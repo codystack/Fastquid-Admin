@@ -22,12 +22,12 @@ const reportsBarChartData = {
     {
       icon: { color: "primary", component: "library_books" },
       label: "users",
-      progress: { content: "36K", percentage: 60 },
+      progress: { content: "10", percentage: 60 },
     },
     {
       icon: { color: "info", component: "touch_app" },
       label: "clicks",
-      progress: { content: "2M", percentage: 90 },
+      progress: { content: "100", percentage: 90 },
     },
     {
       icon: { color: "warning", component: "payment" },

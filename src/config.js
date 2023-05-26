@@ -1,0 +1,1 @@
+export const APP_KEY = "fastquid_ws300ab200cd100";

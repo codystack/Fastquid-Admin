@@ -1,18 +1,3 @@
-/**
-=========================================================
-* Soft UI Dashboard React - v4.0.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/soft-ui-dashboard-react
-* Copyright 2022 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
 import { useState } from "react";
 
 // react-router-dom components
@@ -32,11 +17,69 @@ import CoverLayout from "layouts/authentication/components/CoverLayout";
 
 // Images
 import curved9 from "assets/images/curved-images/curved-6.jpg";
+import APIService from "service";
+import { toast } from "react-hot-toast";
+import { useDispatch, useSelector } from "react-redux";
+// import { setLoading } from "redux/slices/backdrop";
+import { setLoading } from "../../../redux/slices/backdrop";
 
-function SignIn() {
+function SignIn(props) {
+  // const { mutate } = props;
   const [rememberMe, setRememberMe] = useState(true);
+  // const [loading, setLoading] = useState();
+  const [formValues, setFormValues] = useState({
+    emailAddress: "",
+    password: "",
+  });
+
+  const dispatch = useDispatch();
+  const { isLoading } = useSelector((state) => state.loading);
+
+  const handleChange = (e) => {
+    let { name, value } = e.target;
+    setFormValues((prevData) => ({ ...prevData, [name]: value }));
+  };
 
   const handleSetRememberMe = () => setRememberMe(!rememberMe);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    // console.log("TORINO");
+    try {
+      dispatch(setLoading(true));
+      //Now perform login here
+
+      const response = APIService.post("/admin/login", formValues);
+
+      toast.promise(response, {
+        loading: "Loading",
+        success: (res) => {
+          
+          localStorage.setItem("accessToken", res?.data?.accessToken);
+          localStorage.setItem("refreshToken", res?.data?.refreshToken);
+
+          mutate();
+          console.log("PROFILE DATA >> ", data);
+          setTimeout(() => {
+            mutate();
+            dispatch(setLoading(false));
+            console.log("PROFILE DATA >> ", data);
+          }, 5000);
+          
+          return "Login successful!";
+        },
+        error: (err) => {
+          dispatch(setLoading(false));
+          return err?.response?.data?.message || err?.message || "Something went wrong, try again.";
+        },
+      });
+    } catch (error) {
+      dispatch(setLoading(false));
+      console.log(
+        error?.response?.data?.message || error?.message || "Something went wrong, try again."
+      );
+    }
+  };
 
   return (
     <CoverLayout
@@ -45,14 +88,21 @@ function SignIn() {
       image={curved9}
       top={5}
     >
-      <SoftBox component="form" role="form">
+      <SoftBox component="form" role="form" onSubmit={handleSubmit}>
         <SoftBox mb={2}>
           <SoftBox mb={1} ml={0.5}>
             <SoftTypography component="label" variant="caption" fontWeight="bold">
               Email
             </SoftTypography>
           </SoftBox>
-          <SoftInput type="email" placeholder="Email" />
+          <SoftInput
+            value={formValues.emailAddress}
+            name="emailAddress"
+            onChange={handleChange}
+            required
+            type="email"
+            placeholder="Email"
+          />
         </SoftBox>
         <SoftBox mb={2}>
           <SoftBox mb={1} ml={0.5}>
@@ -60,7 +110,14 @@ function SignIn() {
               Password
             </SoftTypography>
           </SoftBox>
-          <SoftInput type="password" placeholder="Password" />
+          <SoftInput
+            value={formValues.password}
+            name="password"
+            onChange={handleChange}
+            required
+            type="password"
+            placeholder="Password"
+          />
         </SoftBox>
         <SoftBox display="flex" alignItems="center">
           <Switch checked={rememberMe} onChange={handleSetRememberMe} />
@@ -74,7 +131,7 @@ function SignIn() {
           </SoftTypography>
         </SoftBox>
         <SoftBox mt={4} mb={1}>
-          <SoftButton variant="gradient" color="info" fullWidth>
+          <SoftButton disable={isLoading} variant="gradient" color="info" type="submit">
             sign in
           </SoftButton>
         </SoftBox>

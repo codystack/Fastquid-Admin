@@ -1,17 +1,4 @@
-/**
-=========================================================
-* Soft UI Dashboard React - v4.0.0
-=========================================================
 
-* Product Page: https://www.creative-tim.com/product/soft-ui-dashboard-react
-* Copyright 2022 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
 
 // @mui material components
 import Grid from "@mui/material/Grid";
@@ -32,19 +19,40 @@ import GradientLineChart from "examples/Charts/LineCharts/GradientLineChart";
 // Soft UI Dashboard React base styles
 import typography from "assets/theme/base/typography";
 
-// Dashboard layout components
-import BuildByDevelopers from "layouts/dashboard/components/BuildByDevelopers";
-import WorkWithTheRockets from "layouts/dashboard/components/WorkWithTheRockets";
-import Projects from "layouts/dashboard/components/Projects";
-import OrderOverview from "layouts/dashboard/components/OrderOverview";
+// // Dashboard layout components
+// import BuildByDevelopers from "layouts/dashboard/components/BuildByDevelopers";
+// import WorkWithTheRockets from "layouts/dashboard/components/WorkWithTheRockets";
+// import Projects from "layouts/dashboard/components/Projects";
+// import OrderOverview from "layouts/dashboard/components/OrderOverview";
 
 // Data
 import reportsBarChartData from "layouts/dashboard/data/reportsBarChartData";
 import gradientLineChartData from "layouts/dashboard/data/gradientLineChartData";
+import { useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import { isPast } from 'date-fns';
+import Loans from "./components/Loans";
 
 function Dashboard() {
   const { size } = typography;
   const { chart, items } = reportsBarChartData;
+  const [pending, setPending] = useState([]);
+  const [approved, setApproved] = useState([]);
+  const [overdue, setOverdue] = useState([]);
+  const {loans, recentLoans} = useSelector((state) => state.loan);
+
+  useEffect(() => {
+    if (loans) {
+      const currentDate = new Date();
+      let arr = loans?.docs?.filter(item => item?.status === "pending");
+      let arr2 = loans?.docs?.filter(item => item?.status === "approved");
+      setPending(arr);
+      setApproved(arr2)
+
+      let over = loans?.docs?.filter(item => isPast(new Date(item?.dueDate)));
+      setOverdue(over);
+    }
+  }, [loans])
 
   return (
     <DashboardLayout>
@@ -55,34 +63,34 @@ function Dashboard() {
             <Grid item xs={12} sm={6} xl={3}>
               <MiniStatisticsCard
                 title={{ text: "total loans" }}
-                count="550"
+                count={loans?.totalDocs}
                 percentage={{ color: "success", text: "loan requests" }}
-                icon={{ color: "info", component: "paid" }}
-              />
+                icon={{ color: "error", component: "paid" }}
+              /> 
             </Grid>
             <Grid item xs={12} sm={6} xl={3}>
               <MiniStatisticsCard
                 title={{ text: "Approved loans" }}
-                count="23"
+                count={approved?.length}
                 percentage={{ color: "success", text: "for disbursement" }}
-                icon={{ color: "info", component: "credit_score" }}
+                icon={{ color: "error", component: "credit_score" }}
               />
             </Grid>
             <Grid item xs={12} sm={6} xl={3}>
               <MiniStatisticsCard
                 title={{ text: "overdue loans" }}
-                count="79"
+                count={overdue?.length}
                 percentage={{ color: "error", text: "to be repaid" }}
-                icon={{ color: "info", component: "fmd_bad" }}
+                icon={{ color: "error", component: "fmd_bad" }}
               />
             </Grid>
             <Grid item xs={12} sm={6} xl={3}>
               <MiniStatisticsCard
                 title={{ text: "pending loans" }}
-                count="38"
+                count={pending?.length}
                 percentage={{ color: "warning", text: "pending" }}
                 icon={{
-                  color: "info",
+                  color: "error",
                   component: "hourglass_bottom",
                 }}
               />
@@ -137,7 +145,7 @@ function Dashboard() {
         </SoftBox>
         <Grid container spacing={3}>
           <Grid item xs={12} md={12} lg={12}>
-            <Projects />
+            <Loans recentLoans={recentLoans}/>
           </Grid>
           {/* <Grid item xs={12} md={6} lg={4}>
             <OrderOverview />

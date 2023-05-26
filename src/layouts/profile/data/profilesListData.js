@@ -24,56 +24,34 @@ const profilesListData = [
   {
     image: kal,
     name: "Sophie B.",
-    description: "Hi! I need more information..",
+    description: "Founder/CEO",
     action: {
       type: "internal",
       route: "/pages/profile/profile-overview",
       color: "info",
-      label: "reply",
+      label: "contact",
     },
   },
   {
     image: marie,
     name: "Anne Marie",
-    description: "Awesome work, can you..",
+    description: "Manager",
     action: {
       type: "internal",
       route: "/pages/profile/profile-overview",
       color: "info",
-      label: "reply",
+      label: "contact",
     },
   },
   {
     image: ivana,
     name: "Ivanna",
-    description: "About files I can..",
+    description: "Sales Manager",
     action: {
-      type: "internal",
+      type: "Sales Manager",
       route: "/pages/profile/profile-overview",
       color: "info",
-      label: "reply",
-    },
-  },
-  {
-    image: team4,
-    name: "Peterson",
-    description: "Have a great afternoon..",
-    action: {
-      type: "internal",
-      route: "/pages/profile/profile-overview",
-      color: "info",
-      label: "reply",
-    },
-  },
-  {
-    image: team3,
-    name: "Nick Daniel",
-    description: "Hi! I need more information..",
-    action: {
-      type: "internal",
-      route: "/pages/profile/profile-overview",
-      color: "info",
-      label: "reply",
+      label: "contact",
     },
   },
 ];

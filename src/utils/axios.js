@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { APP_KEY } from 'config';
 
 // console.info('BASE_URL: ->', process.env.REACT_APP_BASE_URL);
 
@@ -7,7 +8,7 @@ const axiosInstance = axios.create({
   baseURL: "http://192.168.1.103:8080/api", /** https://fastquid-api-production.up.railway.app/api ,* */
   headers: {
     'Content-Type': 'application/json',
-    'secret-key': process.env.APP_SECRET,
+    'secret-key': APP_KEY,
   },
 });
 

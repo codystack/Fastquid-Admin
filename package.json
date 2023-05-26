@@ -24,6 +24,8 @@
     "@mui/lab": "^5.0.0-alpha.131",
     "@mui/material": "5.8.6",
     "@mui/styled-engine": "5.8.0",
+    "@mui/styles": "^5.13.2",
+    "@mui/x-data-grid": "^6.5.0",
     "@mui/x-date-pickers": "^6.5.0",
     "@reduxjs/toolkit": "^1.9.5",
     "@testing-library/jest-dom": "5.16.4",
@@ -45,6 +47,7 @@
     "react-dom": "18.2.0",
     "react-flatpickr": "3.10.13",
     "react-hot-toast": "^2.4.1",
+    "react-material-ui-form-validator": "^3.0.1",
     "react-otp-input": "^3.0.2",
     "react-redux": "^8.0.5",
     "react-router-dom": "6.3.0",
@@ -59,7 +62,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "cp .env build/.env && react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

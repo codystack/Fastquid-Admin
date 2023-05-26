@@ -1,22 +1,8 @@
-/**
-=========================================================
-* Soft UI Dashboard React - v4.0.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/soft-ui-dashboard-react
-* Copyright 2022 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
 
 import { useEffect } from "react";
 
 // react-router-dom components
-import { useLocation, NavLink } from "react-router-dom";
+import { useLocation, NavLink, useNavigate } from "react-router-dom";
 
 // prop-types is a library for typechecking of props.
 import PropTypes from "prop-types";
@@ -42,11 +28,19 @@ import sidenavLogoLabel from "examples/Sidenav/styles/sidenav";
 
 // Soft UI Dashboard React context
 import { useSoftUIController, setMiniSidenav } from "context";
+import APIService from "service";
+import { toast } from "react-hot-toast";
+
+import { useDispatch } from "react-redux";
+import { setAuth, setProfile } from "../../redux/slices/profile";
+import { setLoading } from "redux/slices/backdrop";
 
 function Sidenav({ color, brand, brandName, routes, ...rest }) {
   const [controller, dispatch] = useSoftUIController();
   const { miniSidenav, transparentSidenav } = controller;
   const location = useLocation();
+  const dispatcher = useDispatch();
+  const navigate = useNavigate();
   const { pathname } = location;
   const collapseName = pathname.split("/").slice(1)[0];
 
@@ -127,8 +121,42 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
     return returnValue;
   });
 
+  const logout = async (e) => {
+    e.preventDefault();
+    try {
+      dispatcher(setLoading(true));
+      const response = APIService.update("/admin/logout", "", {});
+
+      //   const response = APIService.get("/admin/create");
+
+      toast.promise(response, {
+        loading: "Loading",
+        success: (res) => {
+          dispatcher(setLoading(false));
+          dispatcher(setAuth(false));
+          dispatcher(setProfile(null));
+
+          //Now route to login
+          navigate("/login", {
+            replace: true,
+          });
+
+          return `Login to continue`;
+        },
+        error: (err) => {
+          console.log("ERROR HERE >>> ", `${err}`);
+          dispatcher(setLoading(false));
+          return err?.response?.data?.message || err?.message || "Something went wrong, try again.";
+        },
+      });
+    } catch (error) {
+      dispatcher(setLoading(false));
+      console.log("ERROR => ", error); 
+    }
+  };
+
   return (
-    <SidenavRoot {...rest} variant="permanent" ownerState={{ transparentSidenav, miniSidenav }}>
+    <SidenavRoot {...rest} variant="permanent" ownerState={{ miniSidenav }}>
       <SoftBox pt={3} pb={1} px={4} textAlign="center">
         <SoftBox
           display={{ xs: "block", xl: "none" }}
@@ -143,31 +171,32 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
             <Icon sx={{ fontWeight: "bold" }}>close</Icon>
           </SoftTypography>
         </SoftBox>
-        <SoftBox component={NavLink} to="/" display="flex" alignItems="center">
-          {brand && <SoftBox component="img" src={brand} alt="Soft UI Logo" width="2rem" />}
-          <SoftBox
+        <SoftBox component={NavLink} to="/" display="flex" justifyContent="center" alignItems="center">
+          {brand && <SoftBox component="img" src={brand} alt="Soft UI Logo" width="75%" />}
+          {/* <SoftBox
             width={!brandName && "100%"}
             sx={(theme) => sidenavLogoLabel(theme, { miniSidenav })}
           >
-            <SoftTypography component="h6" variant="button" fontWeight="medium">
+            {/* <SoftTypography component="h6" variant="button" fontWeight="medium">
               {brandName}
-            </SoftTypography>
-          </SoftBox>
+            </SoftTypography> 
+          </SoftBox> */}
         </SoftBox>
       </SoftBox>
       <Divider />
-      <List sx={{background: "white", borderRadius: 2}} >{renderRoutes}</List>
+      <List sx={{ background: "#18113c", borderRadius: 2 }}>{renderRoutes}</List>
       <SoftBox pt={2} my={2} mx={2} mt="auto">
         {/* <SidenavCard /> */}
         <SoftBox mt={2}>
           <SoftButton
             component="a"
-            href="https://creative-tim.com/product/soft-ui-dashboard-pro-react"
-            target="_blank"
-            rel="noreferrer"
+            // href="https://creative-tim.com/product/soft-ui-dashboard-pro-react"
+            // target="_blank"
+            // rel="noreferrer"
             variant="gradient"
             color={color}
             fullWidth
+            onClick={logout}
           >
             Log out
           </SoftButton>

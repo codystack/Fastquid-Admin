@@ -1,30 +1,20 @@
 import { configureStore } from "@reduxjs/toolkit";
-import userReducer from "./slice/user";
-import cmsReducer from "./slice/cms";
-import ordersReducer from "./slice/orders";
-import productsReducer from "./slice/products";
-import supportReducer from "./slice/support";
-import menuReducer from "./slice/menu";
-import deliveryReducer from "./slice/deliveries";
-import suppliersReducer from "./slice/suppliers";
-import stocksReducer from "./slice/stocks";
-import salesReducer from "./slice/sales";
-import proofsReducer from "./slice/proofs";
-import posReducer from "./slice/pos";
+import loanReducer from "./slices/loans";
+import profileReducer from "./slices/profile";
+import loadingReducer from "./slices/backdrop";
+import transactionReducer from "./slices/transactions";
+import supportReducer from "./slices/support";
+import userReducer from "./slices/user";
+import adminReducer from "./slices/admin";
 
 export default configureStore({
   reducer: {
-    cms: cmsReducer,
+    loan: loanReducer,
+    profile: profileReducer,
+    loading: loadingReducer,
+    transaction: transactionReducer,
+    support: supportReducer,
     user: userReducer,
-    sales: salesReducer,
-    orders: ordersReducer,
-    pos: posReducer,
-    stocks: stocksReducer,
-    proofs: proofsReducer,
-    supports: supportReducer,
-    products: productsReducer,
-    menu: menuReducer,
-    delivery: deliveryReducer,
-    suppliers: suppliersReducer,
+    admin: adminReducer,
   },
 });

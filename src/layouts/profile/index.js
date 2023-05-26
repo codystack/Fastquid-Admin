@@ -49,12 +49,15 @@ import team1 from "assets/images/team-1.jpg";
 import team2 from "assets/images/team-2.jpg";
 import team3 from "assets/images/team-3.jpg";
 import team4 from "assets/images/team-4.jpg";
+import { Toolbar } from "@mui/material";
 
 function Overview() {
   return (
     <DashboardLayout>
       <Header />
-      <SoftBox mt={5} mb={3}>
+      <Toolbar />
+
+      {/* <SoftBox mt={5} mb={3}>
         <Grid container spacing={3}>
           <Grid item xs={12} md={6} xl={4}>
             <PlatformSettings />
@@ -93,8 +96,8 @@ function Overview() {
             <ProfilesList title="conversations" profiles={profilesListData} />
           </Grid>
         </Grid>
-      </SoftBox>
-      <SoftBox mb={3}>
+      </SoftBox> */}
+      {/* <SoftBox mb={3}>
         <Card>
           <SoftBox pt={2} px={2}>
             <SoftBox mb={0.5}>
@@ -176,7 +179,7 @@ function Overview() {
             </Grid>
           </SoftBox>
         </Card>
-      </SoftBox>
+      </SoftBox> */}
 
       <Footer />
     </DashboardLayout>

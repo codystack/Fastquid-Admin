@@ -1,18 +1,3 @@
-/**
-=========================================================
-* Soft UI Dashboard React - v4.0.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/soft-ui-dashboard-react
-* Copyright 2022 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
 import { useState, useEffect } from "react";
 
 // @mui material components
@@ -40,11 +25,14 @@ import breakpoints from "assets/theme/base/breakpoints";
 
 // Images
 import burceMars from "assets/images/bruce-mars.jpg";
+import { useSelector } from "react-redux";
 import curved0 from "assets/images/curved-images/curved0.jpg";
 
 function Header() {
   const [tabsOrientation, setTabsOrientation] = useState("horizontal");
   const [tabValue, setTabValue] = useState(0);
+
+  const { profileData } = useSelector((state) => state.profile);
 
   useEffect(() => {
     // A function that sets the orientation state of the tabs.
@@ -103,7 +91,7 @@ function Header() {
         <Grid container spacing={3} alignItems="center">
           <Grid item>
             <SoftAvatar
-              src={burceMars}
+              src={profileData?.photoUrl}
               alt="profile-image"
               variant="rounded"
               size="xl"
@@ -112,11 +100,16 @@ function Header() {
           </Grid>
           <Grid item>
             <SoftBox height="100%" mt={0.5} lineHeight={1}>
-              <SoftTypography variant="h5" fontWeight="medium">
-                Alex Thompson
+              <SoftTypography variant="h5" fontWeight="medium" textTransform="capitalize">
+                {profileData?.fullName}
               </SoftTypography>
-              <SoftTypography variant="button" color="text" fontWeight="medium">
-                CEO / Co-Founder
+              <SoftTypography
+                variant="button"
+                color="text"
+                fontWeight="medium"
+                textTransform="capitalize"
+              >
+                {`${profileData?.privilege?.role}, ${profileData?.privilege?.claim}`}
               </SoftTypography>
             </SoftBox>
           </Grid>

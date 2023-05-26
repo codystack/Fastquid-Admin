@@ -1,17 +1,3 @@
-/**
-=========================================================
-* Soft UI Dashboard React - v4.0.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/soft-ui-dashboard-react
-* Copyright 2022 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
 
 import { useState, useEffect } from "react";
 
@@ -42,12 +28,16 @@ import {
   setFixedNavbar,
   setSidenavColor,
 } from "context";
+import { useSelector } from "react-redux";
+import { Avatar } from "@mui/material";
 
 function Configurator() {
   const [controller, dispatch] = useSoftUIController();
   const { openConfigurator, transparentSidenav, fixedNavbar, sidenavColor } = controller;
   const [disabled, setDisabled] = useState(false);
-  const sidenavColors = ["primary", "dark", "info", "success", "warning", "error"];
+  const sidenavColors = ["primary", "dark", "error", "success", "warning", "error"];
+
+  const { profileData } = useSelector((state) => state.profile);
 
   // Use the useEffect hook to change the button state for the sidenav type based on window size.
   useEffect(() => {
@@ -94,11 +84,16 @@ function Configurator() {
         pb={0.8}
         px={3}
       >
-        <SoftBox>
-          <SoftTypography variant="h5">Soft UI Configurator</SoftTypography>
-          <SoftTypography variant="body2" color="text">
-            See our dashboard options.
-          </SoftTypography>
+        <SoftBox display="flex" flexDirection="row" justifyContent="start" alignItems="center">
+          <Avatar src={profileData?.photoUrl} />
+          <SoftBox p={1}>
+            <SoftTypography variant="h6">
+              {`${profileData?.firstName}, ${profileData?.lastName}`.toUpperCase()}
+            </SoftTypography>
+            <SoftTypography variant="body2" color="text">
+              {profileData?.emailAddress}
+            </SoftTypography>
+          </SoftBox>
         </SoftBox>
 
         <Icon
@@ -115,6 +110,8 @@ function Configurator() {
           close
         </Icon>
       </SoftBox>
+
+      <SoftBox pt={1.25} pb={3} px={3}></SoftBox>
 
       <Divider />
 
@@ -197,75 +194,6 @@ function Configurator() {
         </SoftBox>
 
         <Divider />
-
-        <SoftBox mt={3} mb={2}>
-          <SoftBox mb={2}>
-            <SoftButton
-              component={Link}
-              href="https://www.creative-tim.com/product/soft-ui-dashboard-react"
-              target="_blank"
-              rel="noreferrer"
-              color="dark"
-              variant="gradient"
-              fullWidth
-            >
-              free download
-            </SoftButton>
-          </SoftBox>
-          <SoftButton
-            component={Link}
-            href="https://www.creative-tim.com/learning-lab/react/quick-start/soft-ui-dashboard/"
-            target="_blank"
-            rel="noreferrer"
-            color="dark"
-            variant="outlined"
-            fullWidth
-          >
-            view documentation
-          </SoftButton>
-        </SoftBox>
-        <SoftBox display="flex" justifyContent="center">
-          <a
-            className="github-button"
-            href="https://github.com/creativetimofficial/soft-ui-dashboard-react"
-            data-icon="octicon-star"
-            data-size="large"
-            data-show-count="true"
-            aria-label="Star creativetimofficial/soft-ui-dashboard-react on GitHub"
-          >
-            Star
-          </a>
-        </SoftBox>
-        <SoftBox mt={3} textAlign="center">
-          <SoftBox mb={0.5}>
-            <SoftTypography variant="h6">Thank you for sharing!</SoftTypography>
-          </SoftBox>
-
-          <SoftBox display="flex" justifyContent="center">
-            <SoftBox mr={1.5}>
-              <SoftButton
-                component={Link}
-                href="//twitter.com/intent/tweet?text=Check%20Soft%20UI%20Dashboard%20React%20made%20by%20%40CreativeTim%20%23webdesign%20%23dashboard%20%23react%23mui&url=https%3A%2F%2Fwww.creative-tim.com%2Fproduct%2Fsoft-ui-dashboard-react"
-                target="_blank"
-                rel="noreferrer"
-                color="dark"
-              >
-                <TwitterIcon />
-                &nbsp; Tweet
-              </SoftButton>
-            </SoftBox>
-            <SoftButton
-              component={Link}
-              href="https://www.facebook.com/sharer/sharer.php?u=https://www.creative-tim.com/product/soft-ui-dashboard-react"
-              target="_blank"
-              rel="noreferrer"
-              color="dark"
-            >
-              <FacebookIcon />
-              &nbsp; Share
-            </SoftButton>
-          </SoftBox>
-        </SoftBox>
       </SoftBox>
     </ConfiguratorRoot>
   );

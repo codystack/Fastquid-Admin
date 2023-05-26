@@ -1,18 +1,3 @@
-/**
-=========================================================
-* Soft UI Dashboard React - v4.0.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/soft-ui-dashboard-react
-* Copyright 2022 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
 import { useState, useEffect, useMemo } from "react";
 
 // react-router components
@@ -32,7 +17,7 @@ import Configurator from "examples/Configurator";
 
 // Soft UI Dashboard React themes
 import theme from "assets/theme";
-import themeRTL from "assets/theme/theme-rtl";
+// import themeRTL from "assets/theme/theme-rtl";
 
 // RTL plugins
 import rtlPlugin from "stylis-plugin-rtl";
@@ -45,10 +30,26 @@ import routes from "routes";
 // Soft UI Dashboard React contexts
 import { useSoftUIController, setMiniSidenav, setOpenConfigurator } from "context";
 
+import { useDispatch, useSelector } from "react-redux";
+
 // Images
-import brand from "assets/images/fast-logos/favicon.png";
+import brand from "assets/images/fast-logos/logolight.svg";
 import SignIn from "layouts/authentication/sign-in";
-import SignUp from 'layouts/authentication/sign-up';
+import SignUp from "layouts/authentication/sign-up";
+
+import useProfile from "hooks/profile";
+import { setAuth, setProfile } from "./redux/slices/profile";
+import useLoan from "hooks/loans";
+import { setLoans, setRecentLoans } from "redux/slices/loans";
+import { setTransaction } from "redux/slices/transactions"
+import { setSupport } from "redux/slices/support"
+import { setUsers } from "redux/slices/user"
+import { setAdmins } from "redux/slices/admin"
+import { Backdrop, CircularProgress } from "@mui/material";
+import useTransaction from "hooks/transactions";
+import useSupport from "hooks/support";
+import useUsers from "hooks/users";
+import useAdmins from "hooks/admins";
 
 export default function App() {
   const [controller, dispatch] = useSoftUIController();
@@ -56,6 +57,18 @@ export default function App() {
   const [onMouseEnter, setOnMouseEnter] = useState(false);
   const [rtlCache, setRtlCache] = useState(null);
   const { pathname } = useLocation();
+
+  const { data, mutate } = useProfile();
+  const { data: loanData, mutate: loanMutate } = useLoan();
+  const { data: transactionData, mutate: transactionMutate } = useTransaction();
+  const { data: supportData, mutate: supportMutate } = useSupport();
+  const { data: usersData, mutate: usersMutate } = useUsers();
+  const { data: adminsData, mutate: adminsMutate } = useAdmins();
+
+
+  const dispatcher = useDispatch();
+  const { profileData, isAuth } = useSelector((state) => state.profile);
+  const { isLoading } = useSelector((state) => state.loading);
 
   // const { isAuth, profile } = useSelector((state) => state.auth);
 
@@ -68,6 +81,38 @@ export default function App() {
 
     setRtlCache(cacheRtl);
   }, []);
+
+  useEffect(() => {
+    if (data) {
+      dispatcher(setAuth(true));
+      dispatcher(setProfile(data));
+    }
+  }, [data]);
+
+  useEffect(() => {
+    if (transactionData) {
+      dispatcher(setTransaction(transactionData));
+    }
+    if (supportData) {
+      dispatcher(setSupport(supportData))
+    }
+  }, [transactionData, supportData]);
+
+  useEffect(() => {
+    if (loanData) {
+      dispatcher(setLoans(loanData));
+      dispatcher(setRecentLoans(loanData?.docs?.slice(0, 6)));
+    }
+  }, [loanData]);
+
+  useEffect(() => {
+    if (usersData) {
+      dispatcher(setUsers(usersData));
+    }
+    if (adminsData) {
+      dispatcher(setAdmins(adminsData));
+    }
+  }, [usersData, adminsData]);
 
   // Open sidenav when mouse enter on mini sidenav
   const handleOnMouseEnter = () => {
@@ -138,8 +183,15 @@ export default function App() {
 
   return (
     <ThemeProvider theme={theme}>
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={isLoading}
+        // onClick={handleClose}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
       <CssBaseline />
-      {2 == 1 ? (
+      {isAuth ? (
         layout === "dashboard" && (
           <>
             <Sidenav
@@ -151,7 +203,7 @@ export default function App() {
               onMouseLeave={handleOnMouseLeave}
             />
             <Configurator />
-            {configsButton}
+            {/* {configsButton} */}
           </>
         )
       ) : (
@@ -159,18 +211,8 @@ export default function App() {
       )}
 
       {/* {layout === "vr" && <Configurator />} */}
-      {1 == 1 ? (
+      {!isAuth && !profileData ? (
         <Routes>
-          {/* {getRoutes(routes)} */}
-          {/* {
-    type: "collapse",
-    name: "Users",
-    key: "users",
-    route: "/users",
-    icon: <People size="12px" />,
-    component: <SignIn />,
-    noCollapse: true,
-  }, */}
           <Route path="/" element={<Navigate to="/login" />} />
           <Route path="/login" element={<SignIn />} />
           <Route path="/sign-up" element={<SignUp />} />

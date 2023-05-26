@@ -1,31 +1,24 @@
 import * as Yup from "yup";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useFormik, Form, FormikProvider } from "formik";
-import { sentenceCase } from "change-case";
-// material
-import Stack from "@mui/material/Stack";
+
 import IconButton from "@mui/material/IconButton";
 import InputAdornment from "@mui/material/InputAdornment";
-import TextField from "@mui/material/TextField";
-import OutlinedInput from "@mui/material/OutlinedInput";
-import FormControl from "@mui/material/FormControl";
-import NativeSelect from "@mui/material/NativeSelect";
-import InputLabel from "@mui/material/InputLabel";
-// import LoadingButton from '@mui/lab/LoadingButton';
-// Date Module
-import { MobileDatePicker } from "@mui/x-date-pickers/MobileDatePicker";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 // Third party
 import toast, { Toaster } from "react-hot-toast";
 // Services
 import APIService from "../../service/";
-// component
-import Iconify from "../../components/Iconify";
 
-import StateApiService from "../../utils/stateApi";
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, Grid, MenuItem, Typography } from "@mui/material";
+
+import { useDispatch } from "react-redux";
+// import env from '../../env';
+
+import { ValidatorForm, TextValidator, SelectValidator } from "react-material-ui-form-validator";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import useProfile from "hooks/profile";
+import { setAuth, setProfile } from "../../redux/slices/profile";
+import { APP_KEY } from "config.js";
 
 const phoneRegExp =
   /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
@@ -38,25 +31,6 @@ const sex = [
   {
     label: "Female",
     value: "female",
-  },
-];
-
-const marital = [
-  {
-    label: "Single",
-    value: "single",
-  },
-  {
-    label: "Married",
-    value: "married",
-  },
-  {
-    label: "Divorced",
-    value: "divorced",
-  },
-  {
-    label: "Widowed",
-    value: "widowed",
   },
 ];
 
@@ -108,85 +82,179 @@ const privilegeRoles = [
 function RegisterForm(props) {
   //   const { mutate } = props;
   const [loading, setLoading] = useState();
-  const [showPassword, setShowPassword] = useState(false);
-  const [states, setStates] = useState([]);
-  const [cities, setCities] = useState([]);
   const [countryCode] = useState("+234");
-  // router
-  const navigate = useNavigate();
-
-  const registerSchema = Yup.object().shape({
-    firstName: Yup.string()
-      .min(2, "Too Short!")
-      .max(50, "Too Long!")
-      .required("First name required"),
-    lastName: Yup.string().min(2, "Too Short!").max(50, "Too Long!").required("Last name required"),
-    phoneNumber: Yup.string()
-      .matches(phoneRegExp, "Enter a valid phone number")
-      .required("Phone number is required")
-      .min(10, "Phone Number must be between 10-11 digits")
-      .max(11, "Phone Number must not be more than 11 digits"),
-    emailAddress: Yup.string()
-      .email("Email must be a valid email address")
-      .required("Email is required"),
-    gender: Yup.string().required("Gender is required"),
-    state: Yup.string().required("State is required"),
-    city: Yup.string().required("City is required"),
-    address: Yup.string().required("Current Address is required"),
-    dob: Yup.string().required("Date of Birth is required"),
-    password: Yup.string().required("Password is required"),
+  const [showCode, setShowCode] = useState(false);
+  const [formValues, setFormValues] = useState({
+    firstName: "",
+    middleName: "",
+    lastName: "",
+    phoneNumber: "",
+    gender: "",
+    emailAddress: "",
+    password: "",
+    type: "",
+    role: "",
+    claim: "",
   });
 
-  const formik = useFormik({
-    initialValues: {
-      firstName: "",
-      lastName: "",
-      emailAddress: "",
-      phoneNumber: "",
-      gender: "male",
-      dob: new Date("2000-12-31T23:00:00.000Z"),
-      address: "",
-      state: "Abia",
-      city: "",
-      password: "",
-    },
-    validationSchema: registerSchema,
-    onSubmit: async () => {
-      console.log("CHECKING >> ");
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-      setLoading(true);
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormValues((prevData) => ({ ...prevData, [name]: value }));
+  };
+
+  const osName = () => {
+    const userAgent = window.navigator.userAgent;
+    let os = "";
+
+    if (userAgent.indexOf("Win") !== -1) {
+      os = "Windows";
+    } else if (userAgent.indexOf("Mac") !== -1) {
+      os = "MacOS";
+    } else if (userAgent.indexOf("Linux") !== -1) {
+      os = "Linux";
+    } else if (userAgent.indexOf("Android") !== -1) {
+      os = "Android";
+    } else if (userAgent.indexOf("iOS") !== -1) {
+      os = "iOS";
+    } else {
+      os = "Unknown";
+    }
+
+    return os;
+  };
+
+  //   const registerSchema = Yup.object().shape({
+  //     firstName: Yup.string()
+  //       .min(2, "Too Short!")
+  //       .max(50, "Too Long!")
+  //       .required("First name required"),
+  //     lastName: Yup.string().min(2, "Too Short!").max(50, "Too Long!").required("Last name required"),
+  //     phoneNumber: Yup.string()
+  //       .matches(phoneRegExp, "Enter a valid phone number")
+  //       .required("Phone number is required")
+  //       .min(10, "Phone Number must be between 10-11 digits")
+  //       .max(11, "Phone Number must not be more than 11 digits"),
+  //     emailAddress: Yup.string()
+  //       .email("Email must be a valid email address")
+  //       .required("Email is required"),
+  //     gender: Yup.string().required("Gender is required"),
+  //     state: Yup.string().required("State is required"),
+  //     city: Yup.string().required("City is required"),
+  //     address: Yup.string().required("Current Address is required"),
+  //     dob: Yup.string().required("Date of Birth is required"),
+  //     password: Yup.string().required("Password is required"),
+  //   });
+
+  //   const formik = useFormik({
+  //     initialValues: {
+  //       firstName: "",
+  //       lastName: "",
+  //       emailAddress: "",
+  //       phoneNumber: "",
+  //       gender: "male",
+  //       dob: new Date("2000-12-31T23:00:00.000Z"),
+  //       address: "",
+  //       state: "Abia",
+  //       city: "",
+  //       password: "",
+  //     },
+  //     // validationSchema: registerSchema,
+  //     onSubmit: async () => {
+  //       console.log("CHECKING >> ");
+
+  //       setLoading(true);
+  //       const payload = {
+  //         ...values,
+  //         phoneNumber: `${countryCode}${
+  //           values?.phoneNumber.charAt(0) === "0"
+  //             ? values?.phoneNumber.substring(1)
+  //             : values?.phoneNumber
+  //         }`,
+  //         location: {
+  //           state: values?.state,
+  //           city: values?.city,
+  //           address: values?.address,
+  //         },
+  //       };
+
+  //       const response = APIService.get("/admin/profile");
+
+  //       toast.promise(response, {
+  //         loading: "Loading",
+  //         success: (res) => {
+  //           setLoading(false);
+  //           // send to verify otp
+  //           //mutate profile
+
+  //           //   navigate("/verify-otp", {
+  //           //     state: {
+  //           //       emailAddress: values?.emailAddress,
+  //           //       accessToken: res?.data?.accessToken,
+  //           //       refreshToken: res?.data?.refreshToken,
+  //           //     },
+  //           //     replace: true,
+  //           //   });
+  //           return `${res?.data?.message}! We sent an OTP to your email address (${values?.emailAddress}). open your mail and enter the OTP sent to your mail.`;
+  //         },
+  //         error: (err) => {
+  //           console.log("ERROR HERE >>> ", `${err}`);
+  //           setLoading(false);
+  //           return err?.response?.data?.message || err?.message || "Something went wrong, try again.";
+  //         },
+  //       });
+  //     },
+  //   });
+
+  //   const { errors, touched, values, handleSubmit, getFieldProps, isValid, setFieldValue } = formik;
+
+  //   const handleShowPassword = () => {
+  //     setShowPassword((show) => !show);
+  //   };
+
+  const submitForm = async (e) => {
+    // console.log("LOADING >>>", APP_KEY);
+    // setLoading(true);
+
+    try {
+      const { type, claim, role, ...rest } = Object.assign({}, formValues);
+
       const payload = {
-        ...values,
+        ...rest,
         phoneNumber: `${countryCode}${
-          values?.phoneNumber.charAt(0) === "0"
-            ? values?.phoneNumber.substring(1)
-            : values?.phoneNumber
+          formValues?.phoneNumber.charAt(0) === "0"
+            ? formValues?.phoneNumber.substring(1)
+            : formValues?.phoneNumber
         }`,
-        location: {
-          state: values?.state,
-          city: values?.city,
-          address: values?.address,
+        privilege: {
+          type: formValues.type,
+          role: formValues.role,
+          claim: formValues.claim,
+        },
+        device: {
+          os: `${osName()}`,
         },
       };
 
-      const response = APIService.get("/admin/profile");
+      console.log("PAYLOADS ", payload);
+
+      const response = APIService.post("/admin/create", payload);
+
+      //   const response = APIService.get("/admin/create");
 
       toast.promise(response, {
         loading: "Loading",
         success: (res) => {
           setLoading(false);
-          // send to verify otp
-          //mutate profile
 
-          //   navigate("/verify-otp", {
-          //     state: {
-          //       emailAddress: values?.emailAddress,
-          //       accessToken: res?.data?.accessToken,
-          //       refreshToken: res?.data?.refreshToken,
-          //     },
-          //     replace: true,
-          //   });
-          return `${res?.data?.message}! We sent an OTP to your email address (${values?.emailAddress}). open your mail and enter the OTP sent to your mail.`;
+          //Now route to login
+          navigate("/login", {
+            replace: true,
+          });
+
+          return `Login to continue`;
         },
         error: (err) => {
           console.log("ERROR HERE >>> ", `${err}`);
@@ -194,244 +262,227 @@ function RegisterForm(props) {
           return err?.response?.data?.message || err?.message || "Something went wrong, try again.";
         },
       });
-    },
-  });
-
-  const { errors, touched, values, handleSubmit, getFieldProps, isValid, setFieldValue } = formik;
-
-  useEffect(() => {
-    const mappedStates = StateApiService.getStates.map((item) => ({
-      label: sentenceCase(item),
-      value: item,
-    }));
-
-    setStates(mappedStates);
-  }, []);
-
-  useEffect(() => {
-    const mappedCities = StateApiService.getLGA(values?.state).map((item) => ({
-      label: sentenceCase(item),
-      value: item,
-    }));
-
-    setCities(mappedCities);
-  }, [states, values.state]);
-
-  const handleShowPassword = () => {
-    setShowPassword((show) => !show);
+    } catch (error) {
+      console.log("ERROR => ", error);
+    }
   };
 
   return (
-    <FormikProvider value={formik}>
-      <Form autoComplete="on" noValidate onSubmit={handleSubmit} style={{ width: "100%" }}>
-        <Stack spacing={2} sx={{ marginBottom: 2 }}>
-          <Stack direction={{ xs: "column", sm: "row" }} alignItems="center" spacing={2}>
-            <TextField
+    <>
+      <ValidatorForm onSubmit={submitForm}>
+        {/* <Stack spacing={2} sx={{ marginBottom: 2 }}> */}
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={6} md={6}>
+            <TextValidator
+              margin="normal"
+              required
               fullWidth
+              id="firstName"
               label="First name"
-              {...getFieldProps("firstName")}
-              error={Boolean(touched.firstName && errors.firstName)}
-              helperText={touched.firstName && errors.firstName}
+              name="firstName"
+              value={formValues.firstName}
+              onChange={handleChange}
+              placeholder="First name"
+              variant="outlined"
+              validators={["required"]}
+              errorMessages={["First name is required"]}
             />
-
-            <TextField
+          </Grid>
+          <Grid item xs={12} sm={6} md={6}>
+            <TextValidator
+              margin="normal"
               fullWidth
+              id="middleName"
+              label="Middle name"
+              name="middleName"
+              value={formValues.middleName}
+              onChange={handleChange}
+              placeholder="Middle name (optional"
+              variant="outlined"
+            />
+          </Grid>
+        </Grid>
+
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={6} md={6}>
+            <TextValidator
+              margin="normal"
+              required
+              fullWidth
+              id="lastName"
               label="Last name"
-              {...getFieldProps("lastName")}
-              error={Boolean(touched.lastName && errors.lastName)}
-              helperText={touched.lastName && errors.lastName}
+              name="lastName"
+              value={formValues.lastName}
+              onChange={handleChange}
+              placeholder="Last name"
+              variant="outlined"
+              validators={["required"]}
+              errorMessages={["Last name is required"]}
             />
-          </Stack>
-
-          <Stack direction={{ xs: "column", sm: "row" }} alignItems="center" spacing={2}>
-            <TextField
-              fullWidth
+          </Grid>
+          <Grid item xs={12} sm={6} md={6}>
+            <TextValidator
+              margin="normal"
               autoComplete="email-address"
+              required
               type="email"
-              label="Email address"
-              {...getFieldProps("emailAddress")}
-              error={Boolean(touched.emailAddress && errors.emailAddress)}
-              helperText={touched.emailAddress && errors.emailAddress}
-            />
-            <TextField
               fullWidth
+              id="emailAddress"
+              label="Email Address"
+              name="emailAddress"
+              value={formValues.emailAddress}
+              onChange={handleChange}
+              placeholder="Email address"
+              variant="outlined"
+              validators={["required"]}
+              errorMessages={["Email address is required"]}
+            />
+          </Grid>
+        </Grid>
+
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={6} md={6}>
+            <TextValidator
+              margin="normal"
+              required
               autoComplete="phone"
-              type="text"
-              label="Phone Number"
-              {...getFieldProps("phoneNumber")}
-              error={Boolean(touched.phoneNumber && errors.phoneNumber)}
-              helperText={touched.phoneNumber && errors.phoneNumber}
-            />
-          </Stack>
-
-          <Stack direction={{ xs: "column", sm: "row" }} alignItems="center" spacing={2}>
-            <FormControl fullWidth>
-              <InputLabel htmlFor="gender" sx={{ bgcolor: "background.paper" }}>
-                <em>Select your Gender</em>
-              </InputLabel>
-              <NativeSelect
-                input={
-                  <OutlinedInput variant="outlined" {...getFieldProps("gender")} id="gender" />
-                }
-                id="gender"
-              >
-                {sex.map((gender) => (
-                  <option key={gender.value} value={gender.value}>
-                    {gender.label}
-                  </option>
-                ))}
-              </NativeSelect>
-            </FormControl>
-            <FormControl fullWidth>
-              <InputLabel htmlFor="maritalStatus" sx={{ bgcolor: "background.paper" }}>
-                <em>Marital status</em>
-              </InputLabel>
-              <NativeSelect
-                input={
-                  <OutlinedInput
-                    variant="outlined"
-                    {...getFieldProps("maritalStatus")}
-                    id="maritalStatus"
-                  />
-                }
-                id="maritalStatus"
-              >
-                {marital.map((item) => (
-                  <option key={item.value} value={item.value}>
-                    {item.label}
-                  </option>
-                ))}
-              </NativeSelect>
-            </FormControl>
-          </Stack>
-
-          <Stack direction={{ xs: "column", sm: "row" }} alignItems="center" spacing={2}>
-            <FormControl fullWidth>
-              <InputLabel htmlFor="state" sx={{ bgcolor: "background.paper" }}>
-                <em>Select your State</em>
-              </InputLabel>
-              <NativeSelect
-                input={<OutlinedInput variant="outlined" {...getFieldProps("state")} id="state" />}
-                id="state"
-              >
-                {states?.map((state) => (
-                  <option key={state.value} value={state.value}>
-                    {state.label}
-                  </option>
-                ))}
-              </NativeSelect>
-            </FormControl>
-            <FormControl fullWidth>
-              <InputLabel htmlFor="city" sx={{ bgcolor: "background.paper" }}>
-                <em>Select your City</em>
-              </InputLabel>
-              <NativeSelect
-                input={<OutlinedInput variant="outlined" {...getFieldProps("city")} id="city" />}
-                id="city"
-              >
-                {cities?.map((city) => (
-                  <option key={city.value} value={city.value}>
-                    {city.label}
-                  </option>
-                ))}
-              </NativeSelect>
-            </FormControl>
-          </Stack>
-
-          <Stack direction={{ xs: "column", sm: "row" }} alignItems="center" spacing={2}>
-            <FormControl fullWidth>
-              <InputLabel htmlFor="type" sx={{ bgcolor: "background.paper" }}>
-                <em>Select Type </em>
-              </InputLabel>
-              <NativeSelect
-                input={<OutlinedInput variant="outlined" {...getFieldProps("type")} id="type" />}
-                id="type"
-              >
-                {privilegeTypes?.map((type) => (
-                  <option key={type.value} value={type.value}>
-                    {type.label}
-                  </option>
-                ))}
-              </NativeSelect>
-            </FormControl>
-            <FormControl fullWidth>
-              <InputLabel htmlFor="role" sx={{ bgcolor: "background.paper" }}>
-                <em>Select role</em>
-              </InputLabel>
-              <NativeSelect
-                input={<OutlinedInput variant="outlined" {...getFieldProps("role")} id="city" />}
-                id="role"
-              >
-                {privilegeRoles?.map((role) => (
-                  <option key={role.value} value={role.value}>
-                    {role.label}
-                  </option>
-                ))}
-              </NativeSelect>
-            </FormControl>
-            <FormControl fullWidth>
-              <InputLabel htmlFor="claim" sx={{ bgcolor: "background.paper" }}>
-                <em>Select claim</em>
-              </InputLabel>
-              <NativeSelect
-                input={<OutlinedInput variant="outlined" {...getFieldProps("claim")} id="city" />}
-                id="claim"
-              >
-                {privilegeClaims?.map((claim) => (
-                  <option key={claim.value} value={claim.value}>
-                    {claim.label}
-                  </option>
-                ))}
-              </NativeSelect>
-            </FormControl>
-          </Stack>
-
-          <TextField
-            fullWidth
-            autoComplete="address"
-            type="text"
-            label="Residential Address"
-            minRows={1}
-            style={{ fontSize: 12 }}
-            multiline
-            {...getFieldProps("address")}
-            error={Boolean(touched.address && errors.address)}
-            helperText={touched.address && errors.address}
-          />
-
-          <Stack direction={{ xs: "column", sm: "row" }} alignItems="center" spacing={2}>
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <MobileDatePicker
-                label="Date of Birth"
-                inputFormat="MM/dd/yyyy"
-                value={values.dob}
-                onChange={(value) => {
-                  setFieldValue("dob", value);
-                }}
-                renderInput={(params) => <TextField fullWidth {...params} />}
-              />
-            </LocalizationProvider>
-
-            <TextField
               fullWidth
-              autoComplete="current-password"
-              type={showPassword ? "text" : "password"}
+              id="phoneNumber"
+              label="Phone Number"
+              name="phoneNumber"
+              value={formValues.phoneNumber}
+              onChange={handleChange}
+              placeholder="Phone number"
+              variant="outlined"
+              validators={["required"]}
+              errorMessages={["Phone number is required"]}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6} md={6}>
+            <SelectValidator
+              margin="normal"
+              value={formValues.gender}
+              onChange={handleChange}
+              label="Select gender"
+              name="gender"
+              fullWidth
+              variant="outlined"
+              size="small"
+              id="gender"
+              validators={["required"]}
+              errorMessages={["Gender e is required"]}
+            >
+              {sex?.map((gender) => (
+                <MenuItem key={gender.value} value={gender.value}>
+                  {gender.label}
+                </MenuItem>
+              ))}
+            </SelectValidator>
+          </Grid>
+        </Grid>
+
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={6} md={6}>
+            <SelectValidator
+              margin="normal"
+              value={formValues.type}
+              onChange={handleChange}
+              label="Select admin type"
+              name="type"
+              fullWidth
+              variant="outlined"
+              size="small"
+              id="type"
+              validators={["required"]}
+              errorMessages={["Admin type is required"]}
+            >
+              {privilegeTypes?.map((item) => (
+                <MenuItem key={item.value} value={item.value}>
+                  {item.label}
+                </MenuItem>
+              ))}
+            </SelectValidator>
+          </Grid>
+          <Grid item xs={12} sm={6} md={6}>
+            <SelectValidator
+              margin="normal"
+              value={formValues.role}
+              onChange={handleChange}
+              label="Select admin role"
+              name="role"
+              fullWidth
+              variant="outlined"
+              size="small"
+              id="role"
+              validators={["required"]}
+              errorMessages={["Admin role is required"]}
+            >
+              {privilegeRoles?.map((item) => (
+                <MenuItem key={item.value} value={item.value}>
+                  {item.label}
+                </MenuItem>
+              ))}
+            </SelectValidator>
+          </Grid>
+        </Grid>
+
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={6} md={6}>
+            <SelectValidator
+              margin="normal"
+              value={formValues.claim}
+              onChange={handleChange}
+              label="Select admin claim"
+              name="claim"
+              fullWidth
+              variant="outlined"
+              size="small"
+              id="claim"
+              validators={["required"]}
+              errorMessages={["Admin claim is required"]}
+            >
+              {privilegeClaims?.map((item) => (
+                <MenuItem key={item.value} value={item.value}>
+                  {item.label}
+                </MenuItem>
+              ))}
+            </SelectValidator>
+          </Grid>
+          <Grid item xs={12} sm={6} md={6}>
+            <TextValidator
+              margin="normal"
+              required
+              fullWidth
+              name="password"
               label="Password"
-              {...getFieldProps("password")}
+              type={showCode ? "text" : "password"}
+              id="password"
+              onChange={handleChange}
+              value={formValues.password}
+              autoComplete="current-password"
+              placeholder="Password"
+              variant="outlined"
+              validators={["required"]}
+              errorMessages={["Password is required"]}
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
-                    <IconButton onClick={handleShowPassword} edge="end">
-                      <Iconify icon={showPassword ? "eva:eye-fill" : "eva:eye-off-fill"} />
+                    <IconButton
+                      aria-label="toggle code"
+                      onClick={() => setShowCode(!showCode)}
+                      onMouseDown={() => setShowCode(!showCode)}
+                      edge="end"
+                    >
+                      {showCode ? <Visibility /> : <VisibilityOff />}
                     </IconButton>
                   </InputAdornment>
                 ),
               }}
-              error={Boolean(touched.password && errors.password)}
-              helperText={touched.password && errors.password}
             />
-          </Stack>
-        </Stack>
+          </Grid>
+        </Grid>
+
+        <br />
 
         <Button fullWidth size="large" type="submit" variant="contained" disabled={loading}>
           Create Account
@@ -452,9 +503,9 @@ function RegisterForm(props) {
             Login{" "}
           </Link>
         </Box>
-      </Form>
+      </ValidatorForm>
       <Toaster />
-    </FormikProvider>
+    </>
   );
 }
 
