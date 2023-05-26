@@ -16,7 +16,7 @@ import SoftButton from "components/SoftButton";
 import CoverLayout from "layouts/authentication/components/CoverLayout";
 
 // Images
-import curved9 from "assets/images/curved-images/curved-6.jpg";
+import curved9 from "assets/images/fast-logos/lagos.jpeg";
 import APIService from "service";
 import { toast } from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
@@ -54,18 +54,19 @@ function SignIn(props) {
       toast.promise(response, {
         loading: "Loading",
         success: (res) => {
-          
           localStorage.setItem("accessToken", res?.data?.accessToken);
           localStorage.setItem("refreshToken", res?.data?.refreshToken);
 
           mutate();
+          
           console.log("PROFILE DATA >> ", data);
           setTimeout(() => {
             mutate();
             dispatch(setLoading(false));
             console.log("PROFILE DATA >> ", data);
+            // navigate("/dashboard");
           }, 5000);
-          
+
           return "Login successful!";
         },
         error: (err) => {
@@ -131,7 +132,7 @@ function SignIn(props) {
           </SoftTypography>
         </SoftBox>
         <SoftBox mt={4} mb={1}>
-          <SoftButton disable={isLoading} variant="gradient" color="info" type="submit">
+          <SoftButton disable={isLoading} variant="gradient" color="error" type="submit">
             sign in
           </SoftButton>
         </SoftBox>
@@ -142,7 +143,7 @@ function SignIn(props) {
               component={Link}
               to="/sign-up"
               variant="button"
-              color="info"
+              color="error"
               fontWeight="medium"
               textGradient
             >

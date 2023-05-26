@@ -47,12 +47,16 @@ function Footer({ company, links }) {
       width="100%"
       display="flex"
       flexDirection={{ xs: "column", lg: "row" }}
-      justifyContent="space-between"
+      justifyContent="center"
       alignItems="center"
       px={1.5}
+      color="text"
+      fontSize={size.sm}
     >
-      <SoftBox
+      &copy; {new Date().getFullYear()}, FastQuid
+      {/* <SoftBox
         display="flex"
+        flexDirection="row"
         justifyContent="center"
         alignItems="center"
         flexWrap="wrap"
@@ -60,29 +64,8 @@ function Footer({ company, links }) {
         fontSize={size.sm}
         px={1.5}
       >
-        &copy; {new Date().getFullYear()}, FastQuid Inc
-        
        
-      </SoftBox>
-      <SoftBox
-        component="ul"
-        sx={({ breakpoints }) => ({
-          display: "flex",
-          flexWrap: "wrap",
-          alignItems: "center",
-          justifyContent: "center",
-          listStyle: "none",
-          mt: 3,
-          mb: 0,
-          p: 0,
-
-          [breakpoints.up("lg")]: {
-            mt: 0,
-          },
-        })}
-      >
-        {/* {renderLinks()} */}
-      </SoftBox>
+      </SoftBox> */}
     </SoftBox>
   );
 }

@@ -132,6 +132,10 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
       toast.promise(response, {
         loading: "Loading",
         success: (res) => {
+
+          localStorage.removeItem("accessToken");
+          localStorage.removeItem("refreshToken");
+
           dispatcher(setLoading(false));
           dispatcher(setAuth(false));
           dispatcher(setProfile(null));

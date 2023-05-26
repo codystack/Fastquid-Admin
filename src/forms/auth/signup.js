@@ -19,6 +19,7 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import useProfile from "hooks/profile";
 import { setAuth, setProfile } from "../../redux/slices/profile";
 import { APP_KEY } from "config.js";
+import SoftButton from "components/SoftButton";
 
 const phoneRegExp =
   /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
@@ -484,9 +485,9 @@ function RegisterForm(props) {
 
         <br />
 
-        <Button fullWidth size="large" type="submit" variant="contained" disabled={loading}>
+        <SoftButton fullWidth  size="large" color="error" type="submit" variant="contained" disabled={loading}>
           Create Account
-        </Button>
+        </SoftButton>
 
         <Box
           paddingY={2}
