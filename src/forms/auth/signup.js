@@ -218,7 +218,7 @@ function RegisterForm(props) {
   const submitForm = async (e) => {
     // console.log("LOADING >>>", APP_KEY);
     // setLoading(true);
-
+ 
     try {
       const { type, claim, role, ...rest } = Object.assign({}, formValues);
 

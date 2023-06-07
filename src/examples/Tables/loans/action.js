@@ -94,34 +94,6 @@ const ActionButton = ({ selected }) => {
     setOpenConfirm(false);
   };
 
-  const performDelete = async () => {};
-
-  const renderDeleteConfirm = (
-    <div className={classes.awardRoot}>
-      <Typography width={320}>
-        {`Are you sure you want to delete this faq \nAction cannot be undone`}
-      </Typography>
-      <div className={classes.awardRow}>
-        <Button
-          className={classes.button}
-          variant="contained"
-          color="error"
-          onClick={() => setOpenDelete(false)}
-        >
-          Cancel
-        </Button>
-        <Button
-          className={classes.button}
-          variant="contained"
-          color="success"
-          onClick={performDelete}
-        >
-          Confirm
-        </Button>
-      </div>
-    </div>
-  );
-
   const renderMenu = (
     <Menu
       id="simple-menu"
@@ -209,23 +181,27 @@ const ActionButton = ({ selected }) => {
   };
 
   const creditLoan = async () => {
-    setOpenDelete(false);
+    handleClose();
     dispatch(setLoading(true));
-    const payload = { ...selected?.row, status: "credited" };
+    const payload = { loan: selected?.row, userId: selected?.row?.user?._id };
 
     try {
-      let response = APIService.update("/admin/loan/update", "", payload);
+      let response = APIService.post("/loan/disburse", payload);
 
       toast.promise(response, {
         loading: "Loading",
         success: (res) => {
           dispatch(setLoading(false));
+          console.log("RESP", res);
           mutate("/loan/all");
-          return `Loan credited successfully`;
+          return `${response.data?.message || "Loan credited successfully"}`;
         },
         error: (err) => {
           console.log("ERROR HERE >>> ", `${err}`);
           dispatch(setLoading(false));
+          console.log(
+            err?.response?.data?.message || err?.message || "Something went wrong, try again."
+          );
           return err?.response?.data?.message || err?.message || "Something went wrong, try again.";
         },
       });
@@ -330,7 +306,10 @@ const ActionButton = ({ selected }) => {
         onClose={() => setOpen(false)}
         TransitionComponent={Transition}
       >
-        <AppBar sx={{ position: "relative" }}>
+        <AppBar
+          sx={{ position: "relative", backgroundColor: "#18113c", color: "white" }}
+          color="secondary"
+        >
           <Toolbar>
             <IconButton
               edge="start"
@@ -341,9 +320,10 @@ const ActionButton = ({ selected }) => {
               <Close />
             </IconButton>
             <Typography
-              sx={{ ml: 2, flex: 1, textTransform: "capitalize" }}
+              sx={{ ml: 2, flex: 1, textTransform: "capitalize",}}
               variant="h6"
               component="div"
+              color={"#fff"}
             >
               {`${selected?.row?.user?.fullName}'s Loan Request Summary`}
             </Typography>

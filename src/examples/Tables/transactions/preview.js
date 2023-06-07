@@ -3,6 +3,7 @@ import { PropTypes } from "prop-types";
 import { Avatar, Chip, Divider, Grid, Typography } from "@mui/material";
 import Box from "@mui/system/Box";
 import formatCurrency from "utils/formatCurrency";
+import logo from "../../../assets/images/fast-logos/credit_card_icon.jpg"
 
 const Preview = (props) => {
   let { selected } = props;
@@ -21,7 +22,7 @@ const Preview = (props) => {
       <Avatar
         size="large"
         sx={{ width: 128, height: 128 }}
-        src={selected?.row?.user?.photoUrl}
+        src={selected?.row?.user?.photoUrl ?? logo}
       >{`${fL}${sL}`}</Avatar>
       <br />
       <Grid container spacing={2}>

@@ -3,15 +3,13 @@ import { APP_KEY } from 'config';
 
 // console.info('BASE_URL: ->', process.env.REACT_APP_BASE_URL);
 
-
 const axiosInstance = axios.create({
-  baseURL: 'https://fastquid-api-production.up.railway.app/api' , /* "http://192.168.1.103:8080/api", */
+  baseURL: "http://192.168.129.183:8080/api" , /* , 'https://fastquid-api-production.up.railway.app/api' */ 
   headers: {
     'Content-Type': 'application/json',
     'secret-key': APP_KEY,
   },
 });
-
 
 
 axiosInstance.interceptors.request.use(async (req) => {

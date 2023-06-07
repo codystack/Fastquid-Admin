@@ -25,12 +25,14 @@ import breakpoints from "assets/theme/base/breakpoints";
 
 // Images
 import burceMars from "assets/images/bruce-mars.jpg";
-import { useSelector } from "react-redux";
-import curved0 from "assets/images/curved-images/curved0.jpg";
+import { useSelector, useDispatch } from "react-redux";
+import curved0 from "assets/images/fast-logos/profile_bgImage.jpg";
+import { setTab } from "redux/slices/settings";
 
 function Header() {
   const [tabsOrientation, setTabsOrientation] = useState("horizontal");
   const [tabValue, setTabValue] = useState(0);
+  const dispatch = useDispatch();
 
   const { profileData } = useSelector((state) => state.profile);
 
@@ -67,10 +69,7 @@ function Header() {
         borderRadius="xl"
         sx={{
           backgroundImage: ({ functions: { rgba, linearGradient }, palette: { gradients } }) =>
-            `${linearGradient(
-              rgba(gradients.info.main, 0.6),
-              rgba(gradients.info.state, 0.6)
-            )}, url(${curved0})`,
+            `url(${curved0})`,
           backgroundSize: "cover",
           backgroundPosition: "50%",
           overflow: "hidden",
@@ -121,9 +120,25 @@ function Header() {
                 onChange={handleSetTabValue}
                 sx={{ background: "transparent" }}
               >
-                <Tab label="App" icon={<Cube />} />
-                <Tab label="Message" icon={<Document />} />
-                <Tab label="Settings" icon={<Settings />} />
+                <Tab
+                  label="My Account"
+                  icon={<Cube />}
+                  onClick={() => {
+                    dispatch(setTab(0));
+                  }}
+                />
+                {profileData?.privilege?.type === "superadmin" &&
+                  (profileData?.privilege?.role === "manager" ||
+                    profileData?.privilege?.role === "developer") &&
+                  profileData?.privilege?.claim === "read/write" && (
+                    <Tab
+                      label="Platform Settings"
+                      icon={<Settings />}
+                      onClick={() => {
+                        dispatch(setTab(1));
+                      }}
+                    />
+                  )}
               </Tabs>
             </AppBar>
           </Grid>

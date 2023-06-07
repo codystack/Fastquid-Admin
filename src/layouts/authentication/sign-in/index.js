@@ -70,6 +70,7 @@ function SignIn(props) {
           return "Login successful!";
         },
         error: (err) => {
+          console.log("err", err);
           dispatch(setLoading(false));
           return err?.response?.data?.message || err?.message || "Something went wrong, try again.";
         },

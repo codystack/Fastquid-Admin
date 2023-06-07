@@ -20,6 +20,8 @@ import Support from "pages/support";
 import Users from "pages/users";
 import Transactions from "pages/transactions";
 import About from "pages/about";
+import Companies from "pages/companies";
+import Admins from "pages/admins";
 
 const routes = [
   {
@@ -64,7 +66,7 @@ const routes = [
     key: "companies",
     route: "/companies",
     icon: <Settings size="12px" />,
-    component: <Box />,
+    component: <Companies />,
     noCollapse: true,
   },
   { type: "title", title: "Account", key: "account-pages" },
@@ -79,6 +81,15 @@ const routes = [
   },
   {
     type: "collapse",
+    name: "Admins",
+    key: "admins",
+    route: "/admins",
+    icon: <SpaceShip size="12px" />,
+    component: <Admins />,
+    noCollapse: true,
+  },
+  {
+    type: "collapse",
     name: "Profile",
     key: "profile",
     route: "/profile",
@@ -86,15 +97,7 @@ const routes = [
     component: <Profile />,
     noCollapse: true,
   },
-  {
-    type: "collapse",
-    name: "About",
-    key: "about",
-    route: "/about",
-    icon: <SpaceShip size="12px" />,
-    component: <About />,
-    noCollapse: true,
-  },
+  
 ];
 
 export default routes;

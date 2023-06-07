@@ -110,6 +110,7 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
           mt={2}
           mb={1}
           ml={1}
+          sx={{color: '#f1f3f4'}}
         >
           {title}
         </SoftTypography>

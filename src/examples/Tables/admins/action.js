@@ -316,7 +316,7 @@ const ActionButton = ({ selected }) => {
         onClose={() => setOpen(false)}
         TransitionComponent={Transition}
       >
-        <AppBar sx={{ position: "relative" }}>
+        <AppBar sx={{ position: "relative", backgroundColor: "#18113c", color: "white" }} color="secondary" > 
           <Toolbar>
             <IconButton
               edge="start"
@@ -330,6 +330,7 @@ const ActionButton = ({ selected }) => {
               sx={{ ml: 2, flex: 1, textTransform: "capitalize" }}
               variant="h6"
               component="div"
+              color={"#fff"}
             >
               {`${selected?.row?.fullName}'s Profile`}
             </Typography>

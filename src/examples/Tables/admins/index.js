@@ -57,9 +57,7 @@ export default function AdminsTable() {
     {
       field: "emailAddress",
       headerName: "Email",
-      renderCell: (params) => (
-        <p style={{ textTransform: "capitalize", fontSize: 14 }}>{params?.row?.emailAddress}</p>
-      ),
+      renderCell: (params) => <p style={{ fontSize: 14 }}>{params?.row?.emailAddress}</p>,
       width: 150,
     },
     {

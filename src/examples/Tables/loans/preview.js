@@ -3,6 +3,7 @@ import { PropTypes } from "prop-types";
 import { Avatar, Chip, Divider, Grid, Typography } from "@mui/material";
 import Box from "@mui/system/Box";
 import formatCurrency from "utils/formatCurrency";
+import logo from "../../../assets/images/fast-logos/credit_card_icon.jpg";
 
 const Preview = (props) => {
   let { selected } = props;
@@ -21,7 +22,8 @@ const Preview = (props) => {
       <Avatar
         size="large"
         sx={{ width: 128, height: 128 }}
-        src={selected?.row?.user?.photoUrl}
+        src={selected?.row?.user?.photoUrl ?? logo}
+        imgProps={{ sx: { objectFit: "cover" } }}
       >{`${fL}${sL}`}</Avatar>
       <br />
       <Grid container spacing={2}>
@@ -153,6 +155,28 @@ const Preview = (props) => {
             <p style={{ fontSize: 14, textTransform: "capitalize" }}>
               {formatCurrency(selected?.row?.totalAmountDue)}
             </p>
+          </Box>
+        </Grid>
+      </Grid>
+
+      <Divider />
+      <Grid container spacing={2}>
+        <Grid item xs={12} sm={6} md={3}>
+          <Box>
+            <Typography variant="h6" fontWeight={600}>
+              SALARY
+            </Typography>
+            <p style={{ fontSize: 14, textTransform: "capitalize" }}>
+              {formatCurrency(selected?.row?.salary ?? 0)}
+            </p>
+          </Box>
+        </Grid>
+        <Grid item xs={12} sm={6} md={3}>
+          <Box>
+            <Typography variant="h6" fontWeight={600}>
+              COMPANY
+            </Typography>
+            <p style={{ fontSize: 14, textTransform: "capitalize" }}>{selected?.row?.company}</p>
           </Box>
         </Grid>
       </Grid>

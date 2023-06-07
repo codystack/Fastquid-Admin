@@ -41,15 +41,19 @@ import useProfile from "hooks/profile";
 import { setAuth, setProfile } from "./redux/slices/profile";
 import useLoan from "hooks/loans";
 import { setLoans, setRecentLoans } from "redux/slices/loans";
-import { setTransaction } from "redux/slices/transactions"
-import { setSupport } from "redux/slices/support"
-import { setUsers } from "redux/slices/user"
-import { setAdmins } from "redux/slices/admin"
+import { setTransaction } from "redux/slices/transactions";
+import { setSupport } from "redux/slices/support";
+import { setUsers } from "redux/slices/user";
+import { setAdmins } from "redux/slices/admin";
 import { Backdrop, CircularProgress } from "@mui/material";
 import useTransaction from "hooks/transactions";
 import useSupport from "hooks/support";
 import useUsers from "hooks/users";
 import useAdmins from "hooks/admins";
+import useCompany from "hooks/useCompany";
+import { setCompanies } from "redux/slices/company";
+import useSettings from "hooks/useSettings";
+import { setSettings } from "redux/slices/settings";
 
 export default function App() {
   const [controller, dispatch] = useSoftUIController();
@@ -59,12 +63,13 @@ export default function App() {
   const { pathname } = useLocation();
 
   const { data, mutate } = useProfile();
+  const { data: companyData, mutateCompany } = useCompany();
+  const { data: settingsData, mutateSettings } = useSettings();
   const { data: loanData, mutate: loanMutate } = useLoan();
   const { data: transactionData, mutate: transactionMutate } = useTransaction();
   const { data: supportData, mutate: supportMutate } = useSupport();
   const { data: usersData, mutate: usersMutate } = useUsers();
   const { data: adminsData, mutate: adminsMutate } = useAdmins();
-
 
   const dispatcher = useDispatch();
   const { profileData, isAuth } = useSelector((state) => state.profile);
@@ -87,14 +92,19 @@ export default function App() {
       dispatcher(setAuth(true));
       dispatcher(setProfile(data));
     }
-  }, [data]);
+
+    if (settingsData) {
+      dispatcher(setSettings(settingsData?.docs[0]));
+      // dispatcher(setProfile(data));
+    }
+  }, [data, settingsData]);
 
   useEffect(() => {
     if (transactionData) {
       dispatcher(setTransaction(transactionData));
     }
     if (supportData) {
-      dispatcher(setSupport(supportData))
+      dispatcher(setSupport(supportData));
     }
   }, [transactionData, supportData]);
 
@@ -103,7 +113,10 @@ export default function App() {
       dispatcher(setLoans(loanData));
       dispatcher(setRecentLoans(loanData?.docs?.slice(0, 6)));
     }
-  }, [loanData]);
+    if (companyData) {
+      dispatcher(setCompanies(companyData));
+    }
+  }, [loanData, companyData, ]);
 
   useEffect(() => {
     if (usersData) {

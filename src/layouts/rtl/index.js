@@ -1,12 +1,12 @@
 /**
 =========================================================
-* Soft UI Dashboard React - v4.0.0
+* FastQuid Admin Dashboard React - v1.0.1
 =========================================================
 
-* Product Page: https://www.creative-tim.com/product/soft-ui-dashboard-react
-* Copyright 2022 Creative Tim (https://www.creative-tim.com)
+*  
+* Copyright 2023 FastQuid. All Rights Reserved
 
-Coded by www.creative-tim.com
+Coded by Stanley Nyekpeye (stanleynyekpeye@gmail.com)
 
  =========================================================
 

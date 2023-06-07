@@ -1,5 +1,3 @@
-
-
 // @mui material components
 import Grid from "@mui/material/Grid";
 import Icon from "@mui/material/Icon";
@@ -29,46 +27,110 @@ import typography from "assets/theme/base/typography";
 import reportsBarChartData from "layouts/dashboard/data/reportsBarChartData";
 import gradientLineChartData from "layouts/dashboard/data/gradientLineChartData";
 import { useSelector } from "react-redux";
-import { useEffect, useState } from "react";
-import { isPast } from 'date-fns';
+import { forwardRef, useEffect, useState } from "react";
+import { isPast } from "date-fns";
 import Loans from "./components/Loans";
+import formatCurrency from "utils/formatCurrency";
+import {
+  AppBar,
+  Button,
+  Dialog,
+  IconButton,
+  List,
+  Slide,
+  Toolbar,
+  Typography,
+} from "@mui/material";
+import { Close } from "@mui/icons-material";
+import InfoDialog from "./components/info_dialog";
+
+const Transition = forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 
 function Dashboard() {
   const { size } = typography;
   const { chart, items } = reportsBarChartData;
   const [pending, setPending] = useState([]);
   const [approved, setApproved] = useState([]);
+  const [denied, setDenied] = useState([]);
+  const [disbursed, setDisbursed] = useState([]);
   const [overdue, setOverdue] = useState([]);
-  const {loans, recentLoans} = useSelector((state) => state.loan);
+  const [open, setOpen] = useState(false);
+  const [totalRevenue, setTotalRevenue] = useState(0);
+  const { loans, recentLoans } = useSelector((state) => state.loan);
+  const [title, setTitle] = useState("");
+  const [lData, setLData] = useState([]);
 
   useEffect(() => {
     if (loans) {
       const currentDate = new Date();
-      let arr = loans?.docs?.filter(item => item?.status === "pending");
-      let arr2 = loans?.docs?.filter(item => item?.status === "approved");
+      let arr = loans?.docs?.filter((item) => item?.status === "pending");
+      let arr2 = loans?.docs?.filter((item) => item?.status === "approved");
+      let arr3 = loans?.docs?.filter((item) => item?.status === "credited");
+      let arr4 = loans?.docs?.filter((item) => item?.status === "denied");
+      let arr5 = loans?.docs?.filter((item) => item?.status === "settled");
       setPending(arr);
-      setApproved(arr2)
+      setApproved(arr2);
+      setDisbursed(arr3);
+      setDenied(arr4);
 
-      let over = loans?.docs?.filter(item => isPast(new Date(item?.dueDate)));
+      let over = loans?.docs?.filter((item) => isPast(new Date(item?.dueDate)));
       setOverdue(over);
+
+      let revenue = 0;
+      let rev = arr5?.forEach((element) => {
+        // if (element) {
+        revenue = revenue + element?.interestAmount;
+        // }
+        setTotalRevenue(revenue);
+      });
     }
-  }, [loans])
+  }, [loans]);
 
   return (
     <DashboardLayout>
       <DashboardNavbar />
       <SoftBox py={3}>
         <SoftBox mb={3}>
-          <Grid container spacing={3}>
-            <Grid item xs={12} sm={6} xl={3}>
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={6} md={4}>
               <MiniStatisticsCard
-                title={{ text: "total loans" }}
-                count={loans?.totalDocs}
-                percentage={{ color: "success", text: "loan requests" }}
+                title={{ text: "total revenue" }}
+                count={`${formatCurrency(totalRevenue)}`}
+                percentage={{ color: "success", text: "in revenue" }}
                 icon={{ color: "error", component: "paid" }}
-              /> 
+              />
             </Grid>
-            <Grid item xs={12} sm={6} xl={3}>
+            <Grid
+              item
+              xs={12}
+              sm={6}
+              md={4}
+              onClick={() => {
+                setLData(disbursed);
+                setOpen(true);
+                setTitle("All Disbursed Loans");
+              }}
+            >
+              <MiniStatisticsCard
+                title={{ text: "Disbursed loans" }}
+                count={disbursed?.length}
+                percentage={{ color: "info", text: "for disbursement" }}
+                icon={{ color: "error", component: "price_check" }}
+              />
+            </Grid>
+            <Grid
+              item
+              xs={12}
+              sm={6}
+              md={4}
+              onClick={() => {
+                setLData(approved);
+                setOpen(true);
+                setTitle("All Approved Loans");
+              }}
+            >
               <MiniStatisticsCard
                 title={{ text: "Approved loans" }}
                 count={approved?.length}
@@ -76,15 +138,22 @@ function Dashboard() {
                 icon={{ color: "error", component: "credit_score" }}
               />
             </Grid>
-            <Grid item xs={12} sm={6} xl={3}>
-              <MiniStatisticsCard
-                title={{ text: "overdue loans" }}
-                count={overdue?.length}
-                percentage={{ color: "error", text: "to be repaid" }}
-                icon={{ color: "error", component: "fmd_bad" }}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6} xl={3}>
+          </Grid>
+        </SoftBox>
+
+        <SoftBox mb={3}>
+          <Grid container spacing={2}>
+            <Grid
+              item
+              xs={12}
+              sm={6}
+              md={4}
+              onClick={() => {
+                setLData(pending);
+                setOpen(true);
+                setTitle("All Pending Loans");
+              }}
+            >
               <MiniStatisticsCard
                 title={{ text: "pending loans" }}
                 count={pending?.length}
@@ -95,18 +164,49 @@ function Dashboard() {
                 }}
               />
             </Grid>
+
+            <Grid
+              item
+              xs={12}
+              sm={6}
+              md={4}
+              onClick={() => {
+                setLData(overdue);
+                setOpen(true);
+                setTitle("All Overdue Loans");
+              }}
+            >
+              <MiniStatisticsCard
+                title={{ text: "overdue loans" }}
+                count={overdue?.length}
+                percentage={{ color: "error", text: "to be repaid" }}
+                icon={{ color: "error", component: "fmd_bad" }}
+              />
+            </Grid>
+            <Grid
+              item
+              xs={12}
+              sm={6}
+              md={4}
+              onClick={() => {
+                setLData(denied);
+                setOpen(true);
+                setTitle("All Declined Loans");
+              }}
+            >
+              <MiniStatisticsCard
+                title={{ text: "declined loans" }}
+                count={denied?.length}
+                percentage={{ color: "error", text: "declined" }}
+                icon={{
+                  color: "error",
+                  component: "error",
+                }}
+              />
+            </Grid>
           </Grid>
         </SoftBox>
-        {/* <SoftBox mb={3}>
-          <Grid container spacing={3}>
-            <Grid item xs={12} lg={7}>
-              <BuildByDevelopers />
-            </Grid>
-            <Grid item xs={12} lg={5}>
-              <WorkWithTheRockets />
-            </Grid>
-          </Grid>
-        </SoftBox> */}
+
         <SoftBox mb={3}>
           <Grid container spacing={3}>
             <Grid item xs={12} lg={5}>
@@ -145,13 +245,22 @@ function Dashboard() {
         </SoftBox>
         <Grid container spacing={3}>
           <Grid item xs={12} md={12} lg={12}>
-            <Loans recentLoans={recentLoans}/>
+            <Loans recentLoans={recentLoans} />
           </Grid>
           {/* <Grid item xs={12} md={6} lg={4}>
             <OrderOverview />
           </Grid> */}
         </Grid>
       </SoftBox>
+
+      <Dialog
+        fullScreen
+        open={open}
+        onClose={() => setOpen(false)}
+        TransitionComponent={Transition}
+      >
+        <InfoDialog title={title} setOpen={setOpen} data={lData} />
+      </Dialog>
       <Footer />
     </DashboardLayout>
   );

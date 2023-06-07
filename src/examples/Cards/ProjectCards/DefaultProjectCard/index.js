@@ -1,12 +1,12 @@
 /**
 =========================================================
-* Soft UI Dashboard React - v4.0.0
+* FastQuid Admin Dashboard React - v1.0.1
 =========================================================
 
-* Product Page: https://www.creative-tim.com/product/soft-ui-dashboard-react
-* Copyright 2022 Creative Tim (https://www.creative-tim.com)
+*  
+* Copyright 2023 FastQuid. All Rights Reserved
 
-Coded by www.creative-tim.com
+Coded by Stanley Nyekpeye (stanleynyekpeye@gmail.com)
 
  =========================================================
 
@@ -31,26 +31,6 @@ import SoftButton from "components/SoftButton";
 import SoftAvatar from "components/SoftAvatar";
 
 function DefaultProjectCard({ image, label, title, description, action, authors }) {
-  const renderAuthors = authors.map(({ image: media, name }) => (
-    <Tooltip key={name} title={name} placement="bottom">
-      <SoftAvatar
-        src={media}
-        alt={name}
-        size="xs"
-        sx={({ borders: { borderWidth }, palette: { white } }) => ({
-          border: `${borderWidth[2]} solid ${white.main}`,
-          cursor: "pointer",
-          position: "relative",
-          ml: -1.25,
-
-          "&:hover, &:focus": {
-            zIndex: "10",
-          },
-        })}
-      />
-    </Tooltip>
-  ));
-
   return (
     <Card
       sx={{
@@ -61,20 +41,6 @@ function DefaultProjectCard({ image, label, title, description, action, authors 
         overflow: "visible",
       }}
     >
-      <SoftBox position="relative" width="100.25%" shadow="xl" borderRadius="xl">
-        <CardMedia
-          src={image}
-          component="img"
-          title={title}
-          sx={{
-            maxWidth: "100%",
-            margin: 0,
-            boxShadow: ({ boxShadows: { md } }) => md,
-            objectFit: "cover",
-            objectPosition: "center",
-          }}
-        />
-      </SoftBox>
       <SoftBox pt={3} px={0.5}>
         <SoftBox mb={1}>
           <SoftTypography
@@ -138,7 +104,6 @@ function DefaultProjectCard({ image, label, title, description, action, authors 
               {action.label}
             </SoftButton>
           )}
-          <SoftBox display="flex">{renderAuthors}</SoftBox>
         </SoftBox>
       </SoftBox>
     </Card>
