@@ -282,7 +282,7 @@ function PlatformSettings() {
                 alignItems="start"
               >
                 <SoftTypography variant="button" fontWeight="regular" color="text">
-                  Personal Loan Percentsge (%)
+                  Personal Salary Percentage (%)
                 </SoftTypography>
                 <SoftInput
                   required
@@ -304,7 +304,7 @@ function PlatformSettings() {
                 alignItems="start"
               >
                 <SoftTypography variant="button" fontWeight="regular" color="text">
-                  Payday Loan Percentsge (%)
+                  Payday Salary Percentage (%)
                 </SoftTypography>
                 <SoftInput
                   type="number"

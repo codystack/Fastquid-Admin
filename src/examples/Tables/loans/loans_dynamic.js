@@ -93,6 +93,21 @@ export default function DynamicLoansTable(props) {
       ),
     },
     {
+      field: "disbursedOn",
+      headerName: "Disbursed On",
+      width: 150,
+      renderCell: (params) => (
+        <p style={{ textTransform: "capitalize", fontSize: 14 }}>{`${new Date(
+          params?.row?.disbursedOn
+        ).toLocaleString("en-US", {
+          weekday: "short",
+          day: "numeric",
+          month: "long",
+          year: "numeric",
+        })}`}</p>
+      ),
+    },
+    {
       field: "dueDate",
       headerName: "Due Date",
       width: 150,
