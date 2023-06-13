@@ -83,36 +83,35 @@ const Users = () => {
   const [isLoading, setLoading] = React.useState(false);
   const [errMsg, setErrMsg] = React.useState("");
   const [isError, setError] = React.useState(false);
-  const [pass, setPass] = React.useState("");
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
   const roles = ["manager", "sales", "analyst", "developer", "operations"];
-  const claims = ["readonly", "read/write"];
+  const claims = ["readonly", "read/write", ];
   const gender = ["male", "female"];
 
-  const osName = () => {
-    const userAgent = window.navigator.userAgent;
-    let os = "";
+  // const osName = () => {
+  //   const userAgent = window.navigator.userAgent;
+  //   let os = "";
 
-    if (userAgent.indexOf("Win") !== -1) {
-      os = "Windows";
-    } else if (userAgent.indexOf("Mac") !== -1) {
-      os = "MacOS";
-    } else if (userAgent.indexOf("Linux") !== -1) {
-      os = "Linux";
-    } else if (userAgent.indexOf("Android") !== -1) {
-      os = "Android";
-    } else if (userAgent.indexOf("iOS") !== -1) {
-      os = "iOS";
-    } else {
-      os = "Unknown";
-    }
+  //   if (userAgent.indexOf("Win") !== -1) {
+  //     os = "Windows";
+  //   } else if (userAgent.indexOf("Mac") !== -1) {
+  //     os = "MacOS";
+  //   } else if (userAgent.indexOf("Linux") !== -1) {
+  //     os = "Linux";
+  //   } else if (userAgent.indexOf("Android") !== -1) {
+  //     os = "Android";
+  //   } else if (userAgent.indexOf("iOS") !== -1) {
+  //     os = "iOS";
+  //   } else {
+  //     os = "Unknown";
+  //   }
 
-    return os;
-  };
+  //   return os;
+  // };
 
   const formik = useFormik({
     initialValues: {
@@ -121,9 +120,7 @@ const Users = () => {
       middleName: "",
       phoneNumber: "",
       emailAddress: "",
-      password: "",
       gender: "male",
-   
     },
     onSubmit: (values) => {
       setLoading(true);
@@ -133,51 +130,51 @@ const Users = () => {
 
         const payload = {
           ...values,
+          password: '123456',
           phoneNumber: `${countryCode}${
             values?.phoneNumber.charAt(0) === "0"
               ? values?.phoneNumber.substring(1)
               : values.phoneNumber
           }`,
-          device: {
-            os: `${osName()}`,
-          },
         };
 
-        // const response = APIService.post("/admin/create", payload);
+        const response = APIService.post("/auth/addUser", payload);
 
-        // toast.promise(response, {
-        //   loading: "Loading",
-        //   success: (res) => {
-        //     console.log("RESP HERE >>> ", `${res}`);
-        //     setError(false);
-        //     setErrMsg("");
+        toast.promise(response, {
+          loading: "Loading",
+          success: (res) => {
+            console.log("RESP HERE >>> ", `${res}`);
+            setError(false);
+            setErrMsg("");
 
-        //     setLoading(false);
-        //     setOpen(false);
+            setLoading(false);
+            setTimeout(() => {
+              setOpen(false);
+            }, 3000);
 
-        //     return `New admin created successfully`;
-        //   },
-        //   error: (err) => {
-        //     console.log(
-        //       "ERROR HERE >>> ",
-        //       `${
-        //         err?.response?.data?.message || err?.message || "Something went wrong, try again."
-        //       }`
-        //     );
-        //     setErrMsg(
-        //       `${
-        //         err?.response?.data?.message || err?.message || "Something went wrong, try again."
-        //       }`
-        //     );
+            return `New user added successfully`;
+          },
+          error: (err) => {
+            console.log(
+              "ERROR HERE >>> ",
+              `${
+                err?.response?.data?.message || err?.message || "Something went wrong, Check internet connection."
+              }`
+            );
+            setErrMsg(
+              `${
+                err?.response?.data?.message || err?.message || "Something went wrong, Check internet connection."
+              }`
+            );
 
-        //     setError(true);
+            setError(true);
 
-        //     setLoading(false);
-        //     return `${
-        //       err?.response?.data?.message || err?.message || "Something went wrong, try again."
-        //     }`;
-        //   },
-        // });
+            setLoading(false);
+            return `${
+              err?.response?.data?.message || err?.message || "Something went wrong, Check internet connection."
+            }`;
+          },
+        });
       } catch (error) {
         setLoading(false);
         console.log("ERROR => ", error);
@@ -324,14 +321,15 @@ const Users = () => {
                       id="demo-simple-select"
                       value={formik.values.gender}
                       required
+                      native
                       name="gender"
                       label="Gender"
                       onChange={formik.handleChange}
                     >
                       {gender?.map((el, index) => (
-                        <MenuItem key={index} value={el}>
+                        <option key={index} value={el}>
                           {el}
-                        </MenuItem>
+                        </option>
                       ))}
                     </Select>
                   </FormControl>
@@ -339,19 +337,7 @@ const Users = () => {
               </Grid>
             </Grid>
 
-            <SoftBox mb={2}>
-              <SoftInput
-                id="password"
-                value={formik.values.password}
-                name="password"
-                type="password"
-                required
-                onChange={formik.handleChange}
-                placeholder="Password"
-              />
-            </SoftBox>
-
-            <SoftBox mt={4} mb={1}>
+            <SoftBox mt={1} mb={1}>
               <SoftButton
                 disabled={isLoading}
                 type="submit"
@@ -359,7 +345,7 @@ const Users = () => {
                 color="dark"
                 fullWidth
               >
-                create  user
+                create user
               </SoftButton>
             </SoftBox>
           </SoftBox>

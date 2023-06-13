@@ -22,6 +22,8 @@ import { toast } from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 // import { setLoading } from "redux/slices/backdrop";
 import { setLoading } from "../../../redux/slices/backdrop";
+import { setProfile } from "redux/slices/profile";
+import { setAuth } from "redux/slices/profile";
 
 function SignIn(props) {
   // const { mutate } = props;
@@ -57,8 +59,11 @@ function SignIn(props) {
           localStorage.setItem("accessToken", res?.data?.accessToken);
           localStorage.setItem("refreshToken", res?.data?.refreshToken);
 
+          dispatch(setProfile(res?.data?.data));
+          dispatch(setAuth(true));
+
           mutate();
-          
+
           console.log("PROFILE DATA >> ", data);
           setTimeout(() => {
             mutate();

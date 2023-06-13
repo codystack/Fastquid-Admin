@@ -40,7 +40,7 @@ import SignUp from "layouts/authentication/sign-up";
 import useProfile from "hooks/profile";
 import { setAuth, setProfile } from "./redux/slices/profile";
 import useLoan from "hooks/loans";
-import { setLoans, setRecentLoans } from "redux/slices/loans";
+import { setLoans, setRecentLoans, setLoanRequests } from "redux/slices/loans";
 import { setTransaction } from "redux/slices/transactions";
 import { setSupport } from "redux/slices/support";
 import { setUsers } from "redux/slices/user";
@@ -54,6 +54,9 @@ import useCompany from "hooks/useCompany";
 import { setCompanies } from "redux/slices/company";
 import useSettings from "hooks/useSettings";
 import { setSettings } from "redux/slices/settings";
+import useRequest from "hooks/useRequest";
+import useCard from "hooks/useCard";
+import { setDebitCards } from "redux/slices/cards";
 
 export default function App() {
   const [controller, dispatch] = useSoftUIController();
@@ -63,12 +66,14 @@ export default function App() {
   const { pathname } = useLocation();
 
   const { data, mutate } = useProfile();
+  const { data: requestData,  } = useRequest(1);
+  const { data: cardData,  } = useCard();
   const { data: companyData, mutateCompany } = useCompany();
   const { data: settingsData, mutateSettings } = useSettings();
-  const { data: loanData, mutate: loanMutate } = useLoan();
-  const { data: transactionData, mutate: transactionMutate } = useTransaction();
+  const { data: loanData, mutate: loanMutate } = useLoan(1);
+  const { data: transactionData, mutate: transactionMutate } = useTransaction(1);
   const { data: supportData, mutate: supportMutate } = useSupport();
-  const { data: usersData, mutate: usersMutate } = useUsers();
+  const { data: usersData, mutate: usersMutate } = useUsers(1);
   const { data: adminsData, mutate: adminsMutate } = useAdmins();
 
   const dispatcher = useDispatch();
@@ -95,9 +100,13 @@ export default function App() {
 
     if (settingsData) {
       dispatcher(setSettings(settingsData?.docs[0]));
-      // dispatcher(setProfile(data));
     }
-  }, [data, settingsData]);
+
+    if (cardData) {
+      dispatcher(setDebitCards(cardData));
+    }
+
+  }, [data, settingsData, cardData]);
 
   useEffect(() => {
     if (transactionData) {
@@ -106,17 +115,20 @@ export default function App() {
     if (supportData) {
       dispatcher(setSupport(supportData));
     }
-  }, [transactionData, supportData]);
+  }, [transactionData, supportData, ]);
 
   useEffect(() => {
     if (loanData) {
       dispatcher(setLoans(loanData));
       dispatcher(setRecentLoans(loanData?.docs?.slice(0, 6)));
     }
+    if (requestData) {
+      dispatcher(setLoanRequests(requestData));
+    }
     if (companyData) {
       dispatcher(setCompanies(companyData));
     }
-  }, [loanData, companyData, ]);
+  }, [loanData, companyData, requestData]);
 
   useEffect(() => {
     if (usersData) {

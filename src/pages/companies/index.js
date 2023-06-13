@@ -24,6 +24,7 @@ import {
   InputLabel,
   List,
   MenuItem,
+  NativeSelect,
   Select,
   TextField,
   Toolbar,
@@ -39,6 +40,7 @@ import { useFormik } from "formik";
 import APIService from "service";
 import { toast } from "react-hot-toast";
 import CompaniesTable from "examples/Tables/companies";
+import { useSelector } from "react-redux";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -86,6 +88,8 @@ const Companies = () => {
   const [isError, setError] = React.useState(false);
   const [pass, setPass] = React.useState("");
 
+  const { admins } = useSelector((state) => state.admin);
+
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -123,6 +127,7 @@ const Companies = () => {
       contactName: "",
       contactPhone: "",
       type: "",
+      accountManager: "",
     },
     onSubmit: (values) => {
       setLoading(true);
@@ -184,7 +189,12 @@ const Companies = () => {
     <DashboardLayout>
       <DashboardNavbar />
       <Box py={3} display="flex" flexDirection="row" justifyContent="end" alignItems="center">
-        <SoftButton variant="contained" startIcon={<Add />} onClick={() => setOpen(true)}>
+        <SoftButton
+          variant="gradient"
+          color="dark"
+          startIcon={<Add />}
+          onClick={() => setOpen(true)}
+        >
           Add Company
         </SoftButton>
       </Box>
@@ -296,7 +306,7 @@ const Companies = () => {
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6} md={6}>
                 <SoftBox mb={2}>
-                <p style={{ fontSize: 12 }}>Phone</p>
+                  <p style={{ fontSize: 12 }}>Phone</p>
                   <SoftInput
                     required
                     id="phone"
@@ -360,6 +370,31 @@ const Companies = () => {
                 </SoftBox>
               </Grid>
             </Grid>
+
+            <SoftBox>
+              <FormControl sx={{ minWidth: 120 }} size="medium" fullWidth>
+                <p style={{ fontSize: 12 }}> Select account manager</p>
+
+                <NativeSelect
+                  defaultValue={formik.values.accountManager}
+                  disableUnderline
+                  onChange={formik.handleChange}
+                  required
+                  fullWidth
+                  sx={{ textTransform: "capitalize" }}
+                  inputProps={{
+                    name: "accountManager",
+                    id: "accountManager",
+                  }}
+                >
+                  {admins?.map((el, index) => (
+                    <option style={{ textTransform: "capitalize" }} key={index} value={el.id}>
+                      {`${el.fullName} - ${el?.privilege?.role}`}
+                    </option>
+                  ))}
+                </NativeSelect>
+              </FormControl>
+            </SoftBox>
 
             <SoftBox mt={4} mb={1}>
               <SoftButton

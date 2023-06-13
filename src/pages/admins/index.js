@@ -90,7 +90,7 @@ const Admins = () => {
   };
 
   const roles = ["manager", "sales", "analyst", "developer", "operations"];
-  const claims = ["readonly", "read/write"];
+  const claims = ["readonly", "read/write", "approve", "disburse"];
   const gender = ["male", "female"];
 
   const osName = () => {

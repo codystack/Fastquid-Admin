@@ -14,11 +14,15 @@
   "engines": {
     "node": "18.x",
     "npm": ">=6"
-  }, 
+  },
   "dependencies": {
     "@emotion/cache": "11.9.3",
     "@emotion/react": "11.9.3",
     "@emotion/styled": "11.9.3",
+    "@fortawesome/fontawesome-svg-core": "^6.4.0",
+    "@fortawesome/free-regular-svg-icons": "^6.4.0",
+    "@fortawesome/free-solid-svg-icons": "^6.4.0",
+    "@fortawesome/react-fontawesome": "^0.2.0",
     "@iconify/react": "^4.1.0",
     "@mui/icons-material": "5.8.4",
     "@mui/lab": "^5.0.0-alpha.131",
@@ -38,6 +42,7 @@
     "date-fns": "^2.30.0",
     "formik": "^2.2.9",
     "intl": "^1.2.5",
+    "json-as-xlsx": "^2.5.3",
     "lodash": "^4.17.21",
     "numeral": "^2.0.6",
     "prop-types": "15.8.1",
@@ -48,6 +53,7 @@
     "react-flatpickr": "3.10.13",
     "react-hot-toast": "^2.4.1",
     "react-material-ui-form-validator": "^3.0.1",
+    "react-number-format": "^5.2.2",
     "react-otp-input": "^3.0.2",
     "react-redux": "^8.0.5",
     "react-router-dom": "6.3.0",

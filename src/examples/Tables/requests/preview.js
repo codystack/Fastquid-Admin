@@ -73,7 +73,7 @@ const Preview = (props) => {
         <Grid item xs={12} sm={6} md={3}>
           <Box>
             <Typography variant="h6" fontWeight={600}>
-              LOAN TYPE
+              REQUEST TYPE
             </Typography>
             <p style={{ fontSize: 14, textTransform: "capitalize" }}>{selected?.row?.type}</p>
           </Box>
@@ -81,7 +81,7 @@ const Preview = (props) => {
         <Grid item xs={12} sm={6} md={3}>
           <Box>
             <Typography variant="h6" fontWeight={600}>
-              LOAN DURATION
+              DURATION
             </Typography>
             <p style={{ fontSize: 14, textTransform: "capitalize" }}>{selected?.row?.duration}</p>
           </Box>
@@ -92,7 +92,7 @@ const Preview = (props) => {
               INITIATED ON
             </Typography>
             <p style={{ fontSize: 14, textTransform: "capitalize" }}>
-              {new Date(selected?.row?.updatedAt).toLocaleString("en-US", {
+              {new Date(selected?.row?.createdAt).toLocaleString("en-US", {
                 weekday: "short",
                 day: "numeric",
                 month: "short",
@@ -104,15 +104,10 @@ const Preview = (props) => {
         <Grid item xs={12} sm={6} md={3}>
           <Box>
             <Typography variant="h6" fontWeight={600}>
-              DUE DATE
+              AMOUNT
             </Typography>
             <p style={{ fontSize: 14, textTransform: "capitalize" }}>
-              {new Date(selected?.row?.dueDate).toLocaleString("en-US", {
-                weekday: "short",
-                day: "numeric",
-                month: "long",
-                year: "numeric",
-              })}
+              {formatCurrency(selected?.row?.amount)}
             </p>
           </Box>
         </Grid>
@@ -122,10 +117,10 @@ const Preview = (props) => {
         <Grid item xs={12} sm={6} md={3}>
           <Box>
             <Typography variant="h6" fontWeight={600}>
-              AMOUNT BORROWED
+              AMOUNT ISSUED
             </Typography>
             <p style={{ fontSize: 14, textTransform: "capitalize" }}>
-              {formatCurrency(selected?.row?.amountBorrowed)}
+              {formatCurrency(selected?.row?.amountIssued)}
             </p>
           </Box>
         </Grid>
@@ -140,72 +135,23 @@ const Preview = (props) => {
         <Grid item xs={12} sm={6} md={3}>
           <Box>
             <Typography variant="h6" fontWeight={600}>
-              INTEREST AMOUNT
+              REASON
             </Typography>
-            <p style={{ fontSize: 14, textTransform: "capitalize" }}>
-              {formatCurrency(selected?.row?.interestAmount)}
-            </p>
+            <p style={{ fontSize: 14, textTransform: "capitalize" }}>{selected?.row?.reason}</p>
           </Box>
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
           <Box>
             <Typography variant="h6" fontWeight={600}>
-              REPAYMENT AMOUNT
+              LOAN ID
             </Typography>
-            <p style={{ fontSize: 14, textTransform: "capitalize" }}>
-              {formatCurrency(selected?.row?.totalAmountDue)}
-            </p>
+            <p style={{ fontSize: 14 }}>{selected?.row?.loanId}</p>
           </Box>
         </Grid>
       </Grid>
 
       <Divider />
-      <Grid container spacing={2}>
-        <Grid item xs={12} sm={6} md={3}>
-          <Box>
-            <Typography variant="h6" fontWeight={600}>
-              SALARY
-            </Typography>
-            <p style={{ fontSize: 14, textTransform: "capitalize" }}>
-              {formatCurrency(selected?.row?.salary ?? 0)}
-            </p>
-          </Box>
-        </Grid>
-        <Grid item xs={12} sm={6} md={3}>
-          <Box>
-            <Typography variant="h6" fontWeight={600}>
-              COMPANY
-            </Typography>
-            <p style={{ fontSize: 14, textTransform: "capitalize" }}>{selected?.row?.company}</p>
-          </Box>
-        </Grid>
-        <Grid item xs={12} sm={6} md={3}>
-          <Box>
-            <Typography variant="h6" fontWeight={600}>
-              HAS LINKED CARD
-            </Typography>
-            <p style={{ fontSize: 14, textTransform: "capitalize" }}>
-              {selected?.row?.user?.debitCard ? "True" : "false"}
-            </p>
-          </Box>
-        </Grid>
-        <Grid item xs={12} sm={6} md={3}>
-          <Box>
-            <Typography variant="h6" fontWeight={600}>
-              LAST DISBURSEMENT
-            </Typography>
-            <p style={{ fontSize: 14, textTransform: "capitalize" }}>
-              {new Date(selected?.row?.disbursedOn).toLocaleString("en-US", {
-                weekday: "short",
-                day: "numeric",
-                month: "long",
-                year: "numeric",
-              })}
-            </p>
-          </Box>
-        </Grid>
-      </Grid>
-      <br />
+
       <br />
       <Box
         padding={1}
@@ -215,7 +161,7 @@ const Preview = (props) => {
         alignItems="center"
       >
         <Typography variant="h6" fontWeight={600}>
-          LOAN STATUS
+           STATUS
         </Typography>
         <Chip
           size="large"

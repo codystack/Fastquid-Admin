@@ -8,6 +8,7 @@ import userReducer from "./slices/user";
 import adminReducer from "./slices/admin";
 import companyReducer from "./slices/company";
 import settingReducer from "./slices/settings";
+import cardReducer from "./slices/cards";
 
 export default configureStore({
   reducer: {
@@ -20,5 +21,6 @@ export default configureStore({
     admin: adminReducer,
     company: companyReducer,
     setting: settingReducer,
+    card: cardReducer,
   },
 });

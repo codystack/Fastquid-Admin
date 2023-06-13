@@ -1,5 +1,3 @@
-
-
 // @mui material components
 import Card from "@mui/material/Card";
 
@@ -17,40 +15,86 @@ import Table from "examples/Tables/Table";
 // import authorsTableData from "layouts/tables/data/authorsTableData";
 // import projectsTableData from "layouts/tables/data/projectsTableData";
 import LoansTable from "examples/Tables/loans";
-import { Box } from '@mui/system';
+import { Box } from "@mui/system";
+import SoftButton from "components/SoftButton";
+import React, { useState } from "react";
+import { AppBar, Dialog, IconButton, Slide, Toolbar, Typography } from "@mui/material";
+import { Close } from "@mui/icons-material";
+import DebitCardsTable from "examples/Tables/cards";
+import CompaniesTable from "examples/Tables/companies";
+import { useSelector } from "react-redux";
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 
 function Tables() {
-  // const { columns, rows } = authorsTableData;
-  // const { columns: prCols, rows: prRows } = projectsTableData;
+  const [open, setOpen] = useState(false);
+  const [isLoading, setLoading] = useState(false);
+
+  const { profileData } = useSelector((state) => state.profile);
 
   return (
     <DashboardLayout>
       <DashboardNavbar />
       <Box py={3}>
-        {/* <SoftBox mb={3}> */}
-          <Card>
-           <LoansTable/> 
-          </Card>
-        {/* </SoftBox> */}
+        {profileData &&
+          profileData?.privilege?.type === "superadmin" &&
+          profileData?.privilege?.claim === "read/write" && (
+            <Box pb={2} display="flex" flexDirection={"row"} justifyContent={"end"}>
+              <SoftButton
+                variant="gradient"
+                color="dark"
+                onClick={() => {
+                  setOpen(true);
+                }}
+              >
+                Debit Cards
+              </SoftButton>
+            </Box>
+          )}
+
         <Card>
-          {/* <SoftBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
-            <SoftTypography variant="h6">Projects table</SoftTypography>
-          </SoftBox> */}
-          {/* <SoftBox
-            sx={{
-              "& .MuiTableRow-root:not(:last-child)": {
-                "& td": {
-                  borderBottom: ({ borders: { borderWidth, borderColor } }) =>
-                    `${borderWidth[1]} solid ${borderColor}`,
-                },
-              },
-            }}
-          > */}
-            {/* <Table columns={prCols} rows={prRows} /> */}
-          {/* </SoftBox> */}
+          <LoansTable />
         </Card>
       </Box>
       <Footer />
+      <Dialog
+        fullScreen
+        open={open}
+        onClose={() => setOpen(false)}
+        TransitionComponent={Transition}
+      >
+        <AppBar
+          sx={{ position: "relative", backgroundColor: "#18113c", color: "white" }}
+          color="secondary"
+        >
+          <Toolbar>
+            <IconButton
+              edge="start"
+              color="white"
+              onClick={() => setOpen(false)}
+              aria-label="close"
+            >
+              <Close />
+            </IconButton>
+            <Typography
+              sx={{ ml: 2, flex: 1, textTransform: "capitalize" }}
+              variant="h6"
+              component="div"
+              color="#fff"
+            >
+              {`All Debit Cards`}
+            </Typography>
+            <SoftButton autoFocus color="inherit" onClick={() => setOpen(false)}>
+              Close
+            </SoftButton>
+          </Toolbar>
+        </AppBar>
+        <Box p={3}>
+          <DebitCardsTable />
+        </Box>
+      </Dialog>
     </DashboardLayout>
   );
 }

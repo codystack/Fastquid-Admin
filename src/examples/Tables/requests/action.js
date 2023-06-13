@@ -109,14 +109,11 @@ const ActionButton = ({ selected }) => {
       open={Boolean(menu)}
       onClose={closeMenu}
     >
-      {profileData && profileData?.privilege?.claim !== "readonly" && (
+      {/* {profileData && profileData?.privilege?.claim === "read/write" && (
         <>
           {selected?.row?.status === "pending" && (
             <>
-              {(profileData?.privilege?.claim === "read/write" ||
-                profileData?.privilege?.claim === "approve") && (
-                <MenuItem onClick={handleClickOpen}>{"Approve"}</MenuItem>
-              )}
+              <MenuItem onClick={handleClickOpen}>{"Approve"}</MenuItem>
               <MenuItem
                 onClick={() => {
                   closeMenu();
@@ -129,10 +126,7 @@ const ActionButton = ({ selected }) => {
           )}
           {selected?.row?.status === "approved" && (
             <>
-             {(profileData?.privilege?.claim === "read/write" ||
-                profileData?.privilege?.claim === "disburse") && (
-                  <MenuItem onClick={handleClickOpen}>{"Credit"}</MenuItem>
-              )}
+              <MenuItem onClick={handleClickOpen}>{"Credit"}</MenuItem>
               <MenuItem
                 onClick={() => {
                   closeMenu();
@@ -144,7 +138,7 @@ const ActionButton = ({ selected }) => {
             </>
           )}
         </>
-      )}
+      )} */}
 
       <MenuItem
         onClick={() => {
@@ -326,12 +320,12 @@ const ActionButton = ({ selected }) => {
               <Close />
             </IconButton>
             <Typography
-              sx={{ ml: 2, flex: 1, textTransform: "capitalize" }}
+              sx={{ ml: 2, flex: 1, textTransform: "capitalize",}}
               variant="h6"
               component="div"
               color={"#fff"}
             >
-              {`${selected?.row?.user?.fullName}'s Loan Summary`}
+              {`${selected?.row?.user?.fullName}'s Loan Request Summary`}
             </Typography>
             <Button autoFocus color="inherit" onClick={() => setOpen(false)}>
               Close

@@ -28,7 +28,7 @@ import reportsBarChartData from "layouts/dashboard/data/reportsBarChartData";
 import gradientLineChartData from "layouts/dashboard/data/gradientLineChartData";
 import { useSelector } from "react-redux";
 import { forwardRef, useEffect, useState } from "react";
-import { isPast } from "date-fns";
+import { isPast, isToday } from "date-fns";
 import Loans from "./components/Loans";
 import formatCurrency from "utils/formatCurrency";
 import {
@@ -55,6 +55,7 @@ function Dashboard() {
   const [approved, setApproved] = useState([]);
   const [denied, setDenied] = useState([]);
   const [disbursed, setDisbursed] = useState([]);
+  const [due, setDue] = useState([]);
   const [overdue, setOverdue] = useState([]);
   const [open, setOpen] = useState(false);
   const [totalRevenue, setTotalRevenue] = useState(0);
@@ -75,7 +76,9 @@ function Dashboard() {
       setDisbursed(arr3);
       setDenied(arr4);
 
+      let today = loans?.docs?.filter((item) => isToday(new Date(item?.dueDate)));
       let over = loans?.docs?.filter((item) => isPast(new Date(item?.dueDate)));
+      setDue(today);
       setOverdue(over);
 
       let revenue = 0;
@@ -161,6 +164,28 @@ function Dashboard() {
                 icon={{
                   color: "error",
                   component: "hourglass_bottom",
+                }}
+              />
+            </Grid>
+
+            <Grid
+              item
+              xs={12}
+              sm={6}
+              md={4}
+              onClick={() => {
+                setLData(due);
+                setOpen(true);
+                setTitle("All Due Loans");
+              }}
+            >
+              <MiniStatisticsCard
+                title={{ text: "due loans" }}
+                count={due?.length}
+                percentage={{ color: "warning", text: "due for repayment" }}
+                icon={{
+                  color: "error",
+                  component: "access_alarm",
                 }}
               />
             </Grid>

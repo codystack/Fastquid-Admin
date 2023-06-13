@@ -22,6 +22,7 @@ import Transactions from "pages/transactions";
 import About from "pages/about";
 import Companies from "pages/companies";
 import Admins from "pages/admins";
+import Requests from "pages/requests";
 
 const routes = [
   {
@@ -31,6 +32,15 @@ const routes = [
     route: "/dashboard",
     icon: <Shop size="12px" />,
     component: <Dashboard />,
+    noCollapse: true,
+  },
+  {
+    type: "collapse",
+    name: "Requests",
+    key: "requests",
+    route: "/requests",
+    icon: <Office size="12px" />,
+    component: <Requests />,
     noCollapse: true,
   },
   {

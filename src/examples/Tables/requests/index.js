@@ -19,51 +19,51 @@ import {
   Dialog,
   Divider,
   FormControl,
+  InputLabel,
   NativeSelect,
+  Popover,
   Typography,
 } from "@mui/material";
 import SoftTypography from "components/SoftTypography";
 import formatCurrency from "utils/formatCurrency";
-import { fCurrency } from "utils/formatNumber";
-import { fNumber } from "utils/formatNumber";
-import { useFormik } from "formik";
-import { ClearAll, FileDownload } from "@mui/icons-material";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFilter } from "@fortawesome/free-solid-svg-icons";
-import SoftBox from "components/SoftBox";
-import SoftInput from "components/SoftInput";
-import SoftButton from "components/SoftButton";
-import NumericFormatCustom from "utils/num_format";
+import { Download, Edit, FileDownload, FileDownloadOff } from "@mui/icons-material";
 import xlsx from "json-as-xlsx";
 import { toast } from "react-hot-toast";
-import { isAfter, isBefore, isEqual, parseISO } from "date-fns";
-import useUsers from "hooks/users";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFilter } from "@fortawesome/free-solid-svg-icons";
+import SoftInput from "components/SoftInput";
+import SoftBox from "components/SoftBox";
+import SoftButton from "components/SoftButton";
+import { useFormik } from "formik";
+import NumericFormatCustom from "utils/num_format";
+import useRequest from "hooks/useRequest";
 
-export default function UsersTable() {
-  const { users } = useSelector((state) => state.user);
-
+export default function RequestsTable() {
+  const { loanRequests } = useSelector((state) => state.loan);
   const [loading, setLoading] = React.useState(false);
-  const [rangeField, setRangeField] = React.useState("createdAt");
+  const [rangeField, setRangeField] = React.useState("amountBorrowed");
   const [open, setOpen] = React.useState(false);
-  const [count, setCount] = React.useState(users?.totalDocs ?? 0);
-  const [filteredUsers, setFilteredUsers] = React.useState(users?.docs ?? []);
+  const [filteredRequests, setFilteredRequests] = React.useState(loanRequests?.docs ?? []);
+
+  // const open = Boolean(anchorEl);
+  // const id = open ? "simple-popover" : undefined;
 
   const [paginationModel, setPaginationModel] = React.useState({
     page: 0,
     pageSize: 25,
   });
 
-  const { data: usersData } = useUsers(paginationModel.page + 1);
+  const { data: requestData, mutate } = useRequest(paginationModel.page + 1);
 
   const handleClickOpen = () => {
     setOpen(true);
   };
 
   React.useEffect(() => {
-    if (users) {
-      setFilteredUsers(users?.docs);
+    if (loanRequests) {
+      setFilteredRequests(loanRequests?.docs);
     }
-  }, [users]);
+  }, [loanRequests]);
 
   const handleClose = () => {
     setOpen(false);
@@ -75,14 +75,15 @@ export default function UsersTable() {
 
   let data = [
     {
-      sheet: "Users",
+      sheet: "Loan Requests",
       columns: [
-        { label: "Full Name", value: (row) => row?.firstName + " " + row?.lastName }, // Top level data
-        { label: "Email Address", value: (row) => row?.emailAddress }, // Top level data
-        { label: "Phone Number", value: (row) => row?.phoneNumber }, // Top level data
-        { label: "Gender", value: "gender" }, // Top level data
+        { label: "Full Name", value: (row) => row.user?.firstName + " " + row.user?.lastName }, // Top level data
+        { label: "Email Address", value: (row) => row.user?.emailAddress }, // Top level data
+        { label: "Phone Number", value: (row) => row.user?.phoneNumber }, // Top level data
+        { label: "Request Type", value: "type" },
+        { label: "Reason", value: "reason" },
         {
-          label: "Joned On",
+          label: "Initiated On",
           value: (row) =>
             new Date(row?.createdAt).toLocaleString("en-US", {
               weekday: "short",
@@ -91,27 +92,28 @@ export default function UsersTable() {
               year: "numeric",
             }),
         },
-        { label: "Marital Status", value: "maritalStatus" },
-        { label: "Children", value: "children" },
-        { label: "Country", value: "countryCode" },
+        { label: "Duration", value: "duration" }, // Top level data
+        { label: "Amount", value: (row) => formatCurrency(row?.amount) }, // Top level data
+        { label: "Amount Issued", value: (row) => formatCurrency(row?.amountIssued) }, // Top level data
+
         {
-          label: "DOB",
+          label: "Due Date",
           value: (row) =>
-            new Date(row?.dob).toLocaleString("en-US", {
+            new Date(row?.dueDate).toLocaleString("en-US", {
               weekday: "short",
               day: "numeric",
               month: "short",
               year: "numeric",
             }),
-        },
-        { label: "Account Status", value: "accountStatus" },
+        }, // Top level data
+        { label: "Request Status", value: "status" }, // Top level data
       ],
-      content: users?.docs ?? [],
+      content: loanRequests?.docs ?? [],
     },
   ];
 
   let settings = {
-    fileName: "users", // Name of the resulting spreadsheet
+    fileName: "loans", // Name of the resulting spreadsheet
     extraLength: 3, // A bigger number means that columns will be wider
     writeMode: "writeFile", // The available parameters are 'WriteFile' and 'write'. This setting is optional. Useful in such cases https://docs.sheetjs.com/docs/solutions/output#example-remote-file
     writeOptions: {}, // Style options from https://docs.sheetjs.com/docs/api/write-options
@@ -123,8 +125,8 @@ export default function UsersTable() {
   };
 
   const rangeFields = [
-    { label: "Date Joined", value: "createdAt" },
-    { label: "DOB", value: "dob" },
+    { label: "Amount Borrowed", value: "amount" },
+    { label: "Initiation Date", value: "createdAt" },
   ];
 
   const formik = useFormik({
@@ -137,22 +139,15 @@ export default function UsersTable() {
       console.log("SELECTED VAL .", rangeField);
       console.log("START VAL .", values.start);
       console.log("END VAL .", values.end);
-      // console.log("CHECKER  .", new Date(values.start).toISOString());
-
       try {
         //Perform filtering here
-        if (rangeField === "createdAt") {
+        if (rangeField === "amountBorrowed") {
           //Filter by amount borrowed
-          let result = users?.docs.filter(
-            (item) =>
-              (isAfter(parseISO(item?.createdAt), parseISO(values.start)) ||
-                isEqual(parseISO(item?.createdAt), parseISO(values.start))) &&
-              (isBefore(parseISO(item?.createdAt), parseISO(values.end)) ||
-                isEqual(parseISO(item?.createdAt), parseISO(values.end)))
+          let result = loans?.docs.filter(
+            (item) => item?.amountBorrowed >= values.start && item?.amountBorrowed <= values.end
           );
-          setFilteredUsers(result);
-          setCount(result?.length);
-          console.log("RESULT", result);
+          setFilteredLoans(result);
+          // console.log("RESULT", result);
         }
       } catch (error) {
         setLoading(false);
@@ -160,11 +155,6 @@ export default function UsersTable() {
       }
     },
   });
-
-  const clearFilter = () => {
-    setFilteredUsers(users?.docs);
-    setCount(users?.totalDocs);
-  };
 
   function CustomToolbar() {
     return (
@@ -184,14 +174,13 @@ export default function UsersTable() {
         <Button onClick={handleClickOpen} startIcon={<FontAwesomeIcon icon={faFilter} size="xs" />}>
           Multi - Filter
         </Button>
-        {count !== users?.totalDocs && (
-          <Button startIcon={<ClearAll />} onClick={clearFilter}>
-            Clear
-          </Button>
-        )}
       </GridToolbarContainer>
     );
   }
+
+  // InputProps={{
+  //   inputComponent: NumberFormatCustom,
+  // }}
 
   const columns = [
     {
@@ -199,103 +188,95 @@ export default function UsersTable() {
       headerName: "Photo",
       width: 70,
       renderCell: (params) => (
-        <Avatar src={params?.row?.photoUrl} variant="circular">
+        <Avatar src={params?.row?.user?.photoUrl} variant="circular">
           {params?.row?.user?.firstName}
         </Avatar>
       ),
     },
     {
-      field: "fullName",
-      headerName: "FullName",
-      width: 150,
+      field: "name",
+      headerName: "Full Name",
+      width: 145,
       renderCell: (params) => (
-        <p style={{ textTransform: "capitalize", fontSize: 14 }}>{params?.row?.fullName}</p>
+        <p style={{ textTransform: "capitalize", fontSize: 14 }}>{params?.row?.user?.fullName}</p>
       ),
     },
     {
-      field: "gender",
-      headerName: "Gender",
-      width: 80,
+      field: "type",
+      headerName: "Request Type",
+      width: 125,
       renderCell: (params) => (
-        <p style={{ textTransform: "capitalize", fontSize: 14 }}>{params?.row?.gender}</p>
+        <p style={{ textTransform: "capitalize", fontSize: 14 }}>{params?.row?.type}</p>
       ),
     },
     {
-      field: "emailAddress",
-      headerName: "Email",
-      renderCell: (params) => <p style={{ fontSize: 14 }}>{params?.row?.emailAddress}</p>,
-      width: 150,
+      field: "duration",
+      headerName: "Duration",
+      renderCell: (params) => (
+        <p style={{ textTransform: "capitalize", fontSize: 14 }}>{params?.row?.duration}</p>
+      ),
+      //   width: 520,
+    },
+
+    {
+      field: "amount",
+      headerName: "Amount",
+      renderCell: (params) => (
+        <p style={{ textTransform: "capitalize", fontSize: 14 }}>{`${formatCurrency(
+          params?.row?.amount
+        )}`}</p>
+      ),
+      //   width: 520,
     },
     {
-      field: "phoneNumber",
-      headerName: "Phone",
+      field: "amountIssued",
+      headerName: "Amt Issued",
       renderCell: (params) => (
-        <p style={{ textTransform: "capitalize", fontSize: 14 }}>{`${params?.row?.phoneNumber}`}</p>
+        <p style={{ textTransform: "capitalize", fontSize: 14 }}>{`${formatCurrency(
+          params?.row?.amountIssued
+        )}`}</p>
       ),
-      width: 135,
+      //   width: 520,
+    },
+    {
+      field: "reason",
+      headerName: "Reason",
+      renderCell: (params) => (
+        <p style={{ textTransform: "capitalize", fontSize: 14 }}>{params?.row?.reason}</p>
+      ),
+      width: 175,
     },
     {
       field: "createdAt",
-      headerName: "Joined On",
-      width: 100,
+      headerName: "Requested On",
+      width: 150,
       renderCell: (params) => (
         <p style={{ textTransform: "capitalize", fontSize: 14 }}>{`${new Date(
           params?.row?.createdAt
-        ).toLocaleDateString("en-GB", {})}`}</p>
+        ).toLocaleString("en-US", {
+          weekday: "short",
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+        })}`}</p>
       ),
     },
     {
-      field: "maritalStatus",
-      headerName: "Marital Status",
-      renderCell: (params) => (
-        <p
-          style={{ textTransform: "capitalize", fontSize: 14 }}
-        >{`${params?.row?.maritalStatus}`}</p>
-      ),
-      width: 115,
-    },
-    {
-      field: "children",
-      headerName: "Children",
-      width: 84,
-      renderCell: (params) => (
-        <p style={{ textTransform: "capitalize", fontSize: 14 }}>{`${fNumber(
-          params?.row?.children
-        )}`}</p>
-      ),
-    },
-    {
-      field: "countryCode",
-      headerName: "Country",
-      width: 80,
-      renderCell: (params) => (
-        <p style={{ textTransform: "capitalize", fontSize: 14 }}>{`${params?.row?.countryCode}`}</p>
-      ),
-    },
-    {
-      field: "dob",
-      headerName: "DOB",
-      width: 100,
-      renderCell: (params) => (
-        <p style={{ textTransform: "capitalize", fontSize: 14 }}>{`${new Date(
-          params?.row?.dob
-        ).toLocaleDateString("en-GB", {})}`}</p>
-      ),
-    },
-    {
-      field: "accountStatus",
-      headerName: "Account Status",
-      width: 120,
+      field: "status",
+      headerName: "Status",
+      width: 108,
       renderCell: (params) => (
         <Chip
           size="small"
           sx={{ textTransform: "capitalize" }}
-          label={params?.row?.accountStatus}
+          label={params?.row?.status}
           color={
-            params?.row?.accountStatus === "pending"
+            params?.row?.status === "pending"
               ? "warning"
-              : params?.row?.accountStatus === "verified"
+              : params?.row?.status === "approved" || params?.row?.status === "settled"
               ? "success"
+              : params?.row?.status === "credited"
+              ? "info"
               : "error"
           }
         />
@@ -305,7 +286,7 @@ export default function UsersTable() {
     },
     {
       field: "id",
-      headerName: "Action",
+      headerName: "Actions",
       width: 90,
       renderCell: (params) => {
         return <ActionButton selected={params} />;
@@ -313,8 +294,32 @@ export default function UsersTable() {
     },
   ];
 
+  React.useEffect(() => {
+    let active = true;
+
+    (async () => {
+      setLoading(true);
+      // const newData = await loadServerRows(paginationModel.page, data);
+      if (requestData) {
+        console.log("SECOND PAGE DATA", requestData);
+        setFilteredRequests(requestData?.docs);
+      }
+
+      if (!active) {
+        return;
+      }
+
+      // setFilteredRequests(data)
+      setLoading(false);
+    })();
+
+    return () => {
+      active = false;
+    };
+  }, [paginationModel.page, requestData]);
+
   return (
-    <div style={{ height: 512, width: "100%" }}>
+    <div style={{ height: 600, width: "100%" }}>
       <Dialog disablePortal={true} onClose={() => setOpen(false)} open={open}>
         <SoftBox padding={2} component="form" role="form" onSubmit={formik.handleSubmit}>
           <SoftBox
@@ -363,7 +368,7 @@ export default function UsersTable() {
               alignItems={"start"}
             >
               <Box
-                width={280}
+                width={256}
                 display={"flex"}
                 flexDirection={"row"}
                 justifyContent={"space-between"}
@@ -379,16 +384,31 @@ export default function UsersTable() {
                     justifyContent={"start"}
                     alignItems={"center"}
                   >
-                    <SoftInput
-                      size="small"
-                      id="start"
-                      name="start"
-                      required
-                      type="date"
-                      value={formik.values.start}
-                      placeholder="Start"
-                      onChange={formik.handleChange}
-                    />
+                    {rangeField === "amountBorrowed" ? (
+                      <SoftInput
+                        size="small"
+                        id="start"
+                        name="start"
+                        required
+                        type="number"
+                        value={formik.values.start}
+                        placeholder="Start"
+                        onChange={formik.handleChange}
+                        inputProps={{
+                          inputComponent: NumericFormatCustom,
+                        }}
+                      />
+                    ) : (
+                      <SoftInput
+                        size="small"
+                        id="start"
+                        name="start"
+                        required
+                        value={formik.values.start}
+                        placeholder="Start"
+                        onChange={formik.handleChange}
+                      />
+                    )}
 
                     <Typography px={1}>-</Typography>
                   </Box>
@@ -398,16 +418,31 @@ export default function UsersTable() {
                   <Typography fontSize={14} fontWeight={600}>
                     To
                   </Typography>
-                  <SoftInput
-                    size="small"
-                    id="end"
-                    name="end"
-                    required
-                    type="date"
-                    value={formik.values.end}
-                    placeholder="End"
-                    onChange={formik.handleChange}
-                  />
+                  {rangeField === "amountBorrowed" ? (
+                    <SoftInput
+                      size="small"
+                      id="end"
+                      name="end"
+                      required
+                      type="number"
+                      value={formik.values.end}
+                      placeholder="End"
+                      onChange={formik.handleChange}
+                      inputProps={{
+                        inputComponent: NumericFormatCustom,
+                      }}
+                    />
+                  ) : (
+                    <SoftInput
+                      size="small"
+                      id="end"
+                      name="end"
+                      required
+                      value={formik.values.end}
+                      placeholder="End"
+                      onChange={formik.handleChange}
+                    />
+                  )}
                 </Box>
               </Box>
             </Box>
@@ -438,13 +473,14 @@ export default function UsersTable() {
           </SoftBox>
         </SoftBox>
       </Dialog>
-      {users && users?.docs && filteredUsers && (
+      {loanRequests && loanRequests?.docs && filteredRequests && (
         <DataGrid
-          rows={filteredUsers}
+          sx={{ padding: 1 }}
+          rows={filteredRequests}
           columns={columns}
           paginationMode="server"
           pageSizeOptions={[25]}
-          rowCount={count}
+          rowCount={loanRequests?.totalDocs}
           paginationModel={paginationModel}
           onPaginationModelChange={setPaginationModel}
           loading={loading}

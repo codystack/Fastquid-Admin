@@ -1,7 +1,7 @@
 import useSWR from 'swr';
 
-export default function useLoan(page) {
-  const { data, mutate, error } = useSWR('/loan/all?page='+page);
+export default function useCard() {
+  const { data, mutate, error } = useSWR('/bank/debitCards');
   // console.log('response', error);
   const loading = !data && !error;
   const loggedOut =
