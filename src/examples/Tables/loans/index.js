@@ -39,7 +39,7 @@ import NumericFormatCustom from "utils/num_format";
 import useLoan from "hooks/loans";
 
 export default function LoansTable() {
-  const { loans } = useSelector((state) => state.loan);
+  const { loans, } = useSelector((state) => state.loan);
   const [loading, setLoading] = React.useState(false);
   const [rangeField, setRangeField] = React.useState("amountBorrowed");
   const [open, setOpen] = React.useState(false);
@@ -366,7 +366,7 @@ export default function LoansTable() {
       headerName: "Actions",
       width: 90,
       renderCell: (params) => {
-        return <ActionButton selected={params} />;
+        return <ActionButton selected={params} mutate={mutate} />;
       },
     },
   ];

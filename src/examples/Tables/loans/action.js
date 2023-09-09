@@ -61,7 +61,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const ActionButton = ({ selected }) => {
+const ActionButton = ({ selected, mutate }) => {
   const classes = useStyles();
 
   const [open, setOpen] = React.useState(false);
@@ -129,9 +129,9 @@ const ActionButton = ({ selected }) => {
           )}
           {selected?.row?.status === "approved" && (
             <>
-             {(profileData?.privilege?.claim === "read/write" ||
+              {(profileData?.privilege?.claim === "read/write" ||
                 profileData?.privilege?.claim === "disburse") && (
-                  <MenuItem onClick={handleClickOpen}>{"Credit"}</MenuItem>
+                <MenuItem onClick={handleClickOpen}>{"Credit"}</MenuItem>
               )}
               <MenuItem
                 onClick={() => {
@@ -172,6 +172,7 @@ const ActionButton = ({ selected }) => {
         success: (res) => {
           dispatch(setLoading(false));
           mutate("/loan/all");
+          mutate();
           return `Loan approved successfully`;
         },
         error: (err) => {
@@ -198,7 +199,8 @@ const ActionButton = ({ selected }) => {
         loading: "Loading",
         success: (res) => {
           dispatch(setLoading(false));
-          console.log("RESP", res);
+          // console.log("RESP", res);
+          mutate();
           mutate("/loan/all");
           return `${response.data?.message || "Loan credited successfully"}`;
         },
@@ -223,17 +225,18 @@ const ActionButton = ({ selected }) => {
     const payload = { ...selected?.row, status: "denied" };
 
     try {
-      let response = APIService.update("/admin/loan/update", "", payload);
+      let response = APIService.update("/admin/loan/update?action=deny-loan", "", payload);
 
       toast.promise(response, {
         loading: "Loading",
         success: (res) => {
           dispatch(setLoading(false));
+          mutate();
           mutate("/loan/all");
           return `Loan credited successfully`;
         },
         error: (err) => {
-          console.log("ERROR HERE >>> ", `${err}`);
+          // console.log("ERROR HERE >>> ", `${err}`);
           dispatch(setLoading(false));
           return err?.response?.data?.message || err?.message || "Something went wrong, try again.";
         },
