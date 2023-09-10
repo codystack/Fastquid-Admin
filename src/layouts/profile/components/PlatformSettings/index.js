@@ -22,7 +22,7 @@ import Switch from "@mui/material/Switch";
 // Soft UI Dashboard React components
 import SoftBox from "components/SoftBox";
 import SoftTypography from "components/SoftTypography";
-import { Grid, IconButton } from "@mui/material";
+import { Dialog, DialogTitle, Grid, IconButton } from "@mui/material";
 import Edit from "@mui/icons-material/Edit";
 import Box from "@mui/system/Box";
 import SoftInput from "components/SoftInput";
@@ -34,11 +34,13 @@ import APIService from "service";
 import { toast } from "react-hot-toast";
 import { mutate } from "swr";
 import { useEffect } from "react";
+import { Add } from "@mui/icons-material";
 
 function PlatformSettings() {
   const [isPersonalActive, setPersonalActive] = useState(true);
   const [isPaydayActive, setPaydayActive] = useState(true);
-  // const [isChanged, setChanged] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [reason, setReason] = useState(null);
   const dispatch = useDispatch();
 
   const { settings } = useSelector((state) => state.setting);
@@ -110,8 +112,35 @@ function PlatformSettings() {
     },
   });
 
+  const addReason = async () => {
+    try {
+      
+    } catch (error) {
+      
+    }
+  }
+
   return (
     <Card>
+      <Dialog open={open} onClose={() => setOpen(false)}>
+        <DialogTitle>....... Add New Loan Reason .......</DialogTitle>
+        <SoftBox p={4} role="form" component="form" onSubmit={addReason} >
+          <SoftInput
+            required
+            fullWidth
+            type="text"
+            value={reason}
+            name="minimumLoanAmount"
+            onChange={(e) => {
+              setReason(e?.target?.value);
+            }}
+          />
+          <br />
+          <SoftButton type="submit" variant="gradient" color="dark" fullWidth>
+            Submit
+          </SoftButton>
+        </SoftBox>
+      </Dialog>
       <SoftBox
         p={4}
         lineHeight={1.25}
@@ -315,6 +344,36 @@ function PlatformSettings() {
               </SoftBox>
             </Grid>
           </Grid>
+        </SoftBox>
+
+        <br />
+
+        <SoftBox display="flex" py={1} mb={0.25} styles={{ width: "100%", marginTop: 4 }}>
+          <SoftBox
+            display="flex"
+            flexDirection="row"
+            justifyContent="space-between"
+            alignItems="center"
+            sx={{ width: "100%" }}
+          >
+            <SoftTypography
+              variant="caption"
+              fontWeight="bold"
+              color="text"
+              textTransform="uppercase"
+            >
+              Loan Reasons
+            </SoftTypography>
+
+            <SoftButton
+              variant="gradient"
+              color="light"
+              startIcon={<Add />}
+              onClick={() => setOpen(true)}
+            >
+              Add New
+            </SoftButton>
+          </SoftBox>
         </SoftBox>
 
         <SoftBox mt={4} mb={1}>
