@@ -38,7 +38,7 @@ const InfoDialog = (props) => {
       <Toolbar />
       <List  >
         <DynamicLoansTable loans={data} />
-        </List>
+      </List>
     </div>
   );
 };

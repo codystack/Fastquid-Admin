@@ -156,7 +156,6 @@ const ActionButton = ({ selected, mutate }) => {
       </MenuItem>
     </Menu>
   );
-  //   []?.
 
   const approveLoan = async () => {
     handleClose();
@@ -220,7 +219,7 @@ const ActionButton = ({ selected, mutate }) => {
   };
 
   const declineLoan = () => {
-    handleClose();
+    setOpenDelete(false);
     dispatch(setLoading(true));
     const payload = { ...selected?.row, status: "denied" };
 
@@ -305,7 +304,7 @@ const ActionButton = ({ selected, mutate }) => {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpenDelete(false)}>Cancel</Button>
-          <Button onClick={declineLoan}>Yes, proceed</Button>
+          <Button onClick={() => declineLoan()}>Yes, proceed</Button>
         </DialogActions>
       </Dialog>
 
