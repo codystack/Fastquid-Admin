@@ -2,15 +2,17 @@ import axios from "axios";
 import { APP_KEY } from "config";
 
 // console.info('BASE_URL: ->', process.env.REACT_APP_BASE_URL);
-/* "https://fast-quid-api-service.vercel.app/api"  "https://fastquid-api-production.up.railway.app/api"*/
+/* "http://192.168.0.103:8080/api" */
 
 const axiosInstance = axios.create({
-  baseURL:  "http://192.168.0.103:8080/api",
+  baseURL: "https://fast-quid-api-service.vercel.app/api",
   headers: {
     "Content-Type": "application/json",
     "secret-key": APP_KEY,
   },
+  
 });
+
 
 axiosInstance.interceptors.request.use(async (req) => {
   try {
