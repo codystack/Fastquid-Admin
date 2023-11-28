@@ -1,7 +1,7 @@
 import useSWR from 'swr';
 
-export default function useCompany() {
-  const { data, mutate, error } = useSWR('/company/all');
+export default function useCompany(page) {
+  const { data, mutate, error } = useSWR('/company/all?page=' + page);
   // console.log('response', error);
   const loading = !data && !error;
   const loggedOut =
@@ -13,7 +13,7 @@ export default function useCompany() {
   return {
     loading,
     loggedOut,
-    data,
+    data, 
     mutate,
   };
 }

@@ -16,16 +16,12 @@ import SoftButton from "components/SoftButton";
 import { Add, Close } from "@mui/icons-material";
 import {
   AppBar,
-  Checkbox,
   Dialog,
   FormControl,
   Grid,
   IconButton,
-  InputLabel,
   List,
-  MenuItem,
-  Select,
-  TextField,
+  NativeSelect,
   Toolbar,
 } from "@mui/material";
 
@@ -316,22 +312,30 @@ const Users = () => {
                   <FormControl fullWidth>
                     <p style={{ fontSize: 12 }}>Gender</p>
                     {/* <InputLabel id="demo-simple-select-label">Gender</InputLabel> */}
-                    <Select
-                      labelId="demo-simple-select-label"
-                      id="demo-simple-select"
-                      value={formik.values.gender}
-                      required
-                      native
-                      name="gender"
-                      label="Gender"
+
+                    <NativeSelect
+                      defaultValue={formik.values.gender}
+                      disableUnderline
+                      variant='outlined'
                       onChange={formik.handleChange}
+                      required
+                      fullWidth
+                      sx={{ textTransform: "capitalize" }}
+                      inputProps={{
+                        name: "gender",
+                        id: "gender",
+                        sx: {
+                          minWidth: "100%",
+                        },
+                      }}
                     >
                       {gender?.map((el, index) => (
-                        <option key={index} value={el}>
-                          {el}
+                        <option style={{ textTransform: "capitalize" }} key={index} value={el}>
+                          {`${el}`}
                         </option>
                       ))}
-                    </Select>
+                    </NativeSelect>
+                    
                   </FormControl>
                 </Box>
               </Grid>

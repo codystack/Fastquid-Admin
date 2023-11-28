@@ -16,16 +16,13 @@ import SoftButton from "components/SoftButton";
 import { Add, Close } from "@mui/icons-material";
 import {
   AppBar,
-  Checkbox,
   Dialog,
   FormControl,
   Grid,
   IconButton,
-  InputLabel,
   List,
   MenuItem,
-  Select,
-  TextField,
+  NativeSelect,
   Toolbar,
 } from "@mui/material";
 
@@ -326,21 +323,29 @@ const Admins = () => {
                   <FormControl fullWidth>
                     <p style={{ fontSize: 12 }}>Select gender</p>
                     {/* <InputLabel id="demo-simple-select-label">Gender</InputLabel> */}
-                    <Select
-                      labelId="demo-simple-select-label"
-                      id="demo-simple-select"
-                      value={formik.values.gender}
-                      required
-                      name="gender"
-                      label="Gender"
+                    <NativeSelect
+                      defaultValue={formik.values.gender}
+                      disableUnderline
+                      variant='outlined'
                       onChange={formik.handleChange}
+                      required
+                      fullWidth
+                      sx={{ textTransform: "capitalize" }}
+                      inputProps={{
+                        name: "gender",
+                        id: "gender",
+                        sx: {
+                          minWidth: "100%",
+                        },
+                      }}
                     >
                       {gender?.map((el, index) => (
-                        <MenuItem key={index} value={el}>
-                          {el}
-                        </MenuItem>
+                        <option style={{ textTransform: "capitalize" }} key={index} value={el}>
+                          {`${el}`}
+                        </option>
                       ))}
-                    </Select>
+                    </NativeSelect>
+
                   </FormControl>
                 </Box>
               </Grid>
@@ -352,21 +357,29 @@ const Admins = () => {
                   <FormControl fullWidth>
                     {/* <InputLabel id="demo-simple-select-labe">Role</InputLabel> */}
                     <p style={{ fontSize: 12 }}>Select role</p>
-                    <Select
-                      labelId="demo-simple-select-labe"
-                      id="demo-simple-select"
-                      value={formik.values.role}
-                      required
-                      name="role"
-                      label="Role"
+                    <NativeSelect
+                      defaultValue={formik.values.role}
+                      disableUnderline
+                      variant='outlined'
                       onChange={formik.handleChange}
+                      required
+                      fullWidth
+                      sx={{ textTransform: "capitalize" }}
+                      inputProps={{
+                        name: "role",
+                        id: "role",
+                        sx: {
+                          minWidth: "100%",
+                        },
+                      }}
                     >
                       {roles?.map((el, index) => (
-                        <MenuItem key={index} value={el}>
-                          {el}
-                        </MenuItem>
+                        <option style={{ textTransform: "capitalize" }} key={index} value={el}>
+                          {`${el}`}
+                        </option>
                       ))}
-                    </Select>
+                    </NativeSelect>
+                    
                   </FormControl>
                 </Box>
               </Grid>
@@ -375,21 +388,30 @@ const Admins = () => {
                   <FormControl fullWidth>
                     {/* <InputLabel id="demo-simple-select-lab">Claim</InputLabel> */}
                     <p style={{ fontSize: 12 }}>Select claim</p>
-                    <Select
-                      labelId="demo-simple-select-lab"
-                      id="demo-simple-select"
-                      value={formik.values.claim}
-                      name="claim"
-                      label="Claim"
-                      required
+                    <NativeSelect
+                      defaultValue={formik.values.claim}
+                      disableUnderline
+                      variant='outlined'
                       onChange={formik.handleChange}
+                      required
+                      fullWidth
+                      value={formik.values.gender}
+                      sx={{ textTransform: "capitalize" }}
+                      inputProps={{
+                        name: "claim",
+                        id: "Claim",
+                        sx: {
+                          minWidth: "100%",
+                        },
+                      }}
                     >
                       {claims?.map((el, index) => (
-                        <MenuItem key={index} value={el}>
-                          {el}
-                        </MenuItem>
+                        <option style={{ textTransform: "capitalize" }} key={index} value={el}>
+                          {`${el}`}
+                        </option>
                       ))}
-                    </Select>
+                    </NativeSelect>
+                    
                   </FormControl>
                 </Box>
               </Grid>

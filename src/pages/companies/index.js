@@ -23,6 +23,7 @@ import {
   IconButton,
   InputLabel,
   List,
+  ListItem,
   MenuItem,
   NativeSelect,
   Select,
@@ -42,16 +43,16 @@ import { toast } from "react-hot-toast";
 import CompaniesTable from "examples/Tables/companies";
 import { useSelector } from "react-redux";
 
-const Transition = React.forwardRef(function Transition(props, ref) {
-  return <Slide direction="up" ref={ref} {...props} />;
+const Transition = React.forwardRef(function Transition (props, ref) {
+  return <Slide direction='up' ref={ref} {...props} />;
 });
 
-function TabPanel(props) {
+function TabPanel (props) {
   const { children, value, index, ...other } = props;
 
   return (
     <div
-      role="tabpanel"
+      role='tabpanel'
       hidden={value !== index}
       id={`simple-tabpanel-${index}`}
       aria-labelledby={`simple-tab-${index}`}
@@ -72,7 +73,7 @@ TabPanel.propTypes = {
   value: PropTypes.number.isRequired,
 };
 
-function a11yProps(index) {
+function a11yProps (index) {
   return {
     id: `simple-tab-${index}`,
     "aria-controls": `simple-tabpanel-${index}`,
@@ -88,13 +89,24 @@ const Companies = () => {
   const [isError, setError] = React.useState(false);
   const [pass, setPass] = React.useState("");
 
-  const { admins } = useSelector((state) => state.admin);
+  const { admins } = useSelector(state => state.admin);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
-  const types = ["personal", "non-profit", "corporation", "government-owned"];
+  const sectors = [
+    "finance",
+    "oil & gas",
+    "education",
+    "government",
+    "hospitality",
+    "healthcare",
+    "transportation",
+    "manufacturing",
+    "technology",
+    "others",
+  ];
 
   const osName = () => {
     const userAgent = window.navigator.userAgent;
@@ -129,7 +141,7 @@ const Companies = () => {
       type: "",
       accountManager: "",
     },
-    onSubmit: (values) => {
+    onSubmit: values => {
       setLoading(true);
 
       try {
@@ -147,7 +159,7 @@ const Companies = () => {
 
         toast.promise(response, {
           loading: "Loading",
-          success: (res) => {
+          success: res => {
             console.log("RESP HERE >>> ", `${res}`);
             setError(false);
             setErrMsg("");
@@ -157,7 +169,7 @@ const Companies = () => {
 
             return `New company added successfully`;
           },
-          error: (err) => {
+          error: err => {
             console.log(
               "ERROR HERE >>> ",
               `${
@@ -188,10 +200,10 @@ const Companies = () => {
   return (
     <DashboardLayout>
       <DashboardNavbar />
-      <Box py={3} display="flex" flexDirection="row" justifyContent="end" alignItems="center">
+      <Box py={3} display='flex' flexDirection='row' justifyContent='end' alignItems='center'>
         <SoftButton
-          variant="gradient"
-          color="dark"
+          variant='gradient'
+          color='dark'
           startIcon={<Add />}
           onClick={() => setOpen(true)}
         >
@@ -209,32 +221,32 @@ const Companies = () => {
       >
         <AppBar
           sx={{ position: "relative", backgroundColor: "#18113c", color: "white" }}
-          color="secondary"
+          color='secondary'
         >
           <Toolbar>
             <IconButton
-              edge="start"
-              color="white"
+              edge='start'
+              color='white'
               onClick={() => setOpen(false)}
-              aria-label="close"
+              aria-label='close'
             >
               <Close />
             </IconButton>
             <Typography
               sx={{ ml: 2, flex: 1, textTransform: "capitalize" }}
-              variant="h6"
-              component="div"
-              color="#fff"
+              variant='h6'
+              component='div'
+              color='#fff'
             >
               {`Add New Company`}
             </Typography>
-            <SoftButton autoFocus color="inherit" onClick={() => setOpen(false)}>
+            <SoftButton autoFocus color='inherit' onClick={() => setOpen(false)}>
               Close
             </SoftButton>
           </Toolbar>
         </AppBar>
         {isError && (
-          <Box display="flex" flexDirection="row" justifyContent="center" alignItems="center">
+          <Box display='flex' flexDirection='row' justifyContent='center' alignItems='center'>
             <SoftTypography fontSize={12} sx={{ color: "red" }} pt={4}>
               {errMsg}
             </SoftTypography>
@@ -249,16 +261,16 @@ const Companies = () => {
             alignItems: "center",
           }}
         >
-          <SoftBox width="50%" component="form" role="form" onSubmit={formik.handleSubmit}>
+          <SoftBox width='50%' component='form' role='form' onSubmit={formik.handleSubmit}>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6} md={6}>
                 <SoftBox mb={2}>
                   <SoftInput
-                    id="name"
-                    name="name"
+                    id='name'
+                    name='name'
                     required
                     value={formik.values.name}
-                    placeholder="Company name"
+                    placeholder='Company name'
                     onChange={formik.handleChange}
                   />
                 </SoftBox>
@@ -266,11 +278,11 @@ const Companies = () => {
               <Grid item xs={12} sm={6} md={6}>
                 <SoftBox mb={2}>
                   <SoftInput
-                    id="website"
-                    name="website"
+                    id='website'
+                    name='website'
                     value={formik.values.website}
                     onChange={formik.handleChange}
-                    placeholder="Company website"
+                    placeholder='Company website'
                   />
                 </SoftBox>
               </Grid>
@@ -280,8 +292,8 @@ const Companies = () => {
               <Grid item xs={12} sm={6} md={6}>
                 <SoftBox mb={2}>
                   <SoftInput
-                    id="domain"
-                    name="domain"
+                    id='domain'
+                    name='domain'
                     value={formik.values.domain}
                     onChange={formik.handleChange}
                     placeholder="Company's email domain in the format abc.com"
@@ -292,12 +304,12 @@ const Companies = () => {
                 <SoftBox mb={2}>
                   <SoftInput
                     required
-                    id="emailAddress"
-                    name="emailAddress"
+                    id='emailAddress'
+                    name='emailAddress'
                     value={formik.values.emailAddress}
                     onChange={formik.handleChange}
-                    type="email"
-                    placeholder="Email"
+                    type='email'
+                    placeholder='Email'
                   />
                 </SoftBox>
               </Grid>
@@ -309,35 +321,42 @@ const Companies = () => {
                   <p style={{ fontSize: 12 }}>Phone</p>
                   <SoftInput
                     required
-                    id="phone"
-                    name="phone"
+                    id='phone'
+                    name='phone'
                     value={formik.values.phone}
                     onChange={formik.handleChange}
-                    type="phone"
+                    type='phone'
                     placeholder="Company's phone number"
                   />
                 </SoftBox>
               </Grid>
               <Grid item xs={12} sm={6} md={6}>
                 <Box mb={2}>
-                  <FormControl fullWidth>
-                    <p style={{ fontSize: 12 }}>Select company type</p>
-                    {/* <InputLabel id="demo-simple-select-labe">Company type</InputLabel> */}
-                    <Select
-                      labelId="demo-simple-select-labe"
-                      id="demo-simple-select"
-                      value={formik.values.type}
-                      required
-                      name="type"
-                      label="Company type"
+                  <FormControl fullWidth  >
+                    <p style={{ fontSize: 12 }}>Select sector type</p>
+
+                    <NativeSelect
+                      defaultValue={formik.values.type}
+                      disableUnderline
+                      variant='outlined'
                       onChange={formik.handleChange}
+                      required
+                      fullWidth
+                      sx={{ textTransform: "capitalize" }}
+                      inputProps={{
+                        name: "type",
+                        id: "type",
+                        sx: {
+                          minWidth: "100%",
+                        },
+                      }}
                     >
-                      {types?.map((el, index) => (
-                        <MenuItem key={index} value={el}>
-                          {el}
-                        </MenuItem>
+                      {sectors?.map((el, index) => (
+                        <option style={{ textTransform: "capitalize" }} key={index} value={el.id}>
+                          {`${el}`}
+                        </option>
                       ))}
-                    </Select>
+                    </NativeSelect>
                   </FormControl>
                 </Box>
               </Grid>
@@ -347,8 +366,8 @@ const Companies = () => {
               <Grid item xs={12} sm={6} md={6}>
                 <SoftBox mb={2}>
                   <SoftInput
-                    id="contactName"
-                    name="contactName"
+                    id='contactName'
+                    name='contactName'
                     required
                     value={formik.values.contactName}
                     placeholder="Representative's name"
@@ -360,11 +379,11 @@ const Companies = () => {
                 <SoftBox mb={2}>
                   <SoftInput
                     required
-                    id="contactPhone"
-                    name="contactPhone"
+                    id='contactPhone'
+                    name='contactPhone'
                     value={formik.values.contactPhone}
                     onChange={formik.handleChange}
-                    type="phone"
+                    type='phone'
                     placeholder="Representative's phone number"
                   />
                 </SoftBox>
@@ -372,12 +391,13 @@ const Companies = () => {
             </Grid>
 
             <SoftBox>
-              <FormControl sx={{ minWidth: 120 }} size="medium" fullWidth>
+              <FormControl sx={{ minWidth: 120 }} size='medium' fullWidth>
                 <p style={{ fontSize: 12 }}> Select account manager</p>
 
                 <NativeSelect
                   defaultValue={formik.values.accountManager}
                   disableUnderline
+                  variant='outlined'
                   onChange={formik.handleChange}
                   required
                   fullWidth
@@ -385,6 +405,9 @@ const Companies = () => {
                   inputProps={{
                     name: "accountManager",
                     id: "accountManager",
+                    sx: {
+                      minWidth: "100%",
+                    },
                   }}
                 >
                   {admins?.map((el, index) => (
@@ -399,9 +422,9 @@ const Companies = () => {
             <SoftBox mt={4} mb={1}>
               <SoftButton
                 disabled={isLoading}
-                type="submit"
-                variant="gradient"
-                color="dark"
+                type='submit'
+                variant='gradient'
+                color='dark'
                 fullWidth
               >
                 add company

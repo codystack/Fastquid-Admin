@@ -68,11 +68,11 @@ export default function App() {
   const { data, mutate } = useProfile();
   const { data: requestData,  } = useRequest(1);
   const { data: cardData,  } = useCard();
-  const { data: companyData, mutateCompany } = useCompany();
+  const { data: companyData, mutateCompany } = useCompany(1);
   const { data: settingsData, mutateSettings } = useSettings();
   const { data: loanData, mutate: loanMutate } = useLoan(1);
   const { data: transactionData, mutate: transactionMutate } = useTransaction(1);
-  const { data: supportData, mutate: supportMutate } = useSupport();
+  const { data: supportData, mutate: supportMutate } = useSupport(1);
   const { data: usersData, mutate: usersMutate } = useUsers(1);
   const { data: adminsData, mutate: adminsMutate } = useAdmins();
 

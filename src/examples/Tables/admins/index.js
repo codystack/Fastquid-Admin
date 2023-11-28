@@ -134,7 +134,7 @@ export default function AdminsTable() {
   const { admins } = useSelector((state) => state.admin);
 
   return (
-    <div style={{ height: 512, width: "100%" }}>
+    <div style={{ height: '80vh', width: "100%" }}>
       {admins && (
         <DataGrid
           rows={admins}

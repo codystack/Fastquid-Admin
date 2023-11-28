@@ -178,9 +178,6 @@ export default function RequestsTable() {
     );
   }
 
-  // InputProps={{
-  //   inputComponent: NumberFormatCustom,
-  // }}
 
   const columns = [
     {
@@ -319,7 +316,7 @@ export default function RequestsTable() {
   }, [paginationModel.page, requestData]);
 
   return (
-    <div style={{ height: 600, width: "100%" }}>
+    <div style={{ height: '80vh', width: "100%" }}>
       <Dialog disablePortal={true} onClose={() => setOpen(false)} open={open}>
         <SoftBox padding={2} component="form" role="form" onSubmit={formik.handleSubmit}>
           <SoftBox

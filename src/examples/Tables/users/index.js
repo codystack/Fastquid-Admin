@@ -314,7 +314,7 @@ export default function UsersTable() {
   ];
 
   return (
-    <div style={{ height: 512, width: "100%" }}>
+    <div style={{ height: '75vh', width: "100%" }}>
       <Dialog disablePortal={true} onClose={() => setOpen(false)} open={open}>
         <SoftBox padding={2} component="form" role="form" onSubmit={formik.handleSubmit}>
           <SoftBox

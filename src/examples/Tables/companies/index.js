@@ -11,6 +11,7 @@ import {
 import CustomNoRowsOverlay from "../../../components/no_data/custom_no_row";
 import ActionButton from "./action";
 import { useSelector } from "react-redux";
+import useCompany from "hooks/useCompany";
 
 function CustomToolbar() {
   return (
@@ -24,6 +25,23 @@ function CustomToolbar() {
 }
 
 export default function CompaniesTable() {
+  const { companies } = useSelector((state) => state.company);
+  const [loading, setLoading] = React.useState(false);
+  const [filteredCompanies, setFilteredCompanies] = React.useState(companies?.docs ?? []);
+
+  const [paginationModel, setPaginationModel] = React.useState({
+    page: 0,
+    pageSize: 25,
+  });
+
+  const { data: companyData, mutate } = useCompany(paginationModel.page + 1);
+
+  React.useEffect(() => {
+    if (companies) {
+      setFilteredCompanies(companies?.docs);
+    }
+  }, [companies]);
+
   const columns = [
     {
       field: "name",
@@ -87,9 +105,7 @@ export default function CompaniesTable() {
       field: "domain",
       headerName: "Email Domain",
       width: 125,
-      renderCell: (params) => (
-        <p style={{  fontSize: 14 }}>{`@${params?.row?.domain}`}</p>
-      ),
+      renderCell: (params) => <p style={{ fontSize: 14 }}>{`@${params?.row?.domain}`}</p>,
     },
     {
       field: "id",
@@ -101,16 +117,40 @@ export default function CompaniesTable() {
     },
   ];
 
-  const { companies } = useSelector((state) => state.company);
+  React.useEffect(() => {
+    let active = true;
+
+    (async () => {
+      setLoading(true);
+      if (companyData) {
+        setFilteredCompanies(companyData?.docs);
+      }
+
+      if (!active) {
+        return;
+      }
+
+      setLoading(false);
+    })();
+
+    return () => {
+      active = false;
+    };
+  }, [paginationModel.page, companyData]);
 
   return (
-    <div style={{ height: 512, width: "100%" }}>
-      {companies && companies?.docs && (
+    <div style={{ height: "75vh", width: "100%" }}>
+      {companies && companies?.docs && filteredCompanies && (
         <DataGrid
           sx={{ padding: 1 }}
-          rows={companies?.docs}
+          rows={filteredCompanies}
           columns={columns}
-          //   autoHeight
+          paginationMode="server"
+          pageSizeOptions={[25]}
+          rowCount={companies?.totalDocs}
+          paginationModel={paginationModel}
+          onPaginationModelChange={setPaginationModel}
+          loading={loading}
           components={{
             Toolbar: CustomToolbar,
             NoRowsOverlay: CustomNoRowsOverlay,

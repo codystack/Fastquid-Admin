@@ -212,7 +212,7 @@ export default function DebitCardsTable() {
   }
 
   return (
-    <div style={{ height: 512, width: "100%" }}>
+    <div style={{ height: '80vh', width: "100%" }}>
       {cards && (
         <DataGrid
           rows={cards}

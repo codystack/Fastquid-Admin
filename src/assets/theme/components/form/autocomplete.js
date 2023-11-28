@@ -45,7 +45,7 @@ const autocomplete = {
     },
 
     option: {
-      padding: `${pxToRem(4.8)} ${pxToRem(16)}`,
+      // padding: `${pxToRem(4.8)} ${pxToRem(16)}`,
       borderRadius: borderRadius.md,
       fontSize: size.sm,
       color: text.main,

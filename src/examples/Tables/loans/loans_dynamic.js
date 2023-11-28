@@ -229,9 +229,8 @@ export default function DynamicLoansTable(props) {
   ];
 
   
-
   return (
-    <div style={{ height: 600, width: "100%" }}>
+    <div style={{ height: '80vh', width: "100%" }}>
       {loans && (
         <DataGrid
           sx={{ padding: 4 }}

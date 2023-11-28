@@ -232,7 +232,6 @@ export default function LoansTable() {
     );
   }
 
-
   const columns = [
     {
       field: "user",
@@ -396,7 +395,7 @@ export default function LoansTable() {
   }, [paginationModel.page, loanData]);
 
   return (
-    <div style={{ height: 600, width: "100%" }}>
+    <div style={{ height: '80vh', width: "100%" }}>
       <Dialog disablePortal={true} onClose={() => setOpen(false)} open={open}>
         <SoftBox padding={2} component="form" role="form" onSubmit={formik.handleSubmit}>
           <SoftBox

@@ -1,7 +1,7 @@
 import useSWR from 'swr';
 
-export default function useSupport() {
-  const { data, mutate, error } = useSWR('/support/all');
+export default function useSupport(page) {
+  const { data, mutate, error } = useSWR("/support/all?page=" + page);
   // console.log('response', error);
   const loading = !data && !error;
   const loggedOut =

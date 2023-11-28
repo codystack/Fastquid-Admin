@@ -12,25 +12,66 @@ import CustomNoRowsOverlay from "../../../components/no_data/custom_no_row";
 import ActionButton from "./action";
 import { useSelector } from "react-redux";
 import { Avatar, Button, Chip } from "@mui/material";
-import SoftTypography from "components/SoftTypography";
 import formatCurrency from "utils/formatCurrency";
 import { toast } from "react-hot-toast";
 import { Download } from "@mui/icons-material";
 import xlsx from "json-as-xlsx";
-
+import useTransaction from "hooks/transactions";
 
 
 export default function LoanTransactionsTable() {
   const [loanTrans, setLoanTrans] = React.useState([]);
 
   const { transactions } = useSelector((state) => state.transaction);
+  const [paginationModel, setPaginationModel] = React.useState({
+    page: 0,
+    pageSize: 25,
+  });
+  const [loading, setLoading] = React.useState(false);
+  // const [filteredTransactions, setFilteredTransactions] = React.useState(transactions?.docs ?? []);
+
+  const { data: requestData, mutate } = useTransaction(paginationModel.page + 1);
+
+  // React.useEffect(() => {
+  //   if (transactions) {
+  //     let arr = transactions?.docs?.filter((elem) => elem?.type === "loan");
+  //     console.log("LENGTH :: ", arr.length);
+  //     setLoanTrans(arr);
+  //   }
+  // }, [transactions]);
 
   React.useEffect(() => {
-    if (transactions) {
-      let arr = transactions?.docs?.filter((elem) => elem?.type === "loan");
-      setLoanTrans(arr);
-    }
-  }, [transactions]);
+    let active = true;
+
+    (async () => {
+      setLoading(true);
+      // const newData = await loadServerRows(paginationModel.page, data);
+      if (requestData) {
+        console.log("SECOND PAGE DATA", requestData);
+        // setFilteredTransactions(requestData?.docs);
+        let arr = requestData?.docs.filter((elem) => elem?.type === "loan");
+        setLoanTrans(arr);
+      }
+
+      if (transactions) {
+        // console.log("SECOND PAGE DATA", requestData);
+        // setFilteredTransactions(requestData?.docs);
+        let arr = transactions?.docs.filter((elem) => elem?.type === "loan");
+        setLoanTrans(arr);
+      }
+
+      if (!active) {
+        return;
+      }
+
+      setLoading(false);
+    })();
+
+    return () => {
+      active = false;
+    };
+  }, [paginationModel.page, requestData, transactions]);
+
 
   const columns = [
     {
@@ -212,12 +253,18 @@ export default function LoanTransactionsTable() {
   }
 
   return (
-    <div style={{ height: 512, width: "100%" }}>
+    <div style={{ height: '75vh', width: "100%" }}>
       {transactions && loanTrans && (
         <DataGrid
           rows={loanTrans}
+          sx={{ padding: 1 }}
           columns={columns}
-          //   autoHeight
+          paginationMode="server"
+          pageSizeOptions={[25]}
+          rowCount={loanTrans?.length}
+          paginationModel={paginationModel}
+          onPaginationModelChange={setPaginationModel}
+          loading={loading}
           components={{
             Toolbar: CustomToolbar,
             NoRowsOverlay: CustomNoRowsOverlay,
