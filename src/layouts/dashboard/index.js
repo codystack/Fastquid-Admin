@@ -27,16 +27,9 @@ import { isPast, isToday } from "date-fns";
 import Loans from "./components/Loans";
 import formatCurrency from "utils/formatCurrency";
 import {
-  AppBar,
-  Button,
   Dialog,
-  IconButton,
-  List,
   Slide,
-  Toolbar,
-  Typography,
 } from "@mui/material";
-import { Close } from "@mui/icons-material";
 import InfoDialog from "./components/info_dialog";
 
 const Transition = forwardRef(function Transition(props, ref) {
@@ -73,8 +66,9 @@ function Dashboard() {
 
       let today = loans?.docs?.filter((item) => isToday(new Date(item?.dueDate)));
       let over = loans?.docs?.filter((item) => isPast(new Date(item?.dueDate)));
+      let filterOver = over.filter((item) => item?.status === "credited");
       setDue(today);
-      setOverdue(over);
+      setOverdue(filterOver);
 
       let revenue = 0;
       let rev = arr5?.forEach((element) => {

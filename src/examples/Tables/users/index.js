@@ -300,8 +300,6 @@ export default function UsersTable() {
           }
         />
       ),
-
-      //   width: 520,
     },
     {
       field: "id",

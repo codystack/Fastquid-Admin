@@ -96,16 +96,16 @@ const Companies = () => {
   };
 
   const sectors = [
-    "finance",
-    "oil & gas",
-    "education",
-    "government",
-    "hospitality",
-    "healthcare",
-    "transportation",
-    "manufacturing",
-    "technology",
-    "others",
+    "Finance",
+    "Oil & Gas",
+    "Education",
+    "Government",
+    "Hospitality",
+    "Healthcare",
+    "Transportation",
+    "Manufacturing",
+    "Technology",
+    "Others",
   ];
 
   const osName = () => {
@@ -352,7 +352,7 @@ const Companies = () => {
                       }}
                     >
                       {sectors?.map((el, index) => (
-                        <option style={{ textTransform: "capitalize" }} key={index} value={el.id}>
+                        <option style={{ textTransform: "uppercase", }} key={index} value={el.toLowerCase()}>
                           {`${el}`}
                         </option>
                       ))}

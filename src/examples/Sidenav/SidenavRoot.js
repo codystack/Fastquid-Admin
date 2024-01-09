@@ -19,7 +19,7 @@ export default styled(Drawer)(({ theme, ownerState }) => {
       duration: transitions.duration.shorter,
     }),
 
-    [breakpoints.up("xl")]: {
+    [breakpoints.up("sm")]: {
       backgroundColor: "#18113c",
       boxShadow: transparentSidenav ? "none" : xxl,
       marginBottom: transparentSidenav ? 0 : "inherit",

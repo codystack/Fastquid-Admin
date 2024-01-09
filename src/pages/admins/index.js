@@ -86,9 +86,9 @@ const Admins = () => {
     setValue(newValue);
   };
 
-  const roles = ["manager", "sales", "analyst", "developer", "operations"];
-  const claims = ["readonly", "read/write", "approve", "disburse"];
-  const gender = ["male", "female"];
+  const roles = ["Manager", "Sales", "Analyst", "Developer", "Operations"];
+  const claims = ["Readonly", "Read/Write", "Approve", "Disburse"];
+  const gender = ["Male", "Female"];
 
   const osName = () => {
     const userAgent = window.navigator.userAgent;
@@ -121,14 +121,13 @@ const Admins = () => {
       password: "",
       gender: "male",
       role: "",
-      type: "admin",
       claim: "",
     },
     onSubmit: (values) => {
       setLoading(true);
 
       try {
-        const { type, claim, role, ...rest } = Object.assign({}, values);
+        const { claim, role, ...rest } = Object.assign({}, values);
 
         const payload = {
           ...rest,
@@ -138,7 +137,6 @@ const Admins = () => {
               : values.phoneNumber
           }`,
           privilege: {
-            type: values.type,
             role: values.role,
             claim: values.claim,
           },
@@ -341,7 +339,7 @@ const Admins = () => {
                     >
                       {gender?.map((el, index) => (
                         <option style={{ textTransform: "capitalize" }} key={index} value={el}>
-                          {`${el}`}
+                          {`${el}`.toLowerCase()}
                         </option>
                       ))}
                     </NativeSelect>
@@ -364,6 +362,7 @@ const Admins = () => {
                       onChange={formik.handleChange}
                       required
                       fullWidth
+                      name="role"
                       sx={{ textTransform: "capitalize" }}
                       inputProps={{
                         name: "role",
@@ -375,7 +374,7 @@ const Admins = () => {
                     >
                       {roles?.map((el, index) => (
                         <option style={{ textTransform: "capitalize" }} key={index} value={el}>
-                          {`${el}`}
+                          {`${el}`.toLowerCase()}
                         </option>
                       ))}
                     </NativeSelect>
@@ -407,7 +406,7 @@ const Admins = () => {
                     >
                       {claims?.map((el, index) => (
                         <option style={{ textTransform: "capitalize" }} key={index} value={el}>
-                          {`${el}`}
+                          {`${el}`.toLowerCase()}
                         </option>
                       ))}
                     </NativeSelect>

@@ -325,7 +325,7 @@ export default function LoansTable() {
     {
       field: "dueDate",
       headerName: "Due Date",
-      width: 150,
+      width: 175,
       renderCell: (params) => (
         <p style={{ textTransform: "capitalize", fontSize: 14 }}>{`${new Date(
           params?.row?.dueDate

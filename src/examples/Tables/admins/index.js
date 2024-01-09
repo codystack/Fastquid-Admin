@@ -58,7 +58,7 @@ export default function AdminsTable() {
       field: "emailAddress",
       headerName: "Email",
       renderCell: (params) => <p style={{ fontSize: 14 }}>{params?.row?.emailAddress}</p>,
-      width: 150,
+      width: 210,
     },
     {
       field: "phoneNumber",
@@ -68,16 +68,16 @@ export default function AdminsTable() {
       ),
       width: 135,
     },
-    {
-      field: "type",
-      headerName: "Admin Type",
-      renderCell: (params) => (
-        <p
-          style={{ textTransform: "capitalize", fontSize: 14 }}
-        >{`${params?.row?.privilege?.type}`}</p>
-      ),
-      width: 110,
-    },
+    // {
+    //   field: "type",
+    //   headerName: "Admin Type",
+    //   renderCell: (params) => (
+    //     <p
+    //       style={{ textTransform: "capitalize", fontSize: 14 }}
+    //     >{`${params?.row?.privilege?.type}`}</p>
+    //   ),
+    //   width: 110,
+    // },
     {
       field: "role",
       headerName: "Role",

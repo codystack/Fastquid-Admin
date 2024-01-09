@@ -117,7 +117,7 @@ export default function DynamicLoansTable(props) {
     {
       field: "fullName",
       headerName: "Full Name",
-      width: 150,
+      width: 200,
       renderCell: (params) => (
         <p style={{ textTransform: "capitalize", fontSize: 14 }}>{params?.row?.user?.fullName}</p>
       ),
@@ -158,7 +158,7 @@ export default function DynamicLoansTable(props) {
     {
       field: "totalAmountDue",
       headerName: "Amount Due",
-      width: 115,
+      width: 130,
       renderCell: (params) => (
         <p style={{ textTransform: "capitalize", fontSize: 14 }}>{`${formatCurrency(
           params?.row?.totalAmountDue
@@ -168,7 +168,7 @@ export default function DynamicLoansTable(props) {
     {
       field: "disbursedOn",
       headerName: "Disbursed On",
-      width: 150,
+      width: 175,
       renderCell: (params) => (
         <p style={{ textTransform: "capitalize", fontSize: 14 }}>{`${params?.row?.status === "credited" ?  new Date(
           params?.row?.updatedAt

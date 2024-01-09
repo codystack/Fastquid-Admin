@@ -87,7 +87,7 @@ export default function LoanTransactionsTable() {
     {
       field: "name",
       headerName: "Full Name",
-      width: 135,
+      width: 200,
       renderCell: (params) => (
         <p style={{ textTransform: "capitalize", fontSize: 14 }}>{params?.row?.user?.fullName}</p>
       ),
