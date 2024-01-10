@@ -63,6 +63,15 @@ const routes = [
   },
   {
     type: "collapse",
+    name: "Settled",
+    key: "settled",
+    route: "/settled",
+    icon: <Office size="12px" />,
+    component: <Loans usecase="settled" />,
+    noCollapse: true,
+  },
+  {
+    type: "collapse",
     name: "Transactions",
     key: "transactions",
     route: "/transactions",

@@ -79,6 +79,7 @@ export default function LoansTable({usecase}) {
     if (loans) {
       // const filterLoan = loans?.docs.filter((item) => item?.status?.toLowerCase() === usecase,);
       setFilteredLoans(loans?.docs);
+      setCount(loans?.docs?.length);
     }
   }, [loans]);
 
