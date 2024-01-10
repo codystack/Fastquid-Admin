@@ -20,15 +20,16 @@ import SoftButton from "components/SoftButton";
 import React, { useState } from "react";
 import { AppBar, Dialog, IconButton, Slide, Toolbar, Typography } from "@mui/material";
 import { Close } from "@mui/icons-material";
-import DebitCardsTable from "examples/Tables/cards";
-import CompaniesTable from "examples/Tables/companies";
+// import DebitCardsTable from "examples/Tables/cards";
+// import CompaniesTable from "examples/Tables/companies";
 import { useSelector } from "react-redux";
+import Requests from "pages/requests";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-function Tables() {
+function Loan({usecase}) {
   const [open, setOpen] = useState(false);
   const [isLoading, setLoading] = useState(false);
 
@@ -39,8 +40,8 @@ function Tables() {
       <DashboardNavbar />
       <Box py={3}>
         {profileData &&
-          profileData?.privilege?.type === "superadmin" &&
-          profileData?.privilege?.claim === "read/write" && (
+          (profileData?.privilege?.role === "manager" || profileData?.privilege?.role === "developer") &&
+          profileData?.privilege?.claim === "read/write" && usecase === "pending" && (
             <Box pb={2} display="flex" flexDirection={"row"} justifyContent={"end"}>
               <SoftButton
                 variant="gradient"
@@ -49,13 +50,13 @@ function Tables() {
                   setOpen(true);
                 }}
               >
-                Debit Cards
+                All Requests
               </SoftButton>
             </Box>
           )}
 
         <Card>
-          <LoansTable />
+          <LoansTable usecase={usecase} />
         </Card>
       </Box>
       <Footer />
@@ -84,7 +85,7 @@ function Tables() {
               component="div"
               color="#fff"
             >
-              {`All Debit Cards`}
+              {`All Loan Requests So Far`}
             </Typography>
             <SoftButton autoFocus color="inherit" onClick={() => setOpen(false)}>
               Close
@@ -92,11 +93,12 @@ function Tables() {
           </Toolbar>
         </AppBar>
         <Box p={3}>
-          <DebitCardsTable />
+          <Requests />
+          {/* <DebitCardsTable /> */}
         </Box>
       </Dialog>
     </DashboardLayout>
   );
 }
 
-export default Tables;
+export default Loan;

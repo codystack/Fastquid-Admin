@@ -57,6 +57,12 @@ import { setSettings } from "redux/slices/settings";
 import useRequest from "hooks/useRequest";
 import useCard from "hooks/useCard";
 import { setDebitCards } from "redux/slices/cards";
+import useLoanUsecase from "hooks/useLoanUsecase";
+import { setApprovedLoans } from "redux/slices/loans";
+import { setPendingLoans } from "redux/slices/loans";
+import { setSettledLoans } from "redux/slices/loans";
+import { setDeclinedLoans } from "redux/slices/loans";
+import { setDisbursedLoans } from "redux/slices/loans";
 
 export default function App() {
   const [controller, dispatch] = useSoftUIController();
@@ -71,6 +77,11 @@ export default function App() {
   const { data: companyData, mutateCompany } = useCompany(1);
   const { data: settingsData, mutateSettings } = useSettings();
   const { data: loanData, mutate: loanMutate } = useLoan(1);
+  const { data: approvedLoanData,  } = useLoanUsecase(1, "approved");
+  const { data: pendingLoanData,  } = useLoanUsecase(1, "pending");
+  const { data: disbursedLoanData,  } = useLoanUsecase(1, "credited");
+  const { data: settledLoanData,  } = useLoanUsecase(1, "settled");
+  const { data: deniedLoanData,  } = useLoanUsecase(1, "denied");
   const { data: transactionData, mutate: transactionMutate } = useTransaction(1);
   const { data: supportData, mutate: supportMutate } = useSupport(1);
   const { data: usersData, mutate: usersMutate } = useUsers(1);
@@ -128,7 +139,23 @@ export default function App() {
     if (companyData) {
       dispatcher(setCompanies(companyData));
     }
-  }, [loanData, companyData, requestData]);
+
+    if (approvedLoanData) {
+      dispatcher(setApprovedLoans(approvedLoanData));
+    }
+    if (pendingLoanData) {
+      dispatcher(setPendingLoans(pendingLoanData));
+    }
+    if (settledLoanData) {
+      dispatcher(setSettledLoans(settledLoanData));
+    }
+    if (deniedLoanData) {
+      dispatcher(setDeclinedLoans(deniedLoanData));
+    }
+    if (disbursedLoanData) {
+      dispatcher(setDisbursedLoans(disbursedLoanData));
+    }
+  }, [loanData, companyData, requestData, approvedLoanData, pendingLoanData, settledLoanData, deniedLoanData, disbursedLoanData]);
 
   useEffect(() => {
     if (usersData) {

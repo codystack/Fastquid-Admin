@@ -142,7 +142,7 @@ const Companies = () => {
       accountManager: "",
     },
     onSubmit: values => {
-      setLoading(true);
+      setLoading(true); 
 
       try {
         const { contactName, contactPhone, ...rest } = Object.assign({}, values);

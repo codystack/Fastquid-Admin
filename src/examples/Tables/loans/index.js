@@ -37,9 +37,26 @@ import SoftButton from "components/SoftButton";
 import { useFormik } from "formik";
 import NumericFormatCustom from "utils/num_format";
 import useLoan from "hooks/loans";
+import useLoanUsecase from "hooks/useLoanUsecase";
 
-export default function LoansTable() {
-  const { loans, } = useSelector((state) => state.loan);
+export default function LoansTable({usecase}) {
+  let loans = [];
+  if (usecase === "approved") {
+    loans  = useSelector((state) => state.loan.approvedLoans);
+  }
+  else if (usecase === "pending") {
+    loans  = useSelector((state) => state.loan.pendingLoans);
+  }
+  else if (usecase === "settled") {
+    loans  = useSelector((state) => state.loan.settledLoans);
+  }
+  else if (usecase === "denied") {
+    loans  = useSelector((state) => state.loan.declinedLoans);
+  }
+  else if (usecase === "credited") {
+    loans  = useSelector((state) => state.loan.disbursedLoans);
+  }
+
   const [loading, setLoading] = React.useState(false);
   const [rangeField, setRangeField] = React.useState("amountBorrowed");
   const [open, setOpen] = React.useState(false);
@@ -51,10 +68,8 @@ export default function LoansTable() {
     pageSize: 25,
   });
 
-  const { data: loanData, mutate } = useLoan(paginationModel.page + 1);
+  const { data: loanData, mutate } = useLoanUsecase(paginationModel.page + 1, usecase);
 
-  // const open = Boolean(anchorEl);
-  // const id = open ? "simple-popover" : undefined;
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -62,6 +77,7 @@ export default function LoansTable() {
 
   React.useEffect(() => {
     if (loans) {
+      // const filterLoan = loans?.docs.filter((item) => item?.status?.toLowerCase() === usecase,);
       setFilteredLoans(loans?.docs);
     }
   }, [loans]);
@@ -201,8 +217,8 @@ export default function LoansTable() {
   });
 
   const clearFilter = () => {
-    setFilteredUsers(loans?.docs);
-    setCount(loans?.totalDocs);
+    setFilteredUsers(filteredLoans);
+    setCount(filteredLoans.length);
   };
 
   function CustomToolbar() {

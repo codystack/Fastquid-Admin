@@ -27,10 +27,19 @@ import { isPast, isToday } from "date-fns";
 import Loans from "./components/Loans";
 import formatCurrency from "utils/formatCurrency";
 import {
+  AppBar,
+  Box,
+  Button,
   Dialog,
+  IconButton,
   Slide,
+  Toolbar,
+  Typography,
 } from "@mui/material";
 import InfoDialog from "./components/info_dialog";
+
+import DebitCardsTable from "examples/Tables/cards";
+import { Close } from "@mui/icons-material";
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -45,9 +54,12 @@ function Dashboard() {
   const [disbursed, setDisbursed] = useState([]);
   const [due, setDue] = useState([]);
   const [overdue, setOverdue] = useState([]);
+  const [debitCards, setDebitCards] = useState([]);
   const [open, setOpen] = useState(false);
+  const [openCard, setOpenCard] = useState(false);
   const [totalRevenue, setTotalRevenue] = useState(0);
   const { loans, recentLoans } = useSelector((state) => state.loan);
+  const { cards } = useSelector((state) => state.card);
   const [title, setTitle] = useState("");
   const [lData, setLData] = useState([]);
 
@@ -78,7 +90,10 @@ function Dashboard() {
         setTotalRevenue(revenue);
       });
     }
-  }, [loans]);
+    if (cards) {
+      setDebitCards(cards)
+    }
+  }, [loans, cards]);
 
   return (
     <DashboardLayout>
@@ -218,6 +233,27 @@ function Dashboard() {
                 }}
               />
             </Grid>
+
+            <Grid
+              item
+              xs={12}
+              sm={6}
+              md={4}
+              onClick={() => {
+                setOpenCard(true);
+                setTitle("All Cards");
+              }}
+            >
+              <MiniStatisticsCard
+                title={{ text: "all cards" }}
+                count={debitCards?.length}
+                percentage={{ color: "info", text: "cards" }}
+                icon={{
+                  color: "info",
+                  component: "card_travel",
+                }}
+              />
+            </Grid>
           </Grid>
         </SoftBox>
 
@@ -274,6 +310,43 @@ function Dashboard() {
         TransitionComponent={Transition}
       >
         <InfoDialog title={title} setOpen={setOpen} data={lData} />
+      </Dialog>
+
+      <Dialog
+        fullScreen
+        open={openCard}
+        onClose={() => setOpenCard(false)}
+        TransitionComponent={Transition}
+      >
+        <AppBar
+          sx={{ position: "relative", backgroundColor: "#18113c", color: "white" }}
+          color="secondary"
+        >
+          <Toolbar>
+            <IconButton
+              edge="start"
+              color="inherit"
+              onClick={() => setOpenCard(false)}
+              aria-label="close"
+            >
+              <Close />
+            </IconButton>
+            <Typography
+              sx={{ ml: 2, flex: 1, textTransform: "capitalize" }}
+              variant="h6"
+              component="div"
+              color={"#fff"}
+            >
+              {'All Debit Cards'}
+            </Typography>
+            <Button autoFocus color="inherit" onClick={() => setOpenCard(false)}>
+              Close
+            </Button>
+          </Toolbar>
+        </AppBar>
+       <Box p={4} >
+       <DebitCardsTable />
+       </Box>
       </Dialog>
       <Footer />
     </DashboardLayout>

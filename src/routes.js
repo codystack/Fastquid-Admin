@@ -1,6 +1,6 @@
 // Soft UI Dashboard React layouts
 import Dashboard from "layouts/dashboard";
-import Loans from "layouts/loans";
+import Loans from "pages/loans";
 // import Transactions from "layouts/transactions";
 
 import Profile from "layouts/profile";
@@ -40,16 +40,25 @@ const routes = [
     key: "requests",
     route: "/requests",
     icon: <Office size="12px" />,
-    component: <Requests />,
+    component: <Loans usecase="pending" />,
     noCollapse: true,
   },
   {
     type: "collapse",
-    name: "Loans",
-    key: "loans",
-    route: "/loans",
+    name: "Approved",
+    key: "approved",
+    route: "/approved",
     icon: <Office size="12px" />,
-    component: <Loans />,
+    component: <Loans usecase="approved" />,
+    noCollapse: true,
+  },
+  {
+    type: "collapse",
+    name: "Disbursed",
+    key: "disbursed",
+    route: "/disbursed",
+    icon: <Office size="12px" />,
+    component: <Loans usecase="credited" />,
     noCollapse: true,
   },
   {
