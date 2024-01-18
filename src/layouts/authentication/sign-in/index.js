@@ -56,7 +56,12 @@ function SignIn(props) {
 
       toast.promise(response, {
         loading: "Loading",
+        
         success: (res) => {
+
+          console.log("REPONSE DDJK :; ", response);
+          console.log("REPONSE RES :; ", res);
+          
           localStorage.setItem("accessToken", res?.data?.accessToken);
           localStorage.setItem("refreshToken", res?.data?.refreshToken);
 
