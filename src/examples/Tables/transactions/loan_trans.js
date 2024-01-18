@@ -49,14 +49,14 @@ export default function LoanTransactionsTable() {
       if (requestData) {
         console.log("SECOND PAGE DATA", requestData);
         // setFilteredTransactions(requestData?.docs);
-        let arr = requestData?.docs.filter((elem) => elem?.type === "loan");
+        let arr = requestData?.docs?.filter((elem) => elem?.type === "loan");
         setLoanTrans(arr);
       }
 
       if (transactions) {
         // console.log("SECOND PAGE DATA", requestData);
         // setFilteredTransactions(requestData?.docs);
-        let arr = transactions?.docs.filter((elem) => elem?.type === "loan");
+        let arr = transactions?.docs?.filter((elem) => elem?.type === "loan");
         setLoanTrans(arr);
       }
 

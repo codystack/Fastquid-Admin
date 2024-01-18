@@ -78,7 +78,7 @@ function Dashboard() {
 
       let today = loans?.docs?.filter((item) => isToday(new Date(item?.dueDate)));
       let over = loans?.docs?.filter((item) => isPast(new Date(item?.dueDate)));
-      let filterOver = over.filter((item) => item?.status === "credited");
+      let filterOver = over?.filter((item) => item?.status === "credited");
       setDue(today);
       setOverdue(filterOver);
 

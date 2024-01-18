@@ -77,7 +77,7 @@ export default function LoansTable({usecase}) {
 
   React.useEffect(() => {
     if (loans) {
-      // const filterLoan = loans?.docs.filter((item) => item?.status?.toLowerCase() === usecase,);
+      // const filterLoan = loans?.docs?.filter((item) => item?.status?.toLowerCase() === usecase,);
       setFilteredLoans(loans?.docs);
       setCount(loans?.docs?.length);
     }
@@ -171,14 +171,14 @@ export default function LoansTable({usecase}) {
         //Perform filtering here
         if (rangeField === "amountBorrowed") {
           //Filter by amount borrowed
-          let result = loans?.docs.filter(
+          let result = loans?.docs?.filter(
             (item) => item?.amountBorrowed >= values.start && item?.amountBorrowed <= values.end
           );
           setFilteredLoans(result);
           setCount(result?.length);
         } else if (rangeField === "dueDate") {
           //Filter by amount borrowed
-          let result = loans?.docs.filter(
+          let result = loans?.docs?.filter(
             (item) =>
               (isAfter(parseISO(item?.dueDate), parseISO(values.start)) ||
                 isEqual(parseISO(item?.dueDate), parseISO(values.start))) &&
@@ -189,7 +189,7 @@ export default function LoansTable({usecase}) {
           setCount(result?.length);
         } else if (rangeField === "disbursedOn") {
           //Filter by amount borrowed
-          let result = loans?.docs.filter(
+          let result = loans?.docs?.filter(
             (item) =>
               (isAfter(parseISO(item?.disbursedOn), parseISO(values.start)) ||
                 isEqual(parseISO(item?.disbursedOn), parseISO(values.start))) &&
@@ -200,7 +200,7 @@ export default function LoansTable({usecase}) {
           setCount(result?.length);
         } else {
           //Filter by amount borrowed
-          let result = loans?.docs.filter(
+          let result = loans?.docs?.filter(
             (item) =>
               (isAfter(parseISO(item?.createdAt), parseISO(values.start)) ||
                 isEqual(parseISO(item?.createdAt), parseISO(values.start))) &&

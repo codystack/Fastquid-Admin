@@ -143,7 +143,7 @@ export default function UsersTable() {
         //Perform filtering here
         if (rangeField === "createdAt") {
           //Filter by amount borrowed
-          let result = users?.docs.filter(
+          let result = users?.docs?.filter(
             (item) =>
               (isAfter(parseISO(item?.createdAt), parseISO(values.start)) ||
                 isEqual(parseISO(item?.createdAt), parseISO(values.start))) &&

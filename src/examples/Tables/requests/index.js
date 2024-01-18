@@ -143,7 +143,7 @@ export default function RequestsTable() {
         //Perform filtering here
         if (rangeField === "amountBorrowed") {
           //Filter by amount borrowed
-          let result = loans?.docs.filter(
+          let result = loans?.docs?.filter(
             (item) => item?.amountBorrowed >= values.start && item?.amountBorrowed <= values.end
           );
           setFilteredLoans(result);
