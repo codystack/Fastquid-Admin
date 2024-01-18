@@ -58,9 +58,6 @@ function SignIn(props) {
         loading: "Loading",
         
         success: (res) => {
-
-          console.log("REPONSE DDJK :; ", response);
-          console.log("REPONSE RES :; ", res);
           
           localStorage.setItem("accessToken", res?.data?.accessToken);
           localStorage.setItem("refreshToken", res?.data?.refreshToken);
@@ -70,11 +67,9 @@ function SignIn(props) {
 
           mutate();
 
-          console.log("PROFILE DATA >> ", data);
           setTimeout(() => {
             mutate();
             dispatch(setLoading(false));
-            console.log("PROFILE DATA >> ", data);
             // navigate("/dashboard");
           }, 5000);
 
@@ -83,13 +78,13 @@ function SignIn(props) {
         error: (err) => {
           console.log("err", err);
           dispatch(setLoading(false));
-          return err?.response?.data?.message || err?.message || "Something went wrong, try again.";
+          return  err?.message || "Something went wrong, try again.";
         },
       });
     } catch (error) {
       dispatch(setLoading(false));
       console.log(
-        error?.response?.data?.message || error?.message || "Something went wrong, try again."
+         error?.message || "Something went wrong, try again."
       );
     }
   };
