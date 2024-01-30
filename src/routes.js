@@ -79,6 +79,15 @@ const routes = [
     component: <Transactions />,
     noCollapse: true,
   },
+  // {
+  //   type: "collapse",
+  //   name: "Reports",
+  //   key: "reports",
+  //   route: "/reports",
+  //   icon: <CreditCard size="12px" />,
+  //   component: <Loans usecase="all" />,
+  //   noCollapse: true,
+  // },
   {
     type: "collapse",
     name: "Support",

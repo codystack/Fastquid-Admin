@@ -135,7 +135,7 @@ export default function AllTransactionsTable() {
       renderCell: (params) => (
         <p style={{ textTransform: "capitalize", fontSize: 14 }}>{params?.row?.reference}</p>
       ),
-      width: 200,
+      width: 256,
     },
     {
       field: "type",

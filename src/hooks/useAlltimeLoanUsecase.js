@@ -1,7 +1,7 @@
 import useSWR from "swr";
 
-export default function useLoanUsecase(page, usecase) {
-  const { data, mutate, error } = useSWR("/loan/all-by-usecase?page=" + page +(usecase === "all" ? "" : "&usecase="+usecase));
+export default function useAlltimeLoanUsecase(page, usecase) {
+  const { data, mutate, error } = useSWR(usecase === "settled" ? "/loan/all-settled?page=" + page : "/loan/all-credited?page=" + page  );
   const loading = !data && !error;
   const loggedOut =
     (error && error?.message === "No token provided.") ||

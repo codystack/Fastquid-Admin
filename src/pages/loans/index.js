@@ -24,6 +24,7 @@ import { Close } from "@mui/icons-material";
 // import CompaniesTable from "examples/Tables/companies";
 import { useSelector } from "react-redux";
 import Requests from "pages/requests";
+import AllTimeLoansTable from "examples/Tables/alltimeloans";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -41,7 +42,7 @@ function Loan({usecase}) {
       <Box py={3}>
         {profileData &&
           (profileData?.privilege?.role === "manager" || profileData?.privilege?.role === "developer") &&
-          profileData?.privilege?.claim === "read/write" && usecase === "pending" && (
+          profileData?.privilege?.claim === "read/write" && (usecase === "pending" || usecase === "settled" || usecase === "credited") && (
             <Box pb={2} display="flex" flexDirection={"row"} justifyContent={"end"}>
               <SoftButton
                 variant="gradient"
@@ -50,7 +51,7 @@ function Loan({usecase}) {
                   setOpen(true);
                 }}
               >
-                All Requests
+                {usecase === "pending" ? "All Requests" : "History"}
               </SoftButton>
             </Box>
           )}
@@ -93,7 +94,9 @@ function Loan({usecase}) {
           </Toolbar>
         </AppBar>
         <Box p={3}>
-          <Requests />
+          {
+            usecase === "pending" ?
+            <Requests /> : <AllTimeLoansTable usecase={usecase} /> }
           {/* <DebitCardsTable /> */}
         </Box>
       </Dialog>

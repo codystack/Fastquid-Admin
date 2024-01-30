@@ -11,6 +11,8 @@ export const loanSlice = createSlice({
     declinedLoans: [],
     pendingLoans: [],
     settledLoans: [],
+    alltimeSettledLoans: [],
+    alltimeCreditedLoans: [],
   },
   reducers: {
     setLoans: (state, action) => {
@@ -37,9 +39,26 @@ export const loanSlice = createSlice({
     setSettledLoans: (state, action) => {
       state.settledLoans = action.payload;
     },
+    setAlltimeSettledLoans: (state, action) => {
+      state.alltimeSettledLoans = action.payload;
+    },
+    setAlltimeCreditedLoans: (state, action) => {
+      state.alltimeCreditedLoans = action.payload;
+    },
   },
 });
 
-export const { setLoans, setRecentLoans, setLoanRequests, setPendingLoans, setApprovedLoans, setDisbursedLoans, setDeclinedLoans, setSettledLoans, } = loanSlice.actions;
+export const {
+  setLoans,
+  setRecentLoans,
+  setLoanRequests,
+  setPendingLoans,
+  setApprovedLoans,
+  setDisbursedLoans,
+  setDeclinedLoans,
+  setSettledLoans,
+  setAlltimeCreditedLoans,
+  setAlltimeSettledLoans,
+} = loanSlice.actions;
 
 export default loanSlice.reducer;
