@@ -2,34 +2,23 @@ import React from "react";
 import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
 
-import MoreVertIcon from "@mui/icons-material/MoreVertRounded";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-import Fade from "@mui/material/Fade";
 
 // import { useSnackbar } from "notistack";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "@mui/styles";
 import { setLoading } from "../../../redux/slices/backdrop";
-import Box from "@mui/system/Box";
-import Edit from "@mui/icons-material/Edit";
-import Delete from "@mui/icons-material/Delete";
 import { PropTypes } from "prop-types";
 import SoftBox from "components/SoftBox";
 import {
   AppBar,
-  Avatar,
   Dialog,
   DialogActions,
   DialogContent,
-  Divider,
-  Grid,
   Icon,
   List,
-  ListItem,
   Toolbar,
 } from "@mui/material";
 
@@ -40,7 +29,7 @@ import { Close } from "@mui/icons-material";
 import Preview from "./preview";
 import APIService from "service";
 import { toast } from "react-hot-toast";
-import { mutate } from "swr";
+// import { mutate } from "swr";
 
 const useStyles = makeStyles((theme) => ({
   awardRoot: {
@@ -61,7 +50,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const ActionButton = ({ selected }) => {
+const ActionButton = ({ selected, mutate }) => {
   const classes = useStyles();
 
   const [open, setOpen] = React.useState(false);
@@ -77,18 +66,17 @@ const ActionButton = ({ selected }) => {
   const closeMenu = () => setMenu(null);
 
   const openAction = Boolean(anchorEl);
-  //   const { enqueueSnackbar } = useSnackbar();
   const { profileData } = useSelector((state) => state.profile);
-  const handleMoreAction = (e) => setAnchorEl(e.currentTarget);
+  // const handleMoreAction = (e) => setAnchorEl(e.currentTarget);
 
-  const handleCloseMoreAction = () => {
-    setAnchorEl(null);
-  };
+  // const handleCloseMoreAction = () => {
+  //   setAnchorEl(null);
+  // };
 
-  const handleClickOpen = () => {
-    closeMenu();
-    setOpenConfirm(true);
-  };
+  // const handleClickOpen = () => {
+  //   closeMenu();
+  //   setOpenConfirm(true);
+  // };
 
   const handleClose = () => {
     setOpenConfirm(false);
@@ -165,7 +153,7 @@ const ActionButton = ({ selected }) => {
         loading: "Loading",
         success: (res) => {
           dispatch(setLoading(false));
-          mutate("/loan/all");
+          mutate();
           return `Loan approved successfully`;
         },
         error: (err) => {
@@ -193,7 +181,8 @@ const ActionButton = ({ selected }) => {
         success: (res) => {
           dispatch(setLoading(false));
           console.log("RESP", res);
-          mutate("/loan/all");
+          // mutate("/loan/all");
+          mutate();
           return `${response.data?.message || "Loan credited successfully"}`;
         },
         error: (err) => {
@@ -223,7 +212,8 @@ const ActionButton = ({ selected }) => {
         loading: "Loading",
         success: (res) => {
           dispatch(setLoading(false));
-          mutate("/loan/all");
+          // mutate("/loan/all");
+          mutate();
           return `Loan credited successfully`;
         },
         error: (err) => {

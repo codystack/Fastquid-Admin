@@ -19,14 +19,11 @@ import {
   Dialog,
   Divider,
   FormControl,
-  InputLabel,
   NativeSelect,
-  Popover,
   Typography,
 } from "@mui/material";
-import SoftTypography from "components/SoftTypography";
 import formatCurrency from "utils/formatCurrency";
-import { Download, Edit, FileDownload, FileDownloadOff } from "@mui/icons-material";
+import { FileDownload } from "@mui/icons-material";
 import xlsx from "json-as-xlsx";
 import { toast } from "react-hot-toast";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -286,7 +283,7 @@ export default function RequestsTable() {
       headerName: "Actions",
       width: 90,
       renderCell: (params) => {
-        return <ActionButton selected={params} />;
+        return <ActionButton selected={params} mutate={mutate} />;
       },
     },
   ];

@@ -67,6 +67,7 @@ import useSettledLoan from "hooks/useSettledLoans";
 import useCreditedLoan from "hooks/useCreditedLoans";
 import { setAlltimeCreditedLoans } from "redux/slices/loans";
 import { setAlltimeSettledLoans } from "redux/slices/loans";
+import { Toaster } from "react-hot-toast";
 
 export default function App () {
   const [controller, dispatch] = useSoftUIController();
@@ -266,6 +267,20 @@ export default function App () {
       >
         <CircularProgress color='inherit' />
       </Backdrop>
+      <Toaster
+        position='top-center'
+        reverseOrder={false}
+        gutter={8}
+        toastOptions={{
+          duration: 5000,
+          success: {
+            theme: {
+              primary: "green",
+              secondary: "black",
+            },
+          },
+        }}
+      />
       <CssBaseline />
       {isAuth ? (
         layout === "dashboard" && (

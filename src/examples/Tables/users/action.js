@@ -2,34 +2,23 @@ import React from "react";
 import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
 
-import MoreVertIcon from "@mui/icons-material/MoreVertRounded";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-import Fade from "@mui/material/Fade";
 
 // import { useSnackbar } from "notistack";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "@mui/styles";
 import { setLoading } from "../../../redux/slices/backdrop";
-import Box from "@mui/system/Box";
-import Edit from "@mui/icons-material/Edit";
-import Delete from "@mui/icons-material/Delete";
 import { PropTypes } from "prop-types";
 import SoftBox from "components/SoftBox";
 import {
   AppBar,
-  Avatar,
   Dialog,
   DialogActions,
   DialogContent,
-  Divider,
-  Grid,
   Icon,
   List,
-  ListItem,
   Toolbar,
 } from "@mui/material";
 
@@ -327,25 +316,7 @@ const ActionButton = ({ selected }) => {
         </DialogActions>
       </Dialog>
 
-      <Dialog
-        open={openDelete}
-        TransitionComponent={Transition}
-        keepMounted
-        onClose={() => setOpenDelete(true)}
-        aria-describedby="alert-dialog-slide-description"
-      >
-        <DialogTitle>{"Decline Loan Request"}</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-slide-description">
-            {`Are you sure you want to decline ${selected?.row?.user?.firstName}\'s loan request? 
-            Proceed if you are very sure you ou want to decline this loan request`}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpenDelete(false)}>Cancel</Button>
-          <Button onClick={declineLoan}>Yes, proceed</Button>
-        </DialogActions>
-      </Dialog>
+      
 
       <Dialog
         fullScreen

@@ -102,15 +102,10 @@ const Preview = (props) => {
         <Grid item xs={12} sm={6} md={3}>
           <Box>
             <Typography variant="h6" fontWeight={600}>
-              DATE OF BIRTH
+              TYPE
             </Typography>
             <p style={{ fontSize: 14, textTransform: "capitalize" }}>
-              {new Date(selected?.row?.dob).toLocaleString("en-US", {
-                weekday: "short",
-                day: "numeric",
-                month: "long",
-                year: "numeric",
-              })}
+              {selected?.row?.privilege?.type}
             </p>
           </Box>
         </Grid>

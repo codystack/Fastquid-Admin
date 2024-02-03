@@ -35,16 +35,16 @@ import { useFormik } from "formik";
 import APIService from "service";
 import { toast } from "react-hot-toast";
 
-const Transition = React.forwardRef(function Transition(props, ref) {
-  return <Slide direction="up" ref={ref} {...props} />;
+const Transition = React.forwardRef(function Transition (props, ref) {
+  return <Slide direction='up' ref={ref} {...props} />;
 });
 
-function TabPanel(props) {
+function TabPanel (props) {
   const { children, value, index, ...other } = props;
 
   return (
     <div
-      role="tabpanel"
+      role='tabpanel'
       hidden={value !== index}
       id={`simple-tabpanel-${index}`}
       aria-labelledby={`simple-tab-${index}`}
@@ -65,7 +65,7 @@ TabPanel.propTypes = {
   value: PropTypes.number.isRequired,
 };
 
-function a11yProps(index) {
+function a11yProps (index) {
   return {
     id: `simple-tab-${index}`,
     "aria-controls": `simple-tabpanel-${index}`,
@@ -85,7 +85,7 @@ const Users = () => {
   };
 
   const roles = ["manager", "sales", "analyst", "developer", "operations"];
-  const claims = ["readonly", "read/write", ];
+  const claims = ["readonly", "read/write"];
   const gender = ["male", "female"];
 
   // const osName = () => {
@@ -118,7 +118,7 @@ const Users = () => {
       emailAddress: "",
       gender: "male",
     },
-    onSubmit: (values) => {
+    onSubmit: values => {
       setLoading(true);
 
       try {
@@ -126,7 +126,7 @@ const Users = () => {
 
         const payload = {
           ...values,
-          password: '123456',
+          password: "123456",
           phoneNumber: `${countryCode}${
             values?.phoneNumber.charAt(0) === "0"
               ? values?.phoneNumber.substring(1)
@@ -138,7 +138,7 @@ const Users = () => {
 
         toast.promise(response, {
           loading: "Loading",
-          success: (res) => {
+          success: res => {
             console.log("RESP HERE >>> ", `${res}`);
             setError(false);
             setErrMsg("");
@@ -150,16 +150,20 @@ const Users = () => {
 
             return `New user added successfully`;
           },
-          error: (err) => {
+          error: err => {
             console.log(
               "ERROR HERE >>> ",
               `${
-                err?.response?.data?.message || err?.message || "Something went wrong, Check internet connection."
+                err?.response?.data?.message ||
+                err?.message ||
+                "Something went wrong, Check internet connection."
               }`
             );
             setErrMsg(
               `${
-                err?.response?.data?.message || err?.message || "Something went wrong, Check internet connection."
+                err?.response?.data?.message ||
+                err?.message ||
+                "Something went wrong, Check internet connection."
               }`
             );
 
@@ -167,7 +171,9 @@ const Users = () => {
 
             setLoading(false);
             return `${
-              err?.response?.data?.message || err?.message || "Something went wrong, Check internet connection."
+              err?.response?.data?.message ||
+              err?.message ||
+              "Something went wrong, Check internet connection."
             }`;
           },
         });
@@ -181,8 +187,13 @@ const Users = () => {
   return (
     <DashboardLayout>
       <DashboardNavbar />
-      <Box py={3} display="flex" flexDirection="row" justifyContent="end" alignItems="center">
-        <SoftButton variant="contained" startIcon={<Add />} onClick={() => setOpen(true)}>
+      <Box py={3} display='flex' flexDirection='row' justifyContent='end' alignItems='center'>
+        <SoftButton
+          variant='gradient'
+          color='dark'
+          startIcon={<Add />}
+          onClick={() => setOpen(true)}
+        >
           Create User
         </SoftButton>
       </Box>
@@ -197,32 +208,32 @@ const Users = () => {
       >
         <AppBar
           sx={{ position: "relative", backgroundColor: "#18113c", color: "white" }}
-          color="secondary"
+          color='secondary'
         >
           <Toolbar>
             <IconButton
-              edge="start"
-              color="white"
+              edge='start'
+              color='white'
               onClick={() => setOpen(false)}
-              aria-label="close"
+              aria-label='close'
             >
               <Close />
             </IconButton>
             <Typography
               sx={{ ml: 2, flex: 1, textTransform: "capitalize" }}
-              variant="h6"
-              component="div"
-              color="#fff"
+              variant='h6'
+              component='div'
+              color='#fff'
             >
               {`Create New User`}
             </Typography>
-            <SoftButton autoFocus color="inherit" onClick={() => setOpen(false)}>
+            <SoftButton autoFocus color='inherit' onClick={() => setOpen(false)}>
               Close
             </SoftButton>
           </Toolbar>
         </AppBar>
         {isError && (
-          <Box display="flex" flexDirection="row" justifyContent="center" alignItems="center">
+          <Box display='flex' flexDirection='row' justifyContent='center' alignItems='center'>
             <SoftTypography fontSize={12} sx={{ color: "red" }} pt={4}>
               {errMsg}
             </SoftTypography>
@@ -237,16 +248,16 @@ const Users = () => {
             alignItems: "center",
           }}
         >
-          <SoftBox width="50%" component="form" role="form" onSubmit={formik.handleSubmit}>
+          <SoftBox width='50%' component='form' role='form' onSubmit={formik.handleSubmit}>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6} md={6}>
                 <SoftBox mb={2}>
                   <SoftInput
-                    id="firstName"
-                    name="firstName"
+                    id='firstName'
+                    name='firstName'
                     required
                     value={formik.values.firstName}
-                    placeholder="First name"
+                    placeholder='First name'
                     onChange={formik.handleChange}
                   />
                 </SoftBox>
@@ -254,11 +265,11 @@ const Users = () => {
               <Grid item xs={12} sm={6} md={6}>
                 <SoftBox mb={2}>
                   <SoftInput
-                    id="middleName"
-                    name="middleName"
+                    id='middleName'
+                    name='middleName'
                     value={formik.values.middleName}
                     onChange={formik.handleChange}
-                    placeholder="Middle name"
+                    placeholder='Middle name'
                   />
                 </SoftBox>
               </Grid>
@@ -268,12 +279,12 @@ const Users = () => {
               <Grid item xs={12} sm={6} md={6}>
                 <SoftBox mb={2}>
                   <SoftInput
-                    id="lastName"
+                    id='lastName'
                     required
-                    name="lastName"
+                    name='lastName'
                     value={formik.values.lastName}
                     onChange={formik.handleChange}
-                    placeholder="Last name"
+                    placeholder='Last name'
                   />
                 </SoftBox>
               </Grid>
@@ -281,12 +292,12 @@ const Users = () => {
                 <SoftBox mb={2}>
                   <SoftInput
                     required
-                    id="emailAddress"
-                    name="emailAddress"
+                    id='emailAddress'
+                    name='emailAddress'
                     value={formik.values.emailAddress}
                     onChange={formik.handleChange}
-                    type="email"
-                    placeholder="Email"
+                    type='email'
+                    placeholder='Email'
                   />
                 </SoftBox>
               </Grid>
@@ -298,12 +309,12 @@ const Users = () => {
                   <p style={{ fontSize: 12 }}>Phone</p>
                   <SoftInput
                     required
-                    id="phoneNumber"
-                    name="phoneNumber"
+                    id='phoneNumber'
+                    name='phoneNumber'
                     value={formik.values.phoneNumber}
                     onChange={formik.handleChange}
-                    type="phone"
-                    placeholder="Phone number"
+                    type='phone'
+                    placeholder='Phone number'
                   />
                 </SoftBox>
               </Grid>
@@ -335,7 +346,6 @@ const Users = () => {
                         </option>
                       ))}
                     </NativeSelect>
-                    
                   </FormControl>
                 </Box>
               </Grid>
@@ -344,9 +354,9 @@ const Users = () => {
             <SoftBox mt={1} mb={1}>
               <SoftButton
                 disabled={isLoading}
-                type="submit"
-                variant="gradient"
-                color="dark"
+                type='submit'
+                variant='gradient'
+                color='dark'
                 fullWidth
               >
                 create user

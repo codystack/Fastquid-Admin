@@ -42,7 +42,7 @@ import APIService from "service";
 import { toast } from "react-hot-toast";
 import { mutate } from "swr";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   awardRoot: {
     display: "flex",
     flexDirection: "column",
@@ -57,8 +57,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Transition = React.forwardRef(function Transition(props, ref) {
-  return <Slide direction="up" ref={ref} {...props} />;
+const Transition = React.forwardRef(function Transition (props, ref) {
+  return <Slide direction='up' ref={ref} {...props} />;
 });
 
 const ActionButton = ({ selected }) => {
@@ -77,54 +77,23 @@ const ActionButton = ({ selected }) => {
   const closeMenu = () => setMenu(null);
 
   const openAction = Boolean(anchorEl);
-  //   const { enqueueSnackbar } = useSnackbar();
-  const { profileData } = useSelector((state) => state.profile);
-  const handleMoreAction = (e) => setAnchorEl(e.currentTarget);
+  const { profileData } = useSelector(state => state.profile);
+  const handleMoreAction = e => setAnchorEl(e.currentTarget);
 
-  const handleCloseMoreAction = () => {
-    setAnchorEl(null);
-  };
 
   const handleClickOpen = () => {
     closeMenu();
-    setOpenConfirm(true);
+    setOpenDelete(true);
   };
 
   const handleClose = () => {
     setOpenConfirm(false);
   };
 
-  const performDelete = async () => {};
-
-  const renderDeleteConfirm = (
-    <div className={classes.awardRoot}>
-      <Typography width={320}>
-        {`Are you sure you want to delete this faq \nAction cannot be undone`}
-      </Typography>
-      <div className={classes.awardRow}>
-        <Button
-          className={classes.button}
-          variant="contained"
-          color="error"
-          onClick={() => setOpenDelete(false)}
-        >
-          Cancel
-        </Button>
-        <Button
-          className={classes.button}
-          variant="contained"
-          color="success"
-          onClick={performDelete}
-        >
-          Confirm
-        </Button>
-      </div>
-    </div>
-  );
 
   const renderMenu = (
     <Menu
-      id="simple-menu"
+      id='simple-menu'
       anchorEl={menu}
       anchorOrigin={{
         vertical: "top",
@@ -139,23 +108,11 @@ const ActionButton = ({ selected }) => {
     >
       {profileData && profileData?.privilege?.claim === "read/write" && (
         <>
-          {selected?.row?.status === "pending" && (
+          {profileData?.privilege?.type.toLowerCase() === "superadmin" && (
             <>
-              <MenuItem onClick={handleClickOpen}>{"Approve"}</MenuItem>
-              <MenuItem
-                onClick={() => {
-                  closeMenu();
-                  setOpenDelete(true);
-                }}
-              >
-                {"Decline"}
-              </MenuItem>
-            </>
-          )}
-          {selected?.row?.status === "approved" && (
-            <>
-              <MenuItem onClick={handleClickOpen}>{"Credit"}</MenuItem>
-              <MenuItem onClick={() => setOpenDelete(true)}>{"Decline"}</MenuItem>
+              {selected?.row?.privilege?.type.toLowerCase() !== "superadmin" && (
+                <MenuItem onClick={handleClickOpen}>{"Remove"}</MenuItem>
+              )}
             </>
           )}
         </>
@@ -164,79 +121,24 @@ const ActionButton = ({ selected }) => {
       <MenuItem onClick={() => setOpen(true)}>Preview</MenuItem>
     </Menu>
   );
-  //   []?.
 
-  const approveLoan = async () => {
+
+  const removeAdmin = () => {
     handleClose();
     dispatch(setLoading(true));
-    const payload = { ...selected?.row, status: "approved" };
+    // const payload = { ...selected?.row, status: "denied" };
 
-    // console.log("NEW PAYLOAD ", payload);
     try {
-      let response = APIService.update("/admin/loan/update", "", payload);
+      let response = APIService.delete("/admin/delete", `${selected?.row?.id}`);
 
       toast.promise(response, {
         loading: "Loading",
-        success: (res) => {
+        success: res => {
+          mutate("/admin/all");
           dispatch(setLoading(false));
-          mutate("/loan/all");
-          return `Loan approved successfully`;
+          return `${response?.message || "Admin deleted successfully"}`;
         },
-        error: (err) => {
-          console.log("ERROR HERE >>> ", `${err}`);
-          dispatch(setLoading(false));
-          return err?.response?.data?.message || err?.message || "Something went wrong, try again.";
-        },
-      });
-    } catch (error) {
-      dispatch(setLoading(false));
-      console.log("ERROR ASYNC HERE >>> ", `${error}`);
-    }
-  };
-
-  const creditLoan = async () => {
-    setOpenDelete(false);
-    dispatch(setLoading(true));
-    const payload = { ...selected?.row, status: "credited" };
-
-    try {
-      let response = APIService.update("/admin/loan/update", "", payload);
-
-      toast.promise(response, {
-        loading: "Loading",
-        success: (res) => {
-          dispatch(setLoading(false));
-          mutate("/loan/all");
-          return `Loan credited successfully`;
-        },
-        error: (err) => {
-          console.log("ERROR HERE >>> ", `${err}`);
-          dispatch(setLoading(false));
-          return err?.response?.data?.message || err?.message || "Something went wrong, try again.";
-        },
-      });
-    } catch (error) {
-      dispatch(setLoading(false));
-      console.log("ERROR ASYNC HERE >>> ", `${error}`);
-    }
-  };
-
-  const declineLoan = () => {
-    handleClose();
-    dispatch(setLoading(true));
-    const payload = { ...selected?.row, status: "denied" };
-
-    try {
-      let response = APIService.update("/admin/loan/update", "", payload);
-
-      toast.promise(response, {
-        loading: "Loading",
-        success: (res) => {
-          dispatch(setLoading(false));
-          mutate("/loan/all");
-          return `Loan credited successfully`;
-        },
-        error: (err) => {
+        error: err => {
           console.log("ERROR HERE >>> ", `${err}`);
           dispatch(setLoading(false));
           return err?.response?.data?.message || err?.message || "Something went wrong, try again.";
@@ -250,63 +152,31 @@ const ActionButton = ({ selected }) => {
 
   return (
     <>
-      <SoftBox color="text" px={2}>
-        <Icon sx={{ cursor: "pointer", fontWeight: "bold" }} fontSize="small" onClick={openMenu}>
+      <SoftBox color='text' px={2}>
+        <Icon sx={{ cursor: "pointer", fontWeight: "bold" }} fontSize='small' onClick={openMenu}>
           more_vert
         </Icon>
       </SoftBox>
       {renderMenu}
-      <Dialog
-        open={openConfirm}
-        TransitionComponent={Transition}
-        keepMounted
-        onClose={handleClose}
-        aria-describedby="alert-dialog-slide-description"
-      >
-        <DialogTitle>
-          {selected?.row?.status === "pending"
-            ? "Approve Loan Request"
-            : "Disburse Funds For Loan Request"}
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-slide-description" sx={{ fontSize: 14 }}>
-            {`${
-              selected?.row?.status === "pending"
-                ? "Are you sure you want to approve"
-                : "Are you sure you want to disburse funds for"
-            } ${selected?.row?.user?.firstName}\'s loan request? 
-          ${
-            selected?.row?.status === "pending"
-              ? "Proceed if you are very sure you ou want to approve this loan request "
-              : `Make sure you have credited ${selected?.row?.user?.fullName} before proceeding`
-          }`}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={selected?.row?.status === "pending" ? approveLoan : creditLoan}>
-            Yes, proceed
-          </Button>
-        </DialogActions>
-      </Dialog>
+     
 
       <Dialog
         open={openDelete}
         TransitionComponent={Transition}
         keepMounted
         onClose={() => setOpenDelete(true)}
-        aria-describedby="alert-dialog-slide-description"
+        aria-describedby='alert-dialog-slide-description'
       >
-        <DialogTitle>{"Decline Loan Request"}</DialogTitle>
+        <DialogTitle>{"Remove Admin"}</DialogTitle>
         <DialogContent>
-          <DialogContentText id="alert-dialog-slide-description">
-            {`Are you sure you want to decline ${selected?.row?.user?.firstName}\'s loan request? 
-            Proceed if you are very sure you ou want to decline this loan request`}
+          <DialogContentText id='alert-dialog-slide-description'>
+            {`Are you sure you want to remove ${selected?.row?.fullName} as an admin. 
+            Proceed if you are very sure you want to remove this admin`}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpenDelete(false)}>Cancel</Button>
-          <Button onClick={declineLoan}>Yes, proceed</Button>
+          <Button onClick={removeAdmin}>Yes, proceed</Button>
         </DialogActions>
       </Dialog>
 
@@ -316,25 +186,28 @@ const ActionButton = ({ selected }) => {
         onClose={() => setOpen(false)}
         TransitionComponent={Transition}
       >
-        <AppBar sx={{ position: "relative", backgroundColor: "#18113c", color: "white" }} color="secondary" > 
+        <AppBar
+          sx={{ position: "relative", backgroundColor: "#18113c", color: "white" }}
+          color='secondary'
+        >
           <Toolbar>
             <IconButton
-              edge="start"
-              color="inherit"
+              edge='start'
+              color='inherit'
               onClick={() => setOpen(false)}
-              aria-label="close"
+              aria-label='close'
             >
               <Close />
             </IconButton>
             <Typography
               sx={{ ml: 2, flex: 1, textTransform: "capitalize" }}
-              variant="h6"
-              component="div"
+              variant='h6'
+              component='div'
               color={"#fff"}
             >
               {`${selected?.row?.fullName}'s Profile`}
             </Typography>
-            <Button autoFocus color="inherit" onClick={() => setOpen(false)}>
+            <Button autoFocus color='inherit' onClick={() => setOpen(false)}>
               Close
             </Button>
           </Toolbar>

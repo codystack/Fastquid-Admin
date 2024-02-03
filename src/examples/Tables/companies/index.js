@@ -68,13 +68,13 @@ export default function CompaniesTable() {
     {
       field: "website",
       headerName: "Website",
-      width: 170,
+      width: 200,
       renderCell: (params) => <p style={{ fontSize: 14 }}>{params?.row?.website}</p>,
     },
     {
       field: "contactPerson",
       headerName: "Company Rep",
-      width: 125,
+      width: 150,
       renderCell: (params) => (
         <p style={{ textTransform: "capitalize", fontSize: 14 }}>
           {params?.row?.contactPerson?.name}
@@ -94,7 +94,7 @@ export default function CompaniesTable() {
     {
       field: "accountManager",
       headerName: "Account Manager",
-      width: 145,
+      width: 175,
       renderCell: (params) => (
         <p style={{ textTransform: "capitalize", fontSize: 14 }}>
           {params?.row?.accountManager?.fullName ?? ""}
@@ -104,7 +104,7 @@ export default function CompaniesTable() {
     {
       field: "domain",
       headerName: "Email Domain",
-      width: 125,
+      width: 150,
       renderCell: (params) => <p style={{ fontSize: 14 }}>{`@${params?.row?.domain}`}</p>,
     },
     {

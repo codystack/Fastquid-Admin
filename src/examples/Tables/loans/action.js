@@ -2,34 +2,23 @@ import React from "react";
 import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
 
-import MoreVertIcon from "@mui/icons-material/MoreVertRounded";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-import Fade from "@mui/material/Fade";
 
 // import { useSnackbar } from "notistack";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "@mui/styles";
 import { setLoading } from "../../../redux/slices/backdrop";
-import Box from "@mui/system/Box";
-import Edit from "@mui/icons-material/Edit";
-import Delete from "@mui/icons-material/Delete";
 import { PropTypes } from "prop-types";
 import SoftBox from "components/SoftBox";
 import {
   AppBar,
-  Avatar,
   Dialog,
   DialogActions,
   DialogContent,
-  Divider,
-  Grid,
   Icon,
   List,
-  ListItem,
   Toolbar,
 } from "@mui/material";
 
@@ -61,7 +50,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const ActionButton = ({ selected, mutate }) => {
+const ActionButton = ({ selected }) => {
   const classes = useStyles();
 
   const [open, setOpen] = React.useState(false);
@@ -77,13 +66,7 @@ const ActionButton = ({ selected, mutate }) => {
   const closeMenu = () => setMenu(null);
 
   const openAction = Boolean(anchorEl);
-  //   const { enqueueSnackbar } = useSnackbar();
   const { profileData } = useSelector((state) => state.profile);
-  const handleMoreAction = (e) => setAnchorEl(e.currentTarget);
-
-  const handleCloseMoreAction = () => {
-    setAnchorEl(null);
-  };
 
   const handleClickOpen = () => {
     closeMenu();
@@ -162,17 +145,15 @@ const ActionButton = ({ selected, mutate }) => {
     dispatch(setLoading(true));
     const payload = { ...selected?.row, status: "approved" };
 
-    // console.log("NEW PAYLOAD ", payload);
     try {
       let response = APIService.update("/admin/loan/update", "", payload);
 
       toast.promise(response, {
         loading: "Loading",
         success: (res) => {
-          dispatch(setLoading(false));
           mutate("/loan/all");
-          mutate();
-          return `Loan approved successfully`;
+          dispatch(setLoading(false));
+          return `${response.data?.message || "Loan approved successfully"}`;
         },
         error: (err) => {
           console.log("ERROR HERE >>> ", `${err}`);
@@ -232,7 +213,7 @@ const ActionButton = ({ selected, mutate }) => {
           dispatch(setLoading(false));
           mutate();
           mutate("/loan/all");
-          return `Loan credited successfully`;
+          return `${response.data?.message || "Loan declined successfully"}`;
         },
         error: (err) => {
           // console.log("ERROR HERE >>> ", `${err}`);

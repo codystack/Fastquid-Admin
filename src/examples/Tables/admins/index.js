@@ -68,16 +68,16 @@ export default function AdminsTable() {
       ),
       width: 135,
     },
-    // {
-    //   field: "type",
-    //   headerName: "Admin Type",
-    //   renderCell: (params) => (
-    //     <p
-    //       style={{ textTransform: "capitalize", fontSize: 14 }}
-    //     >{`${params?.row?.privilege?.type}`}</p>
-    //   ),
-    //   width: 110,
-    // },
+    {
+      field: "type",
+      headerName: "Admin Type",
+      renderCell: (params) => (
+        <p
+          style={{ textTransform: "capitalize", fontSize: 14 }}
+        >{`${params?.row?.privilege?.type}`}</p>
+      ),
+      width: 110,
+    },
     {
       field: "role",
       headerName: "Role",

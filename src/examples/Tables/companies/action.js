@@ -2,34 +2,23 @@ import React from "react";
 import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
 
-import MoreVertIcon from "@mui/icons-material/MoreVertRounded";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-import Fade from "@mui/material/Fade";
 
 // import { useSnackbar } from "notistack";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "@mui/styles";
 import { setLoading } from "../../../redux/slices/backdrop";
-import Box from "@mui/system/Box";
-import Edit from "@mui/icons-material/Edit";
-import Delete from "@mui/icons-material/Delete";
 import { PropTypes } from "prop-types";
 import SoftBox from "components/SoftBox";
 import {
   AppBar,
-  Avatar,
   Dialog,
   DialogActions,
   DialogContent,
-  Divider,
-  Grid,
   Icon,
   List,
-  ListItem,
   Toolbar,
 } from "@mui/material";
 
@@ -63,11 +52,10 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 const ActionButton = ({ selected }) => {
-  const classes = useStyles();
+  // const classes = useStyles();
 
   const [open, setOpen] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
-  //   const [openEdit, setOpenEdit] = React.useState(false);
   const [openDelete, setOpenDelete] = React.useState(false);
 
   const [openEdit, setOpenEdit] = React.useState(false);
@@ -78,21 +66,11 @@ const ActionButton = ({ selected }) => {
   const closeMenu = () => setMenu(null);
 
   const openAction = Boolean(anchorEl);
-  //   const { enqueueSnackbar } = useSnackbar();
   const { profileData } = useSelector((state) => state.profile);
-  const handleMoreAction = (e) => setAnchorEl(e.currentTarget);
+  // const handleMoreAction = (e) => setAnchorEl(e.currentTarget);
 
-  const handleCloseMoreAction = () => {
-    setAnchorEl(null);
-  };
-
-  // const handleClickOpen = () => {
-  //   closeMenu();
-  //   setOpenConfirm(true);
-  // };
-
-  // const handleClose = () => {
-  //   setOpenConfirm(false);
+  // const handleCloseMoreAction = () => {
+  //   setAnchorEl(null);
   // };
 
   const renderMenu = (
@@ -175,29 +153,28 @@ const ActionButton = ({ selected }) => {
   // };
 
   const deleteCompany = () => {
-    handleClose();
     dispatch(setLoading(true));
-    const payload = { ...selected?.row };
+    console.log("DELE KLKNS");
 
     try {
-      let response = APIService.update("/company/delete", `${selected.row?._id}`, payload);
+      let response = APIService.delete("/company/delete", `${selected.row?.id}`);
 
       toast.promise(response, {
         loading: "Loading",
         success: (res) => {
+          console.log("RESP :: ", res);
           dispatch(setLoading(false));
-          mutate("/company/all");
-          return `Company deleted successfully`;
+          mutate("/company/all?page=1");
+          setOpenDelete(false);
+          return `${response.data?.message || "Operation successful"}`;
         },
         error: (err) => {
-          // console.log("ERROR HERE >>> ", `${err}`);
           dispatch(setLoading(false));
           return err?.response?.data?.message || err?.message || "Something went wrong, try again.";
         },
       });
     } catch (error) {
       dispatch(setLoading(false));
-      // console.log("ERROR ASYNC HERE >>> ", `${error}`);
     }
   };
 
@@ -213,20 +190,19 @@ const ActionButton = ({ selected }) => {
       <Dialog
         open={openDelete}
         TransitionComponent={Transition}
-        keepMounted
         onClose={() => setOpenDelete(true)}
-        aria-describedby="alert-dialog-slide-description"
+        aria-describedby="alert-dialog-slide-descriptio"
       >
         <DialogTitle>{"Delete Company"}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-slide-description">
             {`Are you sure you want to delete ${selected?.row?.name}\ from database? 
-            Proceed if you are very sure you ou want to delete this company`}
+            Proceed if you are very sure you want to delete this company`}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpenDelete(false)}>Cancel</Button>
-          <Button onClick={deleteCompany}>Yes, proceed</Button>
+          <Button key={"9302h"} onClick={deleteCompany}>Yes, proceed</Button>
         </DialogActions>
       </Dialog>
 

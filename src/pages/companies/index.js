@@ -19,6 +19,7 @@ import {
   Checkbox,
   Dialog,
   FormControl,
+  FormHelperText,
   Grid,
   IconButton,
   InputLabel,
@@ -42,6 +43,8 @@ import APIService from "service";
 import { toast } from "react-hot-toast";
 import CompaniesTable from "examples/Tables/companies";
 import { useSelector } from "react-redux";
+import { mutate } from "swr";
+import * as Yup from "yup";
 
 const Transition = React.forwardRef(function Transition (props, ref) {
   return <Slide direction='up' ref={ref} {...props} />;
@@ -79,6 +82,11 @@ function a11yProps (index) {
     "aria-controls": `simple-tabpanel-${index}`,
   };
 }
+
+const daysOfMonth = [
+  1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27,
+  28, 29, 30, 31,
+];
 
 const Companies = () => {
   const [countryCode] = React.useState("+234");
@@ -129,6 +137,30 @@ const Companies = () => {
     return os;
   };
 
+  const dateSuffixer = num =>
+    num === 1 || num === 21 || num === 31
+      ? "st"
+      : num === 2 || num === 22
+      ? "nd"
+      : num === 3 || num === 23
+      ? "rd"
+      : "th";
+
+  const validationSchema = Yup.object().shape({
+    name: Yup.string().required("Company name is required."),
+    website: Yup.string().url().required("Company name is required."),
+    phone: Yup.string().required("Company phone number is required."),
+    domain: Yup.string().required("Company work email domain is required."),
+    contactName: Yup.string().required("Company rep name is required."),
+    contactPhone: Yup.string().required("Company rep phone number is required."),
+    type: Yup.string().required("Company sector type is required."),
+    accountManager: Yup.string().required("Company account manager is required."),
+    salaryDay: Yup.number().required("Company salary day is required."),
+    emailAddress: Yup.string()
+      .email("Enter a valid email address")
+      .required("Company email address is required."),
+  });
+
   const formik = useFormik({
     initialValues: {
       name: "",
@@ -140,10 +172,13 @@ const Companies = () => {
       contactPhone: "",
       type: "",
       accountManager: "",
+      salaryDay: 0,
     },
+    validationSchema,
     onSubmit: values => {
-      setLoading(true); 
+      // setLoading(true);
 
+     
       try {
         const { contactName, contactPhone, ...rest } = Object.assign({}, values);
 
@@ -153,7 +188,11 @@ const Companies = () => {
             name: values.contactName,
             phone: values.contactPhone,
           },
+          salaryDay: parseInt(values.salaryDay)
         };
+
+        console.log("COMAPNY PAYLOADS ... ", payload);
+
 
         const response = APIService.post("/company/create", payload);
 
@@ -163,6 +202,8 @@ const Companies = () => {
             console.log("RESP HERE >>> ", `${res}`);
             setError(false);
             setErrMsg("");
+
+            mutate("/company/all?page=1");
 
             setLoading(false);
             setOpen(false);
@@ -196,6 +237,10 @@ const Companies = () => {
       }
     },
   });
+
+  const { errors, touched, values, getFieldProps, handleSubmit } = formik;
+
+  // console.log("ADMINS >>> ", admins);
 
   return (
     <DashboardLayout>
@@ -265,23 +310,28 @@ const Companies = () => {
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6} md={6}>
                 <SoftBox mb={2}>
+                  <p style={{ fontSize: 12 }}> Company Name</p>
                   <SoftInput
                     id='name'
                     name='name'
                     required
-                    value={formik.values.name}
+                    {...getFieldProps('name')}
+                    error={Boolean(touched.name && errors.name)}
+                    helperText={errors.name}
                     placeholder='Company name'
-                    onChange={formik.handleChange}
                   />
                 </SoftBox>
               </Grid>
               <Grid item xs={12} sm={6} md={6}>
                 <SoftBox mb={2}>
+                  <p style={{ fontSize: 12 }}> Company's Website</p>
                   <SoftInput
                     id='website'
                     name='website'
-                    value={formik.values.website}
-                    onChange={formik.handleChange}
+                    {...getFieldProps('website')}
+                    error={Boolean(touched.website && errors.website)}
+                    helperText={errors.website}
+                   
                     placeholder='Company website'
                   />
                 </SoftBox>
@@ -291,25 +341,29 @@ const Companies = () => {
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6} md={6}>
                 <SoftBox mb={2}>
+                  <p style={{ fontSize: 12 }}> Company's Web Domain</p>
                   <SoftInput
                     id='domain'
                     name='domain'
-                    value={formik.values.domain}
-                    onChange={formik.handleChange}
+                    {...getFieldProps('domain')}
+                    error={Boolean(touched.domain && errors.domain)}
+                    helperText={errors.domain}
                     placeholder="Company's email domain in the format abc.com"
                   />
                 </SoftBox>
               </Grid>
               <Grid item xs={12} sm={6} md={6}>
                 <SoftBox mb={2}>
+                  <p style={{ fontSize: 12 }}> Company's Email</p>
                   <SoftInput
                     required
                     id='emailAddress'
                     name='emailAddress'
-                    value={formik.values.emailAddress}
-                    onChange={formik.handleChange}
+                    {...getFieldProps('emailAddress')}
+                    error={Boolean(touched.emailAddress && errors.emailAddress)}
+                    helperText={errors.emailAddress}
                     type='email'
-                    placeholder='Email'
+                    placeholder='Email Address'
                   />
                 </SoftBox>
               </Grid>
@@ -318,13 +372,14 @@ const Companies = () => {
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6} md={6}>
                 <SoftBox mb={2}>
-                  <p style={{ fontSize: 12 }}>Phone</p>
+                  <p style={{ fontSize: 12 }}>Company's Phone</p>
                   <SoftInput
                     required
                     id='phone'
                     name='phone'
-                    value={formik.values.phone}
-                    onChange={formik.handleChange}
+                    {...getFieldProps('phone')}
+                    error={Boolean(touched.phone && errors.phone)}
+                    helperText={errors.phone}
                     type='phone'
                     placeholder="Company's phone number"
                   />
@@ -332,16 +387,14 @@ const Companies = () => {
               </Grid>
               <Grid item xs={12} sm={6} md={6}>
                 <Box mb={2}>
-                  <FormControl fullWidth  >
-                    <p style={{ fontSize: 12 }}>Select sector type</p>
-
+                  <FormControl fullWidth error={Boolean(touched.type && errors.type)} >
+                    <p style={{ fontSize: 12 }}>Sector type</p>
                     <NativeSelect
-                      defaultValue={formik.values.type}
                       disableUnderline
                       variant='outlined'
-                      onChange={formik.handleChange}
                       required
                       fullWidth
+                      {...getFieldProps('type')}
                       sx={{ textTransform: "capitalize" }}
                       inputProps={{
                         name: "type",
@@ -352,11 +405,18 @@ const Companies = () => {
                       }}
                     >
                       {sectors?.map((el, index) => (
-                        <option style={{ textTransform: "uppercase", }} key={index} value={el.toLowerCase()}>
+                        <option
+                          style={{ textTransform: "uppercase" }}
+                          key={index}
+                          value={el.toLowerCase()}
+                        >
                           {`${el}`}
                         </option>
                       ))}
                     </NativeSelect>
+                    <FormHelperText>
+                    {errors.type}
+                    </FormHelperText>
                   </FormControl>
                 </Box>
               </Grid>
@@ -365,24 +425,28 @@ const Companies = () => {
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6} md={6}>
                 <SoftBox mb={2}>
+                  <p style={{ fontSize: 12 }}> Rep's Name</p>
                   <SoftInput
                     id='contactName'
                     name='contactName'
                     required
-                    value={formik.values.contactName}
+                    {...getFieldProps('contactName')}
+                    error={Boolean(touched.contactName && errors.contactName)}
+                    helperText={errors.contactName}
                     placeholder="Representative's name"
-                    onChange={formik.handleChange}
                   />
                 </SoftBox>
               </Grid>
               <Grid item xs={12} sm={6} md={6}>
                 <SoftBox mb={2}>
+                  <p style={{ fontSize: 12 }}> Rep's Phone</p>
                   <SoftInput
                     required
                     id='contactPhone'
                     name='contactPhone'
-                    value={formik.values.contactPhone}
-                    onChange={formik.handleChange}
+                    {...getFieldProps('contactPhone')}
+                    error={Boolean(touched.contactPhone && errors.contactPhone)}
+                    helperText={errors.contactPhone}
                     type='phone'
                     placeholder="Representative's phone number"
                   />
@@ -390,34 +454,70 @@ const Companies = () => {
               </Grid>
             </Grid>
 
-            <SoftBox>
-              <FormControl sx={{ minWidth: 120 }} size='medium' fullWidth>
-                <p style={{ fontSize: 12 }}> Select account manager</p>
-
-                <NativeSelect
-                  defaultValue={formik.values.accountManager}
-                  disableUnderline
-                  variant='outlined'
-                  onChange={formik.handleChange}
-                  required
-                  fullWidth
-                  sx={{ textTransform: "capitalize" }}
-                  inputProps={{
-                    name: "accountManager",
-                    id: "accountManager",
-                    sx: {
-                      minWidth: "100%",
-                    },
-                  }}
-                >
-                  {admins?.map((el, index) => (
-                    <option style={{ textTransform: "capitalize" }} key={index} value={el.id}>
-                      {`${el.fullName} - ${el?.privilege?.role}`}
-                    </option>
-                  ))}
-                </NativeSelect>
-              </FormControl>
-            </SoftBox>
+            <Grid container spacing={2}>
+              <Grid item xs={12} sm={6}>
+                <SoftBox>
+                  <FormControl sx={{ minWidth: 120 }} size='medium' fullWidth>
+                    <p style={{ fontSize: 12 }}> Salary Day</p>
+                    <NativeSelect
+                      defaultValue={formik.values.salaryDay}
+                      disableUnderline
+                      variant='outlined'
+                      onChange={formik.handleChange}
+                      required
+                      fullWidth
+                      sx={{ textTransform: "capitalize" }}
+                      inputProps={{
+                        name: "salaryDay",
+                        id: "salaryDay",
+                        sx: {
+                          minWidth: "100%",
+                        },
+                      }}
+                    >
+                      {daysOfMonth?.map((el, index) => (
+                        <option
+                          style={{ textTransform: "capitalize" }}
+                          key={index}
+                          value={parseInt(`${el}`)}
+                        >
+                          {`${el}${dateSuffixer(el)}`}
+                        </option>
+                      ))}
+                    </NativeSelect>
+                  </FormControl>
+                </SoftBox>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <SoftBox>
+                  <FormControl sx={{ minWidth: 120 }} size='medium' fullWidth>
+                    <p style={{ fontSize: 12 }}>Account Manager</p>
+                    <NativeSelect
+                      defaultValue={formik.values.accountManager}
+                      disableUnderline
+                      variant='outlined'
+                      onChange={formik.handleChange}
+                      required
+                      fullWidth
+                      sx={{ textTransform: "capitalize" }}
+                      inputProps={{
+                        name: "accountManager",
+                        id: "accountManager",
+                        sx: {
+                          minWidth: "100%",
+                        },
+                      }}
+                    >
+                      {admins?.map((el, index) => (
+                        <option style={{ textTransform: "capitalize" }} key={index} value={el.id}>
+                          {`${el.fullName} - ${el?.privilege?.role}`}
+                        </option>
+                      ))}
+                    </NativeSelect>
+                  </FormControl>
+                </SoftBox>
+              </Grid>
+            </Grid>
 
             <SoftBox mt={4} mb={1}>
               <SoftButton

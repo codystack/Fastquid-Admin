@@ -224,7 +224,7 @@ export default function UsersTable() {
       field: "emailAddress",
       headerName: "Email",
       renderCell: (params) => <p style={{ fontSize: 14 }}>{params?.row?.emailAddress}</p>,
-      width: 150,
+      width: 200,
     },
     {
       field: "phoneNumber",
@@ -282,25 +282,25 @@ export default function UsersTable() {
         ).toLocaleDateString("en-GB", {})}`}</p>
       ),
     },
-    {
-      field: "accountStatus",
-      headerName: "Account Status",
-      width: 120,
-      renderCell: (params) => (
-        <Chip
-          size="small"
-          sx={{ textTransform: "capitalize" }}
-          label={params?.row?.accountStatus}
-          color={
-            params?.row?.accountStatus === "pending"
-              ? "warning"
-              : params?.row?.accountStatus === "verified"
-              ? "success"
-              : "error"
-          }
-        />
-      ),
-    },
+    // {
+    //   field: "accountStatus",
+    //   headerName: "Account Status",
+    //   width: 120,
+    //   renderCell: (params) => (
+    //     <Chip
+    //       size="small"
+    //       sx={{ textTransform: "capitalize" }}
+    //       label={params?.row?.accountStatus}
+    //       color={
+    //         params?.row?.accountStatus === "pending"
+    //           ? "warning"
+    //           : params?.row?.accountStatus === "verified"
+    //           ? "success"
+    //           : "error"
+    //       }
+    //     />
+    //   ),
+    // },
     {
       field: "id",
       headerName: "Action",

@@ -41,6 +41,7 @@ import useLoanUsecase from "hooks/useLoanUsecase";
 import { mutate } from 'swr';
 
 export default function LoansTable({usecase}) {
+  console.log("USE CASE HERE ::: ", usecase);
   let loans = [];
   if (usecase === "approved") {
     loans  = useSelector((state) => state.loan.approvedLoans);
@@ -422,6 +423,8 @@ export default function LoansTable({usecase}) {
       active = false;
     };
   }, [paginationModel.page, loanData]);
+
+  console.log("LOAN DATA :: ::: ::: ", filteredLoans);
 
   return (
     <div style={{ height: '80vh', width: "100%" }}>
