@@ -29,7 +29,6 @@ import { Close } from "@mui/icons-material";
 import Preview from "./preview";
 import APIService from "service";
 import { toast } from "react-hot-toast";
-// import { mutate } from "swr";
 
 const useStyles = makeStyles((theme) => ({
   awardRoot: {
@@ -67,16 +66,7 @@ const ActionButton = ({ selected, mutate }) => {
 
   const openAction = Boolean(anchorEl);
   const { profileData } = useSelector((state) => state.profile);
-  // const handleMoreAction = (e) => setAnchorEl(e.currentTarget);
 
-  // const handleCloseMoreAction = () => {
-  //   setAnchorEl(null);
-  // };
-
-  // const handleClickOpen = () => {
-  //   closeMenu();
-  //   setOpenConfirm(true);
-  // };
 
   const handleClose = () => {
     setOpenConfirm(false);
@@ -152,8 +142,8 @@ const ActionButton = ({ selected, mutate }) => {
       toast.promise(response, {
         loading: "Loading",
         success: (res) => {
-          dispatch(setLoading(false));
           mutate();
+          dispatch(setLoading(false));
           return `Loan approved successfully`;
         },
         error: (err) => {

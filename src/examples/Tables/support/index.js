@@ -12,6 +12,7 @@ import CustomNoRowsOverlay from "../../../components/no_data/custom_no_row";
 import ActionButton from "./action";
 import { useSelector } from "react-redux";
 import useSupport from "hooks/support";
+import { Chip } from "@mui/material";
 
 function CustomToolbar() {
   return (
@@ -46,24 +47,69 @@ export default function SupportTable() {
     {
       field: "ticketId",
       headerName: "Ticket ID",
-      width: 150,
+      width: 130,
+      renderCell: (params) => (
+        <p style={{ fontSize: 14 }} > {params?.row?.ticketId } </p>
+      ),
     },
     {
       field: "subject",
       headerName: "Subject",
-      width: 320,
+      width: 140,
+      renderCell: (params) => (
+        <p style={{ textTransform: "capitalize", fontSize: 14 }} >  {params?.row?.subject } </p>
+      ),
     },
     {
       field: "message",
       headerName: "Message",
-      width: 500,
+      width: 450,
+      renderCell: (params) => (
+        <p style={{ textTransform: "capitalize", fontSize: 14 }} >  {params?.row?.message } </p>
+      ),
+    },
+    {
+      field: "user",
+      headerName: "Sender's Email",
+      width: 175,
+      renderCell: (params) => (
+        <p style={{ textTransform: "lowercase", fontSize: 14 }} >  {params?.row?.user?.emailAddress } </p>
+      ),
+    },
+    {
+      field: "createAt",
+      headerName: "Create On",
+      width: 175,
+      renderCell: (params) => (
+        <p style={{ textTransform: "capitalize", fontSize: 14 }}>{`${new Date(
+          params?.row?.createdAt
+        ).toLocaleString("en-US", {
+          weekday: "short",
+          day: "numeric",
+          month: "long",
+          year: "numeric",
+        })}`}</p>
+      ),
+    },
+    {
+      field: "status",
+      headerName: "Status",
+      width: 108,
+      renderCell: (params) => (
+        <Chip
+          size="small"
+          sx={{ textTransform: "capitalize" }}
+          label={params?.row?.status}
+          color={params?.row?.status === "open" ? "success" : "info"}
+        />
+      ),
     },
     {
       field: "id",
       headerName: "ACTIONS",
       width: 90,
       renderCell: (params) => {
-        return <ActionButton selected={params} />;
+        return <ActionButton selected={params} mutate={mutate} />;
       },
     },
   ];
