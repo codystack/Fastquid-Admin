@@ -4,7 +4,7 @@ import { APP_KEY } from "config";
 // console.info('BASE_URL: ->', process.env.REACT_APP_BASE_URL);
 /* "http://192.168.0.103:8080/api" */
 
-const BASE_URL = "http://192.168.171.247:8080"; // "https://fast-quid-api-service.vercel.app"
+const BASE_URL = "https://fast-quid-api-service.vercel.app";  // "http://192.168.171.247:8080";
 
 const axiosInstance = axios.create({
   baseURL: `${BASE_URL}/api`,
