@@ -24,6 +24,8 @@ import {
   MenuItem,
   NativeSelect,
   Toolbar,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 
 import DialogContentText from "@mui/material/DialogContentText";
@@ -81,6 +83,7 @@ const Admins = () => {
   const [errMsg, setErrMsg] = React.useState("");
   const [isError, setError] = React.useState(false);
   const [pass, setPass] = React.useState("");
+  const [deviceType, setDeviceType] = React.useState("mobile");
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -111,6 +114,21 @@ const Admins = () => {
 
     return os;
   };
+
+  const theme = useTheme();
+  const mobile = useMediaQuery(theme.breakpoints.only('xs'));
+  const tablet = useMediaQuery(theme.breakpoints.only('sm'));
+
+  React.useEffect(() => {
+    if (mobile) {
+      setDeviceType('mobile')
+    } else  if (tablet) {
+      setDeviceType('tablet')
+    }
+    else {
+      setDeviceType('pc')
+    }
+  }, [tablet, mobile])
 
   const formik = useFormik({
     initialValues: {
@@ -236,6 +254,9 @@ const Admins = () => {
             </SoftButton>
           </Toolbar>
         </AppBar>
+        {
+          deviceType === "mobile" && <Toolbar />
+        }
         <List
           sx={{
             height: "100%",
@@ -245,7 +266,7 @@ const Admins = () => {
             alignItems: "center",
           }}
         >
-          <SoftBox width='50%' component='form' role='form' onSubmit={formik.handleSubmit}>
+          <SoftBox width={deviceType === "pc" ? '60%' : deviceType === "tablet" ? '80%' : "90%"} component='form' role='form' onSubmit={formik.handleSubmit}>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6} md={6}>
                 <SoftBox mb={2}>

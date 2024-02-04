@@ -5,35 +5,25 @@ import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import React from "react";
 
 import PropTypes from "prop-types";
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/system/Box";
 // import Card from "@mui/material/Card";
-import UsersTable from "examples/Tables/users";
-import AdminsTable from "examples/Tables/admins";
 import SoftButton from "components/SoftButton";
 import { Add, Close } from "@mui/icons-material";
 import {
   AppBar,
-  Checkbox,
   Dialog,
   FormControl,
   FormHelperText,
   Grid,
   IconButton,
-  InputLabel,
   List,
-  ListItem,
-  MenuItem,
   NativeSelect,
-  Select,
-  TextField,
   Toolbar,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
 import Slide from "@mui/material/Slide";
 import SoftBox from "components/SoftBox";
 import SoftInput from "components/SoftInput";
@@ -96,6 +86,7 @@ const Companies = () => {
   const [errMsg, setErrMsg] = React.useState("");
   const [isError, setError] = React.useState(false);
   const [pass, setPass] = React.useState("");
+  const [deviceType, setDeviceType] = React.useState("mobile");
 
   const { admins } = useSelector(state => state.admin);
 
@@ -160,6 +151,22 @@ const Companies = () => {
       .email("Enter a valid email address")
       .required("Company email address is required."),
   });
+
+  const theme = useTheme();
+  const mobile = useMediaQuery(theme.breakpoints.only('xs'));
+  const tablet = useMediaQuery(theme.breakpoints.only('sm'));
+
+  React.useEffect(() => {
+    if (mobile) {
+      setDeviceType('mobile')
+    } else  if (tablet) {
+      setDeviceType('tablet')
+    }
+    else {
+      setDeviceType('pc')
+    }
+  }, [tablet, mobile])
+
 
   const formik = useFormik({
     initialValues: {
@@ -290,6 +297,9 @@ const Companies = () => {
             </SoftButton>
           </Toolbar>
         </AppBar>
+        {
+          deviceType === "mobile" && <Toolbar />
+        }
         {isError && (
           <Box display='flex' flexDirection='row' justifyContent='center' alignItems='center'>
             <SoftTypography fontSize={12} sx={{ color: "red" }} pt={4}>
@@ -306,7 +316,7 @@ const Companies = () => {
             alignItems: "center",
           }}
         >
-          <SoftBox width='50%' component='form' role='form' onSubmit={formik.handleSubmit}>
+          <SoftBox width={deviceType === "pc" ? '60%' : deviceType === "tablet" ? '80%' : "90%"} component='form' role='form' onSubmit={formik.handleSubmit}>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6} md={6}>
                 <SoftBox mb={2}>
@@ -331,8 +341,7 @@ const Companies = () => {
                     {...getFieldProps('website')}
                     error={Boolean(touched.website && errors.website)}
                     helperText={errors.website}
-                   
-                    placeholder='Company website'
+                    placeholder='e.g: https://your.website.com'
                   />
                 </SoftBox>
               </Grid>
@@ -348,7 +357,7 @@ const Companies = () => {
                     {...getFieldProps('domain')}
                     error={Boolean(touched.domain && errors.domain)}
                     helperText={errors.domain}
-                    placeholder="Company's email domain in the format abc.com"
+                    placeholder="e.g: abc.com"
                   />
                 </SoftBox>
               </Grid>
@@ -363,7 +372,7 @@ const Companies = () => {
                     error={Boolean(touched.emailAddress && errors.emailAddress)}
                     helperText={errors.emailAddress}
                     type='email'
-                    placeholder='Email Address'
+                    placeholder='e.g: info@company.com'
                   />
                 </SoftBox>
               </Grid>
