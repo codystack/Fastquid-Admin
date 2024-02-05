@@ -12,18 +12,11 @@ import CustomNoRowsOverlay from "../../../components/no_data/custom_no_row";
 import ActionButton from "./action";
 import { useSelector } from "react-redux";
 import useSupport from "hooks/support";
-import { Chip } from "@mui/material";
+import { Button, Chip } from "@mui/material";
+import { Download } from "@mui/icons-material";
+import xlsx from "json-as-xlsx";
+import { toast } from "react-hot-toast";
 
-function CustomToolbar() {
-  return (
-    <GridToolbarContainer>
-      <GridToolbarColumnsButton />
-      <GridToolbarFilterButton />
-      <GridToolbarDensitySelector />
-      <GridToolbarExport />
-    </GridToolbarContainer>
-  );
-}
 
 export default function SupportTable() {
   const { supports } = useSelector((state) => state.support);
@@ -36,6 +29,71 @@ export default function SupportTable() {
   });
 
   const { data: supportData, mutate } = useSupport(paginationModel.page + 1);
+
+  let data = [
+    {
+      sheet: "Supports",
+      columns: [
+        { label: "Ticket ID", value: (row) => row?.ticketId }, // Top level data
+        { label: "Subject", value: (row) => row?.subject }, // Top level data
+        { label: "Message", value: (row) => row?.message }, // Top level data
+        { label: "Sender's Email", value: (row) => row?.user?.emailAddress }, // Top level data
+        {
+          label: "Initiated On",
+          value: (row) =>
+            new Date(row?.createdAt).toLocaleString("en-US", {
+              weekday: "short",
+              day: "numeric",
+              month: "short",
+              year: "numeric",
+            }),
+        },
+       { label: "Status", value: "status" }, // Top level data
+        {
+          label: "Updated On",
+          value: (row) =>
+            new Date(row?.updatedAt).toLocaleString("en-US", {
+              weekday: "short",
+              day: "numeric",
+              month: "short",
+              year: "numeric",
+            }),
+        }, // Top level data
+      ],
+      content: supports?.docs ?? [],
+    },
+  ];
+
+  let settings = {
+    fileName: "support_records", // Name of the resulting spreadsheet
+    extraLength: 3, // A bigger number means that columns will be wider
+    writeMode: "writeFile", // The available parameters are 'WriteFile' and 'write'. This setting is optional. Useful in such cases https://docs.sheetjs.com/docs/solutions/output#example-remote-file
+    writeOptions: {}, // Style options from https://docs.sheetjs.com/docs/api/write-options
+    RTL: false, // Display the columns from right-to-left (the default value is false)
+  };
+
+  let callback = function (sheet) {
+    toast.success("Excel file downloaded successfully");
+  };
+
+  function CustomToolbar() {
+    return (
+      <GridToolbarContainer>
+        <GridToolbarColumnsButton />
+        <GridToolbarFilterButton />
+        <GridToolbarDensitySelector />
+        <GridToolbarExport />
+        <Button
+          startIcon={<Download />}
+          onClick={() => {
+            xlsx(data, settings, callback); // Will download the excel file
+          }}
+        >
+          Excel
+        </Button>
+      </GridToolbarContainer>
+    );
+  }
 
   React.useEffect(() => {
     if (supports) {
@@ -73,7 +131,7 @@ export default function SupportTable() {
       headerName: "Sender's Email",
       width: 175,
       renderCell: (params) => (
-        <p style={{ textTransform: "lowercase", fontSize: 14 }} >  {params?.row?.user?.emailAddress } </p>
+        <p style={{ textTransform: "lowercase", fontSize: 14 }} > {params?.row?.user?.emailAddress } </p>
       ),
     },
     {

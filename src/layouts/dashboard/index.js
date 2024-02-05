@@ -17,7 +17,6 @@ import GradientLineChart from "examples/Charts/LineCharts/GradientLineChart";
 // Soft UI Dashboard React base styles
 import typography from "assets/theme/base/typography";
 
-
 // Data
 import reportsBarChartData from "layouts/dashboard/data/reportsBarChartData";
 import gradientLineChartData from "layouts/dashboard/data/gradientLineChartData";
@@ -26,26 +25,17 @@ import { forwardRef, useEffect, useState } from "react";
 import { isPast, isToday } from "date-fns";
 import Loans from "./components/Loans";
 import formatCurrency from "utils/formatCurrency";
-import {
-  AppBar,
-  Box,
-  Button,
-  Dialog,
-  IconButton,
-  Slide,
-  Toolbar,
-  Typography,
-} from "@mui/material";
+import { AppBar, Box, Button, Dialog, IconButton, Slide, Toolbar, Typography } from "@mui/material";
 import InfoDialog from "./components/info_dialog";
 
 import DebitCardsTable from "examples/Tables/cards";
 import { Close } from "@mui/icons-material";
 
-const Transition = forwardRef(function Transition(props, ref) {
-  return <Slide direction="up" ref={ref} {...props} />;
+const Transition = forwardRef(function Transition (props, ref) {
+  return <Slide direction='up' ref={ref} {...props} />;
 });
 
-function Dashboard() {
+function Dashboard () {
   const { size } = typography;
   const { chart, items } = reportsBarChartData;
   const [pending, setPending] = useState([]);
@@ -58,32 +48,32 @@ function Dashboard() {
   const [open, setOpen] = useState(false);
   const [openCard, setOpenCard] = useState(false);
   const [totalRevenue, setTotalRevenue] = useState(0);
-  const { loans, recentLoans } = useSelector((state) => state.loan);
-  const { cards } = useSelector((state) => state.card);
+  const { loans, recentLoans } = useSelector(state => state.loan);
+  const { cards } = useSelector(state => state.card);
   const [title, setTitle] = useState("");
   const [lData, setLData] = useState([]);
 
   useEffect(() => {
     if (loans) {
       const currentDate = new Date();
-      let arr = loans?.docs?.filter((item) => item?.status === "pending");
-      let arr2 = loans?.docs?.filter((item) => item?.status === "approved");
-      let arr3 = loans?.docs?.filter((item) => item?.status === "credited");
-      let arr4 = loans?.docs?.filter((item) => item?.status === "denied");
-      let arr5 = loans?.docs?.filter((item) => item?.status === "settled");
+      let arr = loans?.docs?.filter(item => item?.status === "pending");
+      let arr2 = loans?.docs?.filter(item => item?.status === "approved");
+      let arr3 = loans?.docs?.filter(item => item?.status === "credited");
+      let arr4 = loans?.docs?.filter(item => item?.status === "denied");
+      let arr5 = loans?.docs?.filter(item => item?.status === "settled");
       setPending(arr);
       setApproved(arr2);
       setDisbursed(arr3);
       setDenied(arr4);
 
-      let today = loans?.docs?.filter((item) => isToday(new Date(item?.dueDate)));
-      let over = loans?.docs?.filter((item) => isPast(new Date(item?.dueDate)));
-      let filterOver = over?.filter((item) => item?.status === "credited");
+      let today = loans?.docs?.filter(item => isToday(new Date(item?.dueDate)));
+      let over = loans?.docs?.filter(item => isPast(new Date(item?.dueDate)));
+      let filterOver = over?.filter(item => item?.status === "credited");
       setDue(today);
       setOverdue(filterOver);
 
       let revenue = 0;
-      let rev = arr5?.forEach((element) => {
+      let rev = arr5?.forEach(element => {
         // if (element) {
         revenue = revenue + element?.interestAmount;
         // }
@@ -91,7 +81,7 @@ function Dashboard() {
       });
     }
     if (cards) {
-      setDebitCards(cards)
+      setDebitCards(cards);
     }
   }, [loans, cards]);
 
@@ -257,11 +247,11 @@ function Dashboard() {
           </Grid>
         </SoftBox>
 
-        <SoftBox mb={3}>
+        {/* <SoftBox mb={3}>
           <Grid container spacing={3}>
             <Grid item xs={12} lg={5}>
               <ReportsBarChart
-                title="active users"
+                title='active users'
                 description={
                   <>
                     (<strong>+23%</strong>) than last week
@@ -273,26 +263,26 @@ function Dashboard() {
             </Grid>
             <Grid item xs={12} lg={7}>
               <GradientLineChart
-                title="Sales Overview"
+                title='Sales Overview'
                 description={
-                  <SoftBox display="flex" alignItems="center">
-                    <SoftBox fontSize={size.lg} color="success" mb={0.3} mr={0.5} lineHeight={0}>
-                      <Icon className="font-bold">arrow_upward</Icon>
+                  <SoftBox display='flex' alignItems='center'>
+                    <SoftBox fontSize={size.lg} color='success' mb={0.3} mr={0.5} lineHeight={0}>
+                      <Icon className='font-bold'>arrow_upward</Icon>
                     </SoftBox>
-                    <SoftTypography variant="button" color="text" fontWeight="medium">
+                    <SoftTypography variant='button' color='text' fontWeight='medium'>
                       4% more{" "}
-                      <SoftTypography variant="button" color="text" fontWeight="regular">
+                      <SoftTypography variant='button' color='text' fontWeight='regular'>
                         in 2021
                       </SoftTypography>
                     </SoftTypography>
                   </SoftBox>
                 }
-                height="20.25rem"
+                height='20.25rem'
                 chart={gradientLineChartData}
               />
             </Grid>
           </Grid>
-        </SoftBox>
+        </SoftBox> */}
         <Grid container spacing={3}>
           <Grid item xs={12} md={12} lg={12}>
             <Loans recentLoans={recentLoans} />
@@ -320,33 +310,33 @@ function Dashboard() {
       >
         <AppBar
           sx={{ position: "relative", backgroundColor: "#18113c", color: "white" }}
-          color="secondary"
+          color='secondary'
         >
           <Toolbar>
             <IconButton
-              edge="start"
-              color="inherit"
+              edge='start'
+              color='inherit'
               onClick={() => setOpenCard(false)}
-              aria-label="close"
+              aria-label='close'
             >
               <Close />
             </IconButton>
             <Typography
               sx={{ ml: 2, flex: 1, textTransform: "capitalize" }}
-              variant="h6"
-              component="div"
+              variant='h6'
+              component='div'
               color={"#fff"}
             >
-              {'All Debit Cards'}
+              {"All Debit Cards"}
             </Typography>
-            <Button autoFocus color="inherit" onClick={() => setOpenCard(false)}>
+            <Button autoFocus color='inherit' onClick={() => setOpenCard(false)}>
               Close
             </Button>
           </Toolbar>
         </AppBar>
-       <Box p={4} >
-       <DebitCardsTable />
-       </Box>
+        <Box p={4}>
+          <DebitCardsTable />
+        </Box>
       </Dialog>
       <Footer />
     </DashboardLayout>

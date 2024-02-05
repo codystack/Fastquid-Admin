@@ -96,8 +96,8 @@ const ActionButton = ({ selected }) => {
         <>
           {selected?.row?.status === "pending" && (
             <>
-              {(profileData?.privilege?.claim === "read/write" ||
-                profileData?.privilege?.claim === "approve") && (
+              {(profileData?.privilege?.claim === "read/write"  ||
+                profileData?.privilege?.claim === "approve" || profileData?.privilege?.claim !== "disburse") && (
                 <MenuItem onClick={handleClickOpen}>{"Approve"}</MenuItem>
               )}
               <MenuItem

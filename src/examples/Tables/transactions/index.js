@@ -12,7 +12,6 @@ import CustomNoRowsOverlay from "../../../components/no_data/custom_no_row";
 import ActionButton from "./action";
 import { useSelector } from "react-redux";
 import { Avatar, Button, Chip } from "@mui/material";
-import SoftTypography from "components/SoftTypography";
 import formatCurrency from "utils/formatCurrency";
 import { Download } from "@mui/icons-material";
 import xlsx from "json-as-xlsx";

@@ -4,7 +4,7 @@ import { Avatar, Chip, Divider, Grid, Typography } from "@mui/material";
 import Box from "@mui/system/Box";
 import formatCurrency from "utils/formatCurrency";
 
-const Preview = (props) => {
+const Preview = props => {
   let { selected } = props;
 
   let fL = selected?.row?.firstName?.slice(0, 1);
@@ -13,13 +13,13 @@ const Preview = (props) => {
   return (
     <Box
       padding={4}
-      display="flex"
-      flexDirection="column"
-      justifyContent="center"
-      alignItems="center"
+      display='flex'
+      flexDirection='column'
+      justifyContent='center'
+      alignItems='center'
     >
       <Avatar
-        size="large"
+        size='large'
         sx={{ width: 128, height: 128 }}
         src={selected?.row?.photoUrl}
       >{`${fL}${sL}`}</Avatar>
@@ -27,7 +27,7 @@ const Preview = (props) => {
       <Grid container spacing={2}>
         <Grid item xs={12} sm={6} md={3}>
           <Box>
-            <Typography variant="h6" fontWeight={600}>
+            <Typography variant='h6' fontWeight={600}>
               FULLNAME
             </Typography>
             <p style={{ fontSize: 14, textTransform: "capitalize" }}>{selected?.row?.fullName}</p>
@@ -35,7 +35,7 @@ const Preview = (props) => {
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
           <Box>
-            <Typography variant="h6" fontWeight={600}>
+            <Typography variant='h6' fontWeight={600}>
               EMAIL
             </Typography>
             <p style={{ fontSize: 14, textTransform: "lowercase" }}>
@@ -45,7 +45,7 @@ const Preview = (props) => {
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
           <Box>
-            <Typography variant="h6" fontWeight={600}>
+            <Typography variant='h6' fontWeight={600}>
               PHONE NUMBER
             </Typography>
             <p style={{ fontSize: 14, textTransform: "capitalize" }}>
@@ -55,7 +55,7 @@ const Preview = (props) => {
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
           <Box>
-            <Typography variant="h6" fontWeight={600}>
+            <Typography variant='h6' fontWeight={600}>
               GENDER
             </Typography>
             <p style={{ fontSize: 14, textTransform: "capitalize" }}>{selected?.row?.gender}</p>
@@ -66,7 +66,7 @@ const Preview = (props) => {
       <Grid container spacing={2}>
         <Grid item xs={12} sm={6} md={3}>
           <Box>
-            <Typography variant="h6" fontWeight={600}>
+            <Typography variant='h6' fontWeight={600}>
               ROLE
             </Typography>
             <p style={{ fontSize: 14, textTransform: "capitalize" }}>
@@ -76,7 +76,7 @@ const Preview = (props) => {
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
           <Box>
-            <Typography variant="h6" fontWeight={600}>
+            <Typography variant='h6' fontWeight={600}>
               COUNTRY CODE
             </Typography>
             <p style={{ fontSize: 14, textTransform: "capitalize" }}>
@@ -86,7 +86,7 @@ const Preview = (props) => {
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
           <Box>
-            <Typography variant="h6" fontWeight={600}>
+            <Typography variant='h6' fontWeight={600}>
               JOINED ON
             </Typography>
             <p style={{ fontSize: 14, textTransform: "capitalize" }}>
@@ -101,7 +101,7 @@ const Preview = (props) => {
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
           <Box>
-            <Typography variant="h6" fontWeight={600}>
+            <Typography variant='h6' fontWeight={600}>
               TYPE
             </Typography>
             <p style={{ fontSize: 14, textTransform: "capitalize" }}>
@@ -114,7 +114,7 @@ const Preview = (props) => {
       <Grid container spacing={2}>
         <Grid item xs={12} sm={6} md={3}>
           <Box>
-            <Typography variant="h6" fontWeight={600}>
+            <Typography variant='h6' fontWeight={600}>
               ACTIVE
             </Typography>
             <p style={{ fontSize: 14, textTransform: "capitalize" }}>
@@ -124,7 +124,7 @@ const Preview = (props) => {
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
           <Box>
-            <Typography variant="h6" fontWeight={600}>
+            <Typography variant='h6' fontWeight={600}>
               EMAIL VERIFIED
             </Typography>
             <p style={{ fontSize: 14, textTransform: "capitalize" }}>
@@ -134,7 +134,7 @@ const Preview = (props) => {
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
           <Box>
-            <Typography variant="h6" fontWeight={600}>
+            <Typography variant='h6' fontWeight={600}>
               PHONE VERIFIED
             </Typography>
             <p style={{ fontSize: 14, textTransform: "capitalize" }}>
@@ -144,7 +144,20 @@ const Preview = (props) => {
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
           <Box>
-            <Typography variant="h6" fontWeight={600}>
+            <Typography variant='h6' fontWeight={600}>
+              CLAIM (ACCESS)
+            </Typography>
+            <p style={{ fontSize: 14, textTransform: "capitalize" }}>
+              {selected?.row?.privilege?.claim}
+            </p>
+          </Box>
+        </Grid>
+      </Grid>
+      <Divider />
+      <Grid container spacing={2}>
+        <Grid item xs={12} sm={6} md={3}>
+          <Box>
+            <Typography variant='h6' fontWeight={600}>
               LAST UPDATED ON
             </Typography>
             <p style={{ fontSize: 14, textTransform: "capitalize" }}>
@@ -157,8 +170,28 @@ const Preview = (props) => {
             </p>
           </Box>
         </Grid>
+
+        <Grid item xs={12} sm={6} md={3}>
+          <Box>
+            <Typography variant='h6' fontWeight={600}>
+              DEVICE
+            </Typography>
+            <p style={{ fontSize: 14, textTransform: "capitalize" }}>
+              {selected?.row?.device?.os}
+            </p>
+          </Box>
+        </Grid>
+        <Grid item xs={12} sm={6} md={3}>
+        <Box>
+            <Typography variant='h6' fontWeight={600}>
+              MIDDLE NAME
+            </Typography>
+            <p style={{ fontSize: 14, textTransform: "capitalize" }}>
+              {selected?.row?.middleName}
+            </p>
+          </Box>
+        </Grid>
       </Grid>
-      <Divider />
     </Box>
   );
 };
