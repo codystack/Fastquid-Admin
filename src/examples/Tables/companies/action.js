@@ -100,7 +100,7 @@ const ActionButton = ({ selected }) => {
       {profileData &&
         profileData?.privilege?.type === "superadmin" &&
         profileData?.privilege?.claim === "read/write" && (
-          <>
+          <div>
             <MenuItem
               key={"10"}
               onClick={() => {
@@ -119,7 +119,7 @@ const ActionButton = ({ selected }) => {
             >
               {"Remove"}
             </MenuItem>
-          </>
+          </div>
         )}
     </Menu>
   );

@@ -93,7 +93,7 @@ const ActionButton = ({ selected }) => {
       onClose={closeMenu}
     >
       {profileData && profileData?.privilege?.claim !== "readonly" && (
-        <>
+        <div>
           {selected?.row?.status === "pending" && (
             <>
               {(profileData?.privilege?.claim === "read/write"  ||
@@ -111,7 +111,7 @@ const ActionButton = ({ selected }) => {
             </>
           )}
           {selected?.row?.status === "approved" && (
-            <>
+            <div>
               {(profileData?.privilege?.claim === "read/write" ||
                 profileData?.privilege?.claim === "disburse") && (
                 <MenuItem onClick={handleClickOpen}>{"Credit"}</MenuItem>
@@ -124,9 +124,9 @@ const ActionButton = ({ selected }) => {
               >
                 {"Decline"}
               </MenuItem>
-            </>
+            </div>
           )}
-        </>
+        </div>
       )}
 
       <MenuItem

@@ -66,7 +66,6 @@ const ActionButton = ({ selected }) => {
 
   const [open, setOpen] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
-  //   const [openEdit, setOpenEdit] = React.useState(false);
   const [openDelete, setOpenDelete] = React.useState(false);
 
   const [openConfirm, setOpenConfirm] = React.useState(false);
@@ -78,8 +77,6 @@ const ActionButton = ({ selected }) => {
 
   const openAction = Boolean(anchorEl);
   const { profileData } = useSelector(state => state.profile);
-  const handleMoreAction = e => setAnchorEl(e.currentTarget);
-
 
   const handleClickOpen = () => {
     closeMenu();
@@ -89,7 +86,6 @@ const ActionButton = ({ selected }) => {
   const handleClose = () => {
     setOpenConfirm(false);
   };
-
 
   const renderMenu = (
     <Menu
@@ -106,22 +102,86 @@ const ActionButton = ({ selected }) => {
       open={Boolean(menu)}
       onClose={closeMenu}
     >
-      {profileData && profileData?.privilege?.claim === "read/write" && (
-        <>
-          {profileData?.privilege?.type.toLowerCase() === "superadmin" && (
-            <>
-              {selected?.row?.privilege?.type.toLowerCase() !== "superadmin" && (
-                <MenuItem onClick={handleClickOpen}>{"Remove"}</MenuItem>
-              )}
-            </>
+      {profileData &&
+        profileData?.privilege?.claim === "read/write" &&
+        profileData?.privilege?.type.toLowerCase() === "superadmin" &&
+        selected?.row?.privilege?.type.toLowerCase() !== "superadmin" && (
+         <div>
+           {selected?.row?.accountStatus === "active" ? (
+            <MenuItem onClick={() => {
+              closeMenu();
+              setOpenConfirm(true)
+            }}>{'Disable'}</MenuItem>
+          ) : (
+            <MenuItem onClick={() => {
+              closeMenu();
+              setOpenConfirm(true)
+            }} >{'Enable'}</MenuItem>
           )}
-        </>
-      )}
-
+           <MenuItem onClick={handleClickOpen}>{"Remove"}</MenuItem>
+         </div>
+        )}
       <MenuItem onClick={() => setOpen(true)}>Preview</MenuItem>
     </Menu>
   );
 
+  const freezeAccount = () => {
+    handleClose();
+    dispatch(setLoading(true));
+    const payload = { ...selected?.row, accountStatus: "disabled" };
+
+    try {
+      let response = APIService.update("/admin/users/update", "", payload);
+
+      toast.promise(response, {
+        loading: "Loading",
+        success: (res) => {
+          dispatch(setLoading(false));
+          mutate("/admin/users/all");
+          return `User account successfully disabled`;
+        },
+        error: (err) => {
+          console.log("ERROR HERE >>> ", `${err}`);
+          dispatch(setLoading(false));
+          return err?.response?.data?.message || err?.message || "Something went wrong, try again.";
+        },
+      });
+    } catch (error) {
+      dispatch(setLoading(false));
+      console.log("ERROR ASYNC HERE >>> ", `${error}`);
+    }
+  };
+
+  const unfreezeAccount = () => {
+    handleClose();
+    dispatch(setLoading(true));
+    const payload = {
+      ...selected?.row,
+      accountStatus:
+         "active",
+    };
+
+    try {
+      let response = APIService.update("/admin/users/update", "", payload);
+
+      toast.promise(response, {
+        loading: "Loading",
+        success: (res) => {
+          dispatch(setLoading(false));
+          mutate("/admin/users/all");
+          return 'User account successfully enabled';
+        },
+        error: (err) => {
+          console.log("ERROR HERE >>> ", `${err}`);
+          dispatch(setLoading(false));
+          return err?.response?.data?.message || err?.message || "Something went wrong, try again.";
+        },
+      });
+    } catch (error) {
+      dispatch(setLoading(false));
+      console.log("ERROR ASYNC HERE >>> ", `${error}`);
+    }
+  };
 
   const removeAdmin = () => {
     handleClose();
@@ -158,7 +218,35 @@ const ActionButton = ({ selected }) => {
         </Icon>
       </SoftBox>
       {renderMenu}
-     
+
+      <Dialog
+        open={openConfirm}
+        TransitionComponent={Transition}
+        keepMounted
+        onClose={handleClose}
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <DialogTitle>
+          {selected?.row?.accountStatus === "disabled" ? "Enable Account" : "Disable Account"}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-slide-description" sx={{ fontSize: 14 }}>
+            {`${
+              selected?.row?.accountStatus === "disabled"
+                ? `Are you sure you want to enable ${selected?.row?.firstName}'s account?`
+                : `Are you sure you want to disable ${selected?.row?.firstName}'s account?`
+            }`}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button
+            onClick={selected?.row?.accountStatus === "frozen" ? unfreezeAccount : freezeAccount}
+          >
+            Yes, proceed
+          </Button>
+        </DialogActions>
+      </Dialog>
 
       <Dialog
         open={openDelete}

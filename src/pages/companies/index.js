@@ -181,7 +181,7 @@ const Companies = () => {
       accountManager: "",
       salaryDay: 0,
     },
-    validationSchema,
+    // validationSchema,
     onSubmit: values => {
       // setLoading(true);
 

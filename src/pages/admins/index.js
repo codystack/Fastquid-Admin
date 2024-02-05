@@ -5,12 +5,9 @@ import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import React from "react";
 
 import PropTypes from "prop-types";
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/system/Box";
 // import Card from "@mui/material/Card";
-import UsersTable from "examples/Tables/users";
 import AdminsTable from "examples/Tables/admins";
 import SoftButton from "components/SoftButton";
 import { Add, Close } from "@mui/icons-material";
@@ -21,19 +18,15 @@ import {
   Grid,
   IconButton,
   List,
-  MenuItem,
   NativeSelect,
   Toolbar,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
 
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
 import Slide from "@mui/material/Slide";
 import SoftBox from "components/SoftBox";
 import SoftInput from "components/SoftInput";
-import SoftTypography from "components/SoftTypography";
 import { useFormik } from "formik";
 import APIService from "service";
 import { toast } from "react-hot-toast";
@@ -142,6 +135,7 @@ const Admins = () => {
       role: "manager",
       claim: "readonly",
       type: "admin",
+      accountStatus: "active"
     },
     onSubmit: values => {
       setLoading(true);

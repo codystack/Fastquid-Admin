@@ -121,7 +121,7 @@ export default function CompaniesTable () {
     {
       field: "phone",
       headerName: "Phone No",
-      width: 115,
+      width: 135,
       renderCell: params => (
         <p style={{ textTransform: "capitalize", fontSize: 14 }}>{params?.row?.phone}</p>
       ),

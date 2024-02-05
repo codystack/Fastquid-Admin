@@ -55,8 +55,6 @@ const ActionButton = ({ selected }) => {
 
   const [open, setOpen] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
-  //   const [openEdit, setOpenEdit] = React.useState(false);
-  const [openDelete, setOpenDelete] = React.useState(false);
 
   const [openConfirm, setOpenConfirm] = React.useState(false);
   const [menu, setMenu] = React.useState(null);
@@ -66,13 +64,8 @@ const ActionButton = ({ selected }) => {
   const closeMenu = () => setMenu(null);
 
   const openAction = Boolean(anchorEl);
-  //   const { enqueueSnackbar } = useSnackbar();
   const { profileData } = useSelector((state) => state.profile);
-  const handleMoreAction = (e) => setAnchorEl(e.currentTarget);
-
-  const handleCloseMoreAction = () => {
-    setAnchorEl(null);
-  };
+ 
 
   const handleClickOpen = () => {
     closeMenu();
@@ -99,32 +92,14 @@ const ActionButton = ({ selected }) => {
       onClose={closeMenu}
     >
       {profileData && profileData?.privilege?.claim === "read/write" && (
-        <>
-          {/* {selected?.row?.loan && selected?.row?.loan?.status === "pending" && (
-            <>
-              <MenuItem onClick={handleClickOpen}>{"Approve Loan"}</MenuItem>
-              <MenuItem
-                onClick={() => {
-                  closeMenu();
-                  setOpenDelete(true);
-                }}
-              >
-                {"Decline Loan"}
-              </MenuItem>
-            </>
-          )} */}
-          {/* {selected?.row?.loan && selected?.row?.loan?.status === "approved" && (
-            <>
-              <MenuItem onClick={handleClickOpen}>{`Credit ${selected?.row?.fullName}`}</MenuItem>
-              <MenuItem onClick={() => setOpenDelete(true)}>{"Decline"}</MenuItem>
-            </>
-          )} */}
+        <div>
+          
           {selected?.row?.accountStatus !== "frozen" ? (
             <MenuItem onClick={handleClickOpen}>{`Freeze Account`}</MenuItem>
           ) : (
             <MenuItem onClick={handleClickOpen}>{`Unfreeze Account`}</MenuItem>
           )}
-        </>
+        </div>
       )}
 
       <MenuItem
@@ -137,89 +112,6 @@ const ActionButton = ({ selected }) => {
       </MenuItem>
     </Menu>
   );
-  //   []?.
-
-  const approveLoan = async () => {
-    handleClose();
-    dispatch(setLoading(true));
-    const payload = { ...selected?.row, status: "approved" };
-
-    // console.log("NEW PAYLOAD ", payload);
-    try {
-      let response = APIService.update("/admin/loan/update", "", payload);
-
-      toast.promise(response, {
-        loading: "Loading",
-        success: (res) => {
-          dispatch(setLoading(false));
-          mutate("/loan/all");
-          return `Loan approved successfully`;
-        },
-        error: (err) => {
-          console.log("ERROR HERE >>> ", `${err}`);
-          dispatch(setLoading(false));
-          return err?.response?.data?.message || err?.message || "Something went wrong, try again.";
-        },
-      });
-    } catch (error) {
-      dispatch(setLoading(false));
-      console.log("ERROR ASYNC HERE >>> ", `${error}`);
-    }
-  };
-
-  const creditLoan = async () => {
-    setOpenDelete(false);
-    dispatch(setLoading(true));
-    const payload = { ...selected?.row, status: "credited" };
-
-    try {
-      let response = APIService.update("/admin/loan/update", "", payload);
-
-      toast.promise(response, {
-        loading: "Loading",
-        success: (res) => {
-          dispatch(setLoading(false));
-          mutate("/loan/all");
-          return `Loan credited successfully`;
-        },
-        error: (err) => {
-          console.log("ERROR HERE >>> ", `${err}`);
-          dispatch(setLoading(false));
-          return err?.response?.data?.message || err?.message || "Something went wrong, try again.";
-        },
-      });
-    } catch (error) {
-      dispatch(setLoading(false));
-      console.log("ERROR ASYNC HERE >>> ", `${error}`);
-    }
-  };
-
-  const declineLoan = () => {
-    handleClose();
-    dispatch(setLoading(true));
-    const payload = { ...selected?.row, status: "denied" };
-
-    try {
-      let response = APIService.update("/admin/loan/update", "", payload);
-
-      toast.promise(response, {
-        loading: "Loading",
-        success: (res) => {
-          dispatch(setLoading(false));
-          mutate("/loan/all");
-          return `Loan credited successfully`;
-        },
-        error: (err) => {
-          console.log("ERROR HERE >>> ", `${err}`);
-          dispatch(setLoading(false));
-          return err?.response?.data?.message || err?.message || "Something went wrong, try again.";
-        },
-      });
-    } catch (error) {
-      dispatch(setLoading(false));
-      console.log("ERROR ASYNC HERE >>> ", `${error}`);
-    }
-  };
 
   const freezeAccount = () => {
     handleClose();
@@ -316,7 +208,6 @@ const ActionButton = ({ selected }) => {
         </DialogActions>
       </Dialog>
 
-      
 
       <Dialog
         fullScreen

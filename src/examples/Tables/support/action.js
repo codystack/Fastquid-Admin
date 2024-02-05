@@ -11,15 +11,7 @@ import { makeStyles } from "@mui/styles";
 import { setLoading } from "../../../redux/slices/backdrop";
 import { PropTypes } from "prop-types";
 import SoftBox from "components/SoftBox";
-import {
-  AppBar,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  Icon,
-  List,
-  Toolbar,
-} from "@mui/material";
+import { AppBar, Dialog, DialogActions, DialogContent, Icon, List, Toolbar } from "@mui/material";
 
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -28,7 +20,6 @@ import { Close } from "@mui/icons-material";
 import Preview from "./preview";
 import APIService from "service";
 import { toast } from "react-hot-toast";
-
 
 const useStyles = makeStyles(theme => ({
   awardRoot: {
@@ -66,23 +57,22 @@ const ActionButton = ({ selected, mutate }) => {
   const openAction = Boolean(anchorEl);
   const { profileData } = useSelector(state => state.profile);
 
-
   const closeTicket = () => {
     setOpenDelete(false);
     dispatch(setLoading(true));
 
     try {
-      let response = APIService.update("/support/close", `${selected?.row?.id}` , {});
+      let response = APIService.update("/support/close", `${selected?.row?.id}`, {});
 
       toast.promise(response, {
         loading: "Loading",
-        success: (res) => {
+        success: res => {
           dispatch(setLoading(false));
           mutate();
           // mutate("/support/all");
           return `${response.data?.message || "Ticket closed successfully"}`;
         },
-        error: (err) => {
+        error: err => {
           // console.log("ERROR HERE >>> ", `${err}`);
           dispatch(setLoading(false));
           return err?.response?.data?.message || err?.message || "Something went wrong, try again.";
@@ -92,8 +82,7 @@ const ActionButton = ({ selected, mutate }) => {
       dispatch(setLoading(false));
       console.log("ERROR ASYNC HERE >>> ", `${error}`);
     }
-  }
-
+  };
 
   const renderMenu = (
     <Menu
@@ -115,13 +104,11 @@ const ActionButton = ({ selected, mutate }) => {
         profileData?.privilege?.role === "manager") ||
         (profileData?.privilege?.role === "developer" &&
           profileData?.privilege?.claim === "read/write" && (
-            <>
+            <div>
               {selected?.row?.status === "open" && (
-                <>
-                  <MenuItem onClick={() => setOpenDelete(true)}>Close Ticket</MenuItem>
-                </>
+                <MenuItem onClick={() => setOpenDelete(true)}>Close Ticket</MenuItem>
               )}
-            </>
+            </div>
           ))}
     </Menu>
   );
@@ -140,11 +127,11 @@ const ActionButton = ({ selected, mutate }) => {
         TransitionComponent={Transition}
         keepMounted
         onClose={() => setOpenDelete(true)}
-        aria-describedby="alert-dialog-slide-description"
+        aria-describedby='alert-dialog-slide-description'
       >
         <DialogTitle>{"Decline Loan Request"}</DialogTitle>
         <DialogContent>
-          <DialogContentText id="alert-dialog-slide-description">
+          <DialogContentText id='alert-dialog-slide-description'>
             {`Are you sure you want to close this support ticket by ${selected?.row?.user?.firstName}? 
             Proceed only if you have resolved this and you\'re sure everything is okay `}
           </DialogContentText>
@@ -154,7 +141,6 @@ const ActionButton = ({ selected, mutate }) => {
           <Button onClick={() => closeTicket()}>Yes, proceed</Button>
         </DialogActions>
       </Dialog>
-
 
       <Dialog
         fullScreen

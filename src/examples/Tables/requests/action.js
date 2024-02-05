@@ -87,36 +87,6 @@ const ActionButton = ({ selected, mutate }) => {
       open={Boolean(menu)}
       onClose={closeMenu}
     >
-      {/* {profileData && profileData?.privilege?.claim === "read/write" && (
-        <>
-          {selected?.row?.status === "pending" && (
-            <>
-              <MenuItem onClick={handleClickOpen}>{"Approve"}</MenuItem>
-              <MenuItem
-                onClick={() => {
-                  closeMenu();
-                  setOpenDelete(true);
-                }}
-              >
-                {"Decline"}
-              </MenuItem>
-            </>
-          )}
-          {selected?.row?.status === "approved" && (
-            <>
-              <MenuItem onClick={handleClickOpen}>{"Credit"}</MenuItem>
-              <MenuItem
-                onClick={() => {
-                  closeMenu();
-                  setOpenDelete(true);
-                }}
-              >
-                {"Decline"}
-              </MenuItem>
-            </>
-          )}
-        </>
-      )} */}
 
       <MenuItem
         onClick={() => {

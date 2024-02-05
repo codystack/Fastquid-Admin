@@ -79,22 +79,6 @@ const ActionButton = ({ selected }) => {
   const openAction = Boolean(anchorEl);
   //   const { enqueueSnackbar } = useSnackbar();
   const { profileData } = useSelector((state) => state.profile);
-  const handleMoreAction = (e) => setAnchorEl(e.currentTarget);
-
-  const handleCloseMoreAction = () => {
-    setAnchorEl(null);
-  };
-
-  const handleClickOpen = () => {
-    closeMenu();
-    setOpenConfirm(true);
-  };
-
-  const handleClose = () => {
-    setOpenConfirm(false);
-  };
-
-  const performDelete = async () => {};
 
   const renderMenu = (
     <Menu

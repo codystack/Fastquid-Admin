@@ -79,11 +79,7 @@ const ActionButton = ({ selected }) => {
   const openAction = Boolean(anchorEl);
   //   const { enqueueSnackbar } = useSnackbar();
   const { profileData } = useSelector((state) => state.profile);
-  const handleMoreAction = (e) => setAnchorEl(e.currentTarget);
 
-  const handleCloseMoreAction = () => {
-    setAnchorEl(null);
-  };
 
   const handleClickOpen = () => {
     closeMenu();
@@ -94,7 +90,6 @@ const ActionButton = ({ selected }) => {
     setOpenConfirm(false);
   };
 
-  const performDelete = async () => {};
 
   const renderMenu = (
     <Menu
@@ -112,9 +107,9 @@ const ActionButton = ({ selected }) => {
       onClose={closeMenu}
     >
       {profileData && profileData?.privilege?.claim === "read/write" && (
-        <>
+        <div>
           {selected?.row?.status === "pending" && (
-            <>
+            <div>
               <MenuItem onClick={handleClickOpen}>{"Approve"}</MenuItem>
               <MenuItem
                 onClick={() => {
@@ -124,48 +119,24 @@ const ActionButton = ({ selected }) => {
               >
                 {"Decline"}
               </MenuItem>
-            </>
+            </div>
           )}
           {selected?.row?.status === "approved" && (
-            <>
+            <div>
               <MenuItem onClick={handleClickOpen}>{"Credit"}</MenuItem>
               <MenuItem onClick={() => setOpenDelete(true)}>{"Decline"}</MenuItem>
-            </>
+            </div>
           )}
-        </>
+        </div>
       )}
 
       <MenuItem onClick={() => setOpen(true)}>Preview</MenuItem>
     </Menu>
   );
-  //   []?.
 
   const approveTransaction = async () => {
     handleClose();
-    // dispatch(setLoading(true));
-    // const payload = { ...selected?.row, status: "approved" };
-
-    // // console.log("NEW PAYLOAD ", payload);
-    // try {
-    //   let response = APIService.update("/admin/loan/update", "", payload);
-
-    //   toast.promise(response, {
-    //     loading: "Loading",
-    //     success: (res) => {
-    //       dispatch(setLoading(false));
-    //       mutate("/loan/all");
-    //       return `Transaction approved successfully`;
-    //     },
-    //     error: (err) => {
-    //       console.log("ERROR HERE >>> ", `${err}`);
-    //       dispatch(setLoading(false));
-    //       return err?.response?.data?.message || err?.message || "Something went wrong, try again.";
-    //     },
-    //   });
-    // } catch (error) {
-    //   dispatch(setLoading(false));
-    //   console.log("ERROR ASYNC HERE >>> ", `${error}`);
-    // }
+   
   };
 
   const creditLoan = async () => {
