@@ -17,7 +17,6 @@ import { useDispatch } from "react-redux";
 import { ValidatorForm, TextValidator, SelectValidator } from "react-material-ui-form-validator";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import useProfile from "hooks/profile";
-import { setAuth, setProfile } from "../../redux/slices/profile";
 import { APP_KEY } from "config.js";
 import SoftButton from "components/SoftButton";
 

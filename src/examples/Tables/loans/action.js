@@ -12,15 +12,7 @@ import { makeStyles } from "@mui/styles";
 import { setLoading } from "../../../redux/slices/backdrop";
 import { PropTypes } from "prop-types";
 import SoftBox from "components/SoftBox";
-import {
-  AppBar,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  Icon,
-  List,
-  Toolbar,
-} from "@mui/material";
+import { AppBar, Dialog, DialogActions, DialogContent, Icon, List, Toolbar } from "@mui/material";
 
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -31,7 +23,7 @@ import APIService from "service";
 import { toast } from "react-hot-toast";
 import { mutate } from "swr";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   awardRoot: {
     display: "flex",
     flexDirection: "column",
@@ -46,8 +38,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Transition = React.forwardRef(function Transition(props, ref) {
-  return <Slide direction="up" ref={ref} {...props} />;
+const Transition = React.forwardRef(function Transition (props, ref) {
+  return <Slide direction='up' ref={ref} {...props} />;
 });
 
 const ActionButton = ({ selected }) => {
@@ -55,7 +47,7 @@ const ActionButton = ({ selected }) => {
 
   const [open, setOpen] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
-  //   const [openEdit, setOpenEdit] = React.useState(false);
+  const [openRepay, setOpenRepay] = React.useState(false);
   const [openDelete, setOpenDelete] = React.useState(false);
 
   const [openConfirm, setOpenConfirm] = React.useState(false);
@@ -66,7 +58,7 @@ const ActionButton = ({ selected }) => {
   const closeMenu = () => setMenu(null);
 
   const openAction = Boolean(anchorEl);
-  const { profileData } = useSelector((state) => state.profile);
+  const { profileData } = useSelector(state => state.profile);
 
   const handleClickOpen = () => {
     closeMenu();
@@ -79,7 +71,7 @@ const ActionButton = ({ selected }) => {
 
   const renderMenu = (
     <Menu
-      id="simple-menu"
+      id='simple-menu'
       anchorEl={menu}
       anchorOrigin={{
         vertical: "top",
@@ -95,9 +87,10 @@ const ActionButton = ({ selected }) => {
       {profileData && profileData?.privilege?.claim !== "readonly" && (
         <div>
           {selected?.row?.status === "pending" && (
-            <>
-              {(profileData?.privilege?.claim === "read/write"  ||
-                profileData?.privilege?.claim === "approve" || profileData?.privilege?.claim !== "disburse") && (
+            <div>
+              {(profileData?.privilege?.claim === "read/write" ||
+                profileData?.privilege?.claim === "approve" ||
+                profileData?.privilege?.claim !== "disburse") && (
                 <MenuItem onClick={handleClickOpen}>{"Approve"}</MenuItem>
               )}
               <MenuItem
@@ -108,7 +101,7 @@ const ActionButton = ({ selected }) => {
               >
                 {"Decline"}
               </MenuItem>
-            </>
+            </div>
           )}
           {selected?.row?.status === "approved" && (
             <div>
@@ -128,7 +121,19 @@ const ActionButton = ({ selected }) => {
           )}
         </div>
       )}
-
+      {profileData &&
+        profileData?.privilege?.type === "superadmin" &&
+        profileData?.privilege?.claim !== "readonly" &&
+        selected?.row?.status === "credited" && (
+          <MenuItem
+            onClick={() => {
+              closeMenu();
+              setOpenRepay(true);
+            }}
+          >
+            Mark as paid
+          </MenuItem>
+        )}
       <MenuItem
         onClick={() => {
           closeMenu();
@@ -150,12 +155,12 @@ const ActionButton = ({ selected }) => {
 
       toast.promise(response, {
         loading: "Loading",
-        success: (res) => {
+        success: res => {
           mutate("/loan/all");
           dispatch(setLoading(false));
           return `${response.data?.message || "Loan approved successfully"}`;
         },
-        error: (err) => {
+        error: err => {
           console.log("ERROR HERE >>> ", `${err}`);
           dispatch(setLoading(false));
           return err?.response?.data?.message || err?.message || "Something went wrong, try again.";
@@ -177,14 +182,14 @@ const ActionButton = ({ selected }) => {
 
       toast.promise(response, {
         loading: "Loading",
-        success: (res) => {
+        success: res => {
           dispatch(setLoading(false));
           // console.log("RESP", res);
           mutate();
           mutate("/loan/all");
           return `${response.data?.message || "Loan credited successfully"}`;
         },
-        error: (err) => {
+        error: err => {
           console.log("ERROR HERE >>> ", `${err}`);
           dispatch(setLoading(false));
           console.log(
@@ -209,13 +214,41 @@ const ActionButton = ({ selected }) => {
 
       toast.promise(response, {
         loading: "Loading",
-        success: (res) => {
+        success: res => {
           dispatch(setLoading(false));
           mutate();
           mutate("/loan/all");
           return `${response.data?.message || "Loan declined successfully"}`;
         },
-        error: (err) => {
+        error: err => {
+          // console.log("ERROR HERE >>> ", `${err}`);
+          dispatch(setLoading(false));
+          return err?.response?.data?.message || err?.message || "Something went wrong, try again.";
+        },
+      });
+    } catch (error) {
+      dispatch(setLoading(false));
+      console.log("ERROR ASYNC HERE >>> ", `${error}`);
+    }
+  };
+
+  const settleLoan = () => {
+    setOpenDelete(false);
+    dispatch(setLoading(true));
+    const payload = { ...selected?.row, status: "settled" };
+
+    try {
+      let response = APIService.update("/admin/loan/update", "", payload);
+
+      toast.promise(response, {
+        loading: "Loading",
+        success: res => {
+          dispatch(setLoading(false));
+          mutate();
+          mutate("/loan/all");
+          return `${response.data?.message || "Loan marked as repaid successfully"}`;
+        },
+        error: err => {
           // console.log("ERROR HERE >>> ", `${err}`);
           dispatch(setLoading(false));
           return err?.response?.data?.message || err?.message || "Something went wrong, try again.";
@@ -229,8 +262,8 @@ const ActionButton = ({ selected }) => {
 
   return (
     <>
-      <SoftBox color="text" px={2}>
-        <Icon sx={{ cursor: "pointer", fontWeight: "bold" }} fontSize="small" onClick={openMenu}>
+      <SoftBox color='text' px={2}>
+        <Icon sx={{ cursor: "pointer", fontWeight: "bold" }} fontSize='small' onClick={openMenu}>
           more_vert
         </Icon>
       </SoftBox>
@@ -240,7 +273,7 @@ const ActionButton = ({ selected }) => {
         TransitionComponent={Transition}
         keepMounted
         onClose={handleClose}
-        aria-describedby="alert-dialog-slide-description"
+        aria-describedby='alert-dialog-slide-description'
       >
         <DialogTitle>
           {selected?.row?.status === "pending"
@@ -248,7 +281,7 @@ const ActionButton = ({ selected }) => {
             : "Disburse Funds For Loan Request"}
         </DialogTitle>
         <DialogContent>
-          <DialogContentText id="alert-dialog-slide-description" sx={{ fontSize: 14 }}>
+          <DialogContentText id='alert-dialog-slide-description' sx={{ fontSize: 14 }}>
             {`${
               selected?.row?.status === "pending"
                 ? "Are you sure you want to approve"
@@ -274,11 +307,11 @@ const ActionButton = ({ selected }) => {
         TransitionComponent={Transition}
         keepMounted
         onClose={() => setOpenDelete(true)}
-        aria-describedby="alert-dialog-slide-description"
+        aria-describedby='alert-dialog-slide-description'
       >
         <DialogTitle>{"Decline Loan Request"}</DialogTitle>
         <DialogContent>
-          <DialogContentText id="alert-dialog-slide-description">
+          <DialogContentText id='alert-dialog-slide-description'>
             {`Are you sure you want to decline ${selected?.row?.user?.firstName}\'s loan request? 
             Proceed if you are very sure you ou want to decline this loan request`}
           </DialogContentText>
@@ -290,6 +323,26 @@ const ActionButton = ({ selected }) => {
       </Dialog>
 
       <Dialog
+        open={openRepay}
+        TransitionComponent={Transition}
+        keepMounted
+        onClose={() => setOpenRepay(true)}
+        aria-describedby='alert-dialog-slide-description'
+      >
+        <DialogTitle>{"Mark Loan Request As Read"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id='alert-dialog-slide-description'>
+            {`Are you sure you want to mark ${selected?.row?.user?.firstName}\'s loan request 
+            as 'Read'? If you are very sure of this you can proceed.`}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenRepay(false)}>Cancel</Button>
+          <Button onClick={() => settleLoan()}>Yes, proceed</Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog
         fullScreen
         open={open}
         onClose={() => setOpen(false)}
@@ -297,26 +350,26 @@ const ActionButton = ({ selected }) => {
       >
         <AppBar
           sx={{ position: "relative", backgroundColor: "#18113c", color: "white" }}
-          color="secondary"
+          color='secondary'
         >
           <Toolbar>
             <IconButton
-              edge="start"
-              color="inherit"
+              edge='start'
+              color='inherit'
               onClick={() => setOpen(false)}
-              aria-label="close"
+              aria-label='close'
             >
               <Close />
             </IconButton>
             <Typography
               sx={{ ml: 2, flex: 1, textTransform: "capitalize" }}
-              variant="h6"
-              component="div"
+              variant='h6'
+              component='div'
               color={"#fff"}
             >
               {`${selected?.row?.user?.fullName}'s Loan Summary`}
             </Typography>
-            <Button autoFocus color="inherit" onClick={() => setOpen(false)}>
+            <Button autoFocus color='inherit' onClick={() => setOpen(false)}>
               Close
             </Button>
           </Toolbar>

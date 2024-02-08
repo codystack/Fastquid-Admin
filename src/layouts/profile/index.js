@@ -9,18 +9,13 @@ import SoftTypography from "components/SoftTypography";
 // Soft UI Dashboard React examples
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import Footer from "examples/Footer";
-import ProfileInfoCard from "examples/Cards/InfoCards/ProfileInfoCard";
-import ProfilesList from "examples/Lists/ProfilesList";
-import DefaultProjectCard from "examples/Cards/ProjectCards/DefaultProjectCard";
-import PlaceholderCard from "examples/Cards/PlaceholderCard";
 
 // Overview page components
 import Header from "layouts/profile/components/Header";
 import PlatformSettings from "layouts/profile/components/PlatformSettings";
 
-import { Box, Divider, Toolbar, Typography } from "@mui/material";
+import { Box, Divider, Typography } from "@mui/material";
 import { useSelector } from "react-redux";
-import logo from "../../assets/images/fast-logos/favicon.png";
 
 function Overview() {
   const { currentTab } = useSelector((state) => state.setting);
