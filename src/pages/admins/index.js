@@ -75,7 +75,6 @@ const Admins = () => {
   const [isLoading, setLoading] = React.useState(false);
   const [errMsg, setErrMsg] = React.useState("");
   const [isError, setError] = React.useState(false);
-  const [pass, setPass] = React.useState("");
   const [deviceType, setDeviceType] = React.useState("mobile");
 
   const handleChange = (event, newValue) => {
