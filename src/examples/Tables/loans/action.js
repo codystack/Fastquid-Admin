@@ -205,41 +205,6 @@ const ActionButton = ({ selected }) => {
     }
   };
 
-  const creditLoan = async () => {
-    handleClose();
-    dispatch(setLoading(true));
-    const payload = { loan: selected?.row, userId: selected?.row?.user?._id };
-
-    try {
-      let response = APIService.post("/loan/disburse", payload);
-      // let response = await APIService.update('/admin/loan/disburseOtp', "", {});
-
-      console.log("DISTURSE OTP RESPONSE :: ", response.data);
-      dispatch(setLoading(false));
-
-      toast.promise(response, {
-        loading: "Loading",
-        success: (res) => {
-          dispatch(setLoading(false));
-          mutate();
-          mutate("/loan/all");
-          return `${response.data?.message || "Loan credited successfully"}`;
-        },
-        error: (err) => {
-          console.log("ERROR HERE >>> ", `${err}`);
-          dispatch(setLoading(false));
-          console.log(
-            err?.response?.data?.message || err?.message || "Something went wrong, try again."
-          );
-          return err?.response?.data?.message || err?.message || "Something went wrong, try again.";
-        },
-      });
-    } catch (error) {
-      dispatch(setLoading(false));
-      console.log("ERROR ASYNC HERE >>> ", `${error}`);
-    }
-  };
-
   const declineLoan = () => {
     setOpenDelete(false);
     dispatch(setLoading(true));
