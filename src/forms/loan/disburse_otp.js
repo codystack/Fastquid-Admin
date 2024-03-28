@@ -12,7 +12,7 @@ import { setAuth } from "redux/slices/profile";
 import { setProfile } from "redux/slices/profile";
 import { useNavigate } from "react-router-dom";
 
-export default function DisburseOTPForm({ setOpen, data }) {
+export default function DisburseOTPForm({ setOpen, data, type }) {
   const dispatch = useDispatch();
   //   const navigate = useNavigate();
   //   const [showCode, setShowCode] = React.useState(false)
@@ -41,28 +41,58 @@ export default function DisburseOTPForm({ setOpen, data }) {
           loading: "Loading",
           success: (res) => {
             setTimeout(async () => {
-              const payload2 = { loan: data?.row, userId: data?.row?.user?._id };
-              let resp = APIService.post("/loan/disburse", payload2);
+              if (type === "manual") {
+                const payload = { ...data?.row, status: "credited" };
 
-              toast.promise(resp, {
-                loading: "Loading",
-                success: (respo) => {
-                  dispatch(setLoading(false));
-                  mutate("/loan/all");
-                  values.code = "";
-                  setOpen(false);
-                  return `${respo.data?.message || respo?.message || "Loan credited successfully"}`;
-                },
-                error: (erro) => {
-                  dispatch(setLoading(false));
-                  return (
-                    erro?.response?.data?.message ||
-                    erro?.message ||
-                    "Something went wrong, try again."
-                  );
-                },
-              });
+                try {
+                  let response = APIService.update("/admin/loan/update", "", payload);
 
+                  toast.promise(response, {
+                    loading: "Loading",
+                    success: (res) => {
+                      mutate("/loan/all");
+                      dispatch(setLoading(false));
+                      return `${response.data?.message || "Loan successfully marked as disbursed"}`;
+                    },
+                    error: (err) => {
+                      console.log("ERROR HERE >>> ", `${err}`);
+                      dispatch(setLoading(false));
+                      return (
+                        err?.response?.data?.message ||
+                        err?.message ||
+                        "Something went wrong, try again."
+                      );
+                    },
+                  });
+                } catch (error) {
+                  dispatch(setLoading(false));
+                  console.log("ERROR ASYNC HERE >>> ", `${error}`);
+                }
+              } else {
+                const payload2 = { loan: data?.row, userId: data?.row?.user?._id };
+                let resp = APIService.post("/loan/disburse", payload2);
+
+                toast.promise(resp, {
+                  loading: "Loading",
+                  success: (respo) => {
+                    dispatch(setLoading(false));
+                    mutate("/loan/all");
+                    values.code = "";
+                    setOpen(false);
+                    return `${
+                      respo.data?.message || respo?.message || "Loan credited successfully"
+                    }`;
+                  },
+                  error: (erro) => {
+                    dispatch(setLoading(false));
+                    return (
+                      erro?.response?.data?.message ||
+                      erro?.message ||
+                      "Something went wrong, try again."
+                    );
+                  },
+                });
+              }
             }, 1000);
             return `${res.data?.message || "Loan credited successfully"}`;
           },

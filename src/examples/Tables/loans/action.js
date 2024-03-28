@@ -12,7 +12,7 @@ import { makeStyles } from "@mui/styles";
 import { setLoading } from "../../../redux/slices/backdrop";
 import { PropTypes } from "prop-types";
 import SoftBox from "components/SoftBox";
-import { AppBar, Dialog, DialogActions, DialogContent, Icon, List, Toolbar } from "@mui/material";
+import { AppBar, Dialog, DialogActions, DialogContent, Icon, List, Toolbar, useTheme } from "@mui/material";
 
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -45,8 +45,10 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 const ActionButton = ({ selected }) => {
   const classes = useStyles();
+  const theme = useTheme();
 
   const [open, setOpen] = React.useState(false);
+  const [payoutType, setPayoutType] = React.useState('');
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [openRepay, setOpenRepay] = React.useState(false);
   const [openDelete, setOpenDelete] = React.useState(false);
@@ -109,7 +111,18 @@ const ActionButton = ({ selected }) => {
             <div>
               {(profileData?.privilege?.claim === "read/write" ||
                 profileData?.privilege?.claim === "disburse") && (
-                <MenuItem onClick={handleClickOpen}>{"Credit"}</MenuItem>
+                <div>
+                  <MenuItem onClick={() => {
+                    closeMenu();
+                    setPayoutType('automated');
+                    toast.custom('Temporarily disabled. Check back later!', {style: {backgroundColor: 'red'}})
+                  }}>{"Disburse"}</MenuItem>
+                <MenuItem onClick={() => {
+                  setPayoutType('manual');
+                  closeMenu();
+                  setOpenConfirm(true);
+                }}>{"Manual Disburse"}</MenuItem>
+                </div>
               )}
               <MenuItem
                 onClick={() => {
@@ -289,7 +302,7 @@ const ActionButton = ({ selected }) => {
           ${
             selected?.row?.status === "pending"
               ? "Proceed if you are very sure you ou want to approve this loan request "
-              : `Make sure you have credited ${selected?.row?.user?.fullName} before proceeding`
+              : `Make sure you ${payoutType === "manual" ? "have credited "+ selected?.row?.user?.firstName + " " +  selected?.row?.user?.lastName : "have stable internet connection "} before proceeding`
           }`}
           </DialogContentText>
         </DialogContent>
@@ -355,7 +368,7 @@ const ActionButton = ({ selected }) => {
           </Toolbar>
         </AppBar>
         <List>
-          <DisburseOTPForm setOpen={setOpenDisburseOtp} data={selected} />
+          <DisburseOTPForm setOpen={setOpenDisburseOtp} data={selected} type={payoutType} />
         </List>
       </Dialog>
 
