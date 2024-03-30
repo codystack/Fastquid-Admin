@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 
 // react-router components
-import { useLocation, Link } from "react-router-dom";
+import { useLocation, Link, useNavigate } from "react-router-dom";
 
 // prop-types is a library for typechecking of props.
 import PropTypes from "prop-types";
@@ -82,6 +82,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
   const handleConfiguratorOpen = () => setOpenConfigurator(dispatch, !openConfigurator);
   const handleOpenMenu = (event) => setOpenMenu(event.currentTarget);
   const handleCloseMenu = () => setOpenMenu(false);
+  const navigate = useNavigate();
 
   // Render the notifications menu
   const renderMenu = () => (
@@ -177,7 +178,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
                 aria-controls="notification-menu"
                 aria-haspopup="true"
                 variant="contained"
-                onClick={handleOpenMenu}
+                onClick={() => navigate('/profile')}
               >
                 <Icon className={light ? "text-white" : "text-dark"}>person_circle</Icon>
               </IconButton>

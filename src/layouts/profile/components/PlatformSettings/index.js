@@ -35,15 +35,20 @@ import { toast } from "react-hot-toast";
 import { mutate } from "swr";
 import { useEffect } from "react";
 import { Add } from "@mui/icons-material";
+import AddTemplate from "forms/email/add_template";
+import UpdateTemplate from "forms/email/update_template";
 
 function PlatformSettings () {
   const [isPersonalActive, setPersonalActive] = useState(true);
   const [isPaydayActive, setPaydayActive] = useState(true);
   const [open, setOpen] = useState(false);
+  const [openAdd, setOpenAdd] = useState(false);
+  const [openUpdate, setOpenUpdate] = useState(false);
   const [reason, setReason] = useState(null);
+  const [data, setData] = useState(null);
   const dispatch = useDispatch();
 
-  const { settings } = useSelector(state => state.setting);
+  const { settings, emailTemplates } = useSelector(state => state.setting);
   const { isLoading } = useSelector(state => state.loading);
 
   useEffect(() => {
@@ -112,17 +117,12 @@ function PlatformSettings () {
     },
   });
 
-  const addReason = async () => {
-    try {
-    } catch (error) {}
-  };
-
   return (
     <Box>
       <Card>
         <Dialog open={open} onClose={() => setOpen(false)}>
           <DialogTitle>....... Add New Loan Reason .......</DialogTitle>
-          <SoftBox p={4} role='form' component='form' onSubmit={addReason}>
+          {/* <SoftBox p={4} role='form' component='form' onSubmit={addReason}>
             <SoftInput
               required
               fullWidth
@@ -137,8 +137,18 @@ function PlatformSettings () {
             <SoftButton type='submit' variant='gradient' color='dark' fullWidth>
               Submit
             </SoftButton>
+          </SoftBox> */}
+        </Dialog>
+
+        <Dialog open={openAdd} fullWidth onClose={() => setOpenAdd(false)}>
+          <DialogTitle> ADD NEW EMAIL TEMPLATE </DialogTitle>
+          <SoftBox p={4}>
+            <AddTemplate setOpen={setOpenAdd} />
           </SoftBox>
         </Dialog>
+
+        <DialogItem open={openUpdate} setOpen={setOpenUpdate} data={data} />
+
         <SoftBox
           p={4}
           lineHeight={1.25}
@@ -351,7 +361,7 @@ function PlatformSettings () {
 
           <br />
 
-          <SoftBox display='flex' py={1} mb={0.25} styles={{ width: "100%", marginTop: 4 }}>
+          {/* <SoftBox display='flex' py={1} mb={0.25} styles={{ width: "100%", marginTop: 4 }}>
             <SoftBox
               display='flex'
               flexDirection='row'
@@ -377,7 +387,7 @@ function PlatformSettings () {
                 Add New
               </SoftButton>
             </SoftBox>
-          </SoftBox>
+          </SoftBox> */}
 
           <SoftBox mt={4} mb={1}>
             <SoftButton
@@ -405,39 +415,39 @@ function PlatformSettings () {
           <Box
             display={"flex"}
             flexDirection={"row"}
-            justifyContent={"center"}
+            justifyContent={"space-between"}
             alignItems={"center"}
             pb={2}
           >
             <Typography textTransform={"uppercase"}>Email Template Customization</Typography>
+            {/* <Button variant='contained' onClick={() => setOpenAdd(true)}>
+              Add Template
+            </Button> */}
           </Box>
 
           <SoftBox display='flex' py={1} mb={0.25}>
             <Grid container spacing={2}>
-              <Grid item xs={12} sm={6} md={4}>
-                <SoftBox mt={0.25}>
-                  <SoftTypography variant='body2'>Registration</SoftTypography>
-                  <Button sx={{ textTransform: "capitalize" }} startIcon={<Edit />} size='small'>
-                    Customize
-                  </Button>
-                </SoftBox>
-              </Grid>
-              <Grid item xs={12} sm={6} md={4}>
-                <SoftBox mt={0.25}>
-                  <SoftTypography variant='body2'>Account Login</SoftTypography>
-                  <Button sx={{ textTransform: "capitalize" }} startIcon={<Edit />} size='small'>
-                    Customize
-                  </Button>
-                </SoftBox>
-              </Grid>
-              <Grid item xs={12} sm={6} md={4}>
-                <SoftBox mt={0.25}>
-                  <SoftTypography variant='body2'>Account Login</SoftTypography>
-                  <Button sx={{ textTransform: "capitalize" }} startIcon={<Edit />} size='small'>
-                    Customize
-                  </Button>
-                </SoftBox>
-              </Grid>
+              {emailTemplates?.map((item, index) => (
+                <Grid key={index} item xs={12} sm={6} md={4}>
+                  <SoftBox mt={0.25}>
+                    <SoftTypography variant='body2' textTransform='capitalize'>
+                      {`${item?.type}`.replace("-", " ")}
+                    </SoftTypography>
+                    <Button
+                      sx={{ textTransform: "capitalize" }}
+                      startIcon={<Edit />}
+                      size='small'
+                      onClick={() => {
+                        setData(item)
+                        setOpenUpdate(true)
+                      }}
+                    >
+                      Customize
+                    </Button>
+                  </SoftBox>
+                  
+                </Grid>
+              ))}
             </Grid>
           </SoftBox>
         </SoftBox>
@@ -445,5 +455,14 @@ function PlatformSettings () {
     </Box>
   );
 }
+
+const DialogItem = props => (
+  <Dialog open={props.open} fullWidth onClose={() => props.setOpen(false)}>
+    <DialogTitle> UPDATE EMAIL TEMPLATE </DialogTitle>
+    <SoftBox p={4}>
+      <UpdateTemplate data={props.data} setOpen={props.setOpen} />
+    </SoftBox>
+  </Dialog>
+);
 
 export default PlatformSettings;

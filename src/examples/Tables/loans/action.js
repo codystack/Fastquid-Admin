@@ -224,7 +224,7 @@ const ActionButton = ({ selected }) => {
     const payload = { ...selected?.row, status: "denied" };
 
     try {
-      let response = APIService.update("/admin/loan/update?action=deny-loan", "", payload);
+      let response = APIService.update("/admin/loan/update", "", payload);
 
       toast.promise(response, {
         loading: "Loading",
@@ -379,11 +379,11 @@ const ActionButton = ({ selected }) => {
         onClose={() => setOpenRepay(false)}
         aria-describedby="alert-dialog-slide-description"
       >
-        <DialogTitle>{"Mark Loan Request As Read"}</DialogTitle>
+        <DialogTitle>{"Mark Loan Request As Paid"}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-slide-description">
             {`Are you sure you want to mark ${selected?.row?.user?.firstName}\'s loan request 
-            as 'Read'? If you are very sure of this you can proceed.`}
+            as 'Settled'? If you are very sure of this you can proceed.`}
           </DialogContentText>
         </DialogContent>
         <DialogActions>

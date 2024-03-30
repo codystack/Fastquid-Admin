@@ -68,6 +68,8 @@ import useCreditedLoan from "hooks/useCreditedLoans";
 import { setAlltimeCreditedLoans } from "redux/slices/loans";
 import { setAlltimeSettledLoans } from "redux/slices/loans";
 import { Toaster } from "react-hot-toast";
+import useEmailTemplate from "hooks/useEmailTemplate";
+import { setEmailTemplate } from "redux/slices/settings";
 
 export default function App () {
   const [controller, dispatch] = useSoftUIController();
@@ -80,6 +82,7 @@ export default function App () {
   const { data: requestData } = useRequest(1);
   const { data: cardData } = useCard();
   const { data: companyData, mutateCompany } = useCompany(1);
+  const { data: emailTemplateData } = useEmailTemplate(1);
   const { data: settingsData, mutateSettings } = useSettings();
   const { data: loanData, mutate: loanMutate } = useLoan(1);
   const { data: allSettledLoanData } = useSettledLoan(1);
@@ -166,6 +169,10 @@ export default function App () {
     if (allCreditedLoanData) {
       dispatcher(setAlltimeCreditedLoans(allCreditedLoanData));
     }
+    if (emailTemplateData) {
+      console.log("DATA DAH :: ", emailTemplateData?.docs);
+      dispatcher(setEmailTemplate(emailTemplateData?.docs));
+    }
     if (allSettledLoanData) {
       dispatcher(setAlltimeSettledLoans(allSettledLoanData));
     }
@@ -177,9 +184,11 @@ export default function App () {
     pendingLoanData,
     settledLoanData,
     approvedLoanData,
+    emailTemplateData,
     disbursedLoanData,
     allSettledLoanData,
     allCreditedLoanData,
+    
   ]);
 
   useEffect(() => {

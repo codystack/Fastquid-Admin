@@ -51,11 +51,12 @@ export default function DisburseOTPForm({ setOpen, data, type }) {
                     loading: "Loading",
                     success: (res) => {
                       mutate("/loan/all");
+                      values.code = "";
+                      setOpen(false);
                       dispatch(setLoading(false));
-                      return `${response.data?.message || "Loan successfully marked as disbursed"}`;
+                      return `${res.data?.message || "Loan successfully marked as disbursed"}`;
                     },
                     error: (err) => {
-                      console.log("ERROR HERE >>> ", `${err}`);
                       dispatch(setLoading(false));
                       return (
                         err?.response?.data?.message ||
