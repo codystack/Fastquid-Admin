@@ -88,11 +88,16 @@ const Companies = () => {
   const [pass, setPass] = React.useState("");
   const [deviceType, setDeviceType] = React.useState("mobile");
 
-  const { admins } = useSelector(state => state.admin);
+  const { allAdmins } = useSelector(state => state.admin);
+  // const { admins } = useSelector(state => state.admin);
+
+  console.log("ALL ADMINS :::: ", allAdmins);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+
+  console.log("ADMINS L:: ", allAdmins);
 
   const sectors = [
     "Finance",
@@ -153,20 +158,18 @@ const Companies = () => {
   });
 
   const theme = useTheme();
-  const mobile = useMediaQuery(theme.breakpoints.only('xs'));
-  const tablet = useMediaQuery(theme.breakpoints.only('sm'));
+  const mobile = useMediaQuery(theme.breakpoints.only("xs"));
+  const tablet = useMediaQuery(theme.breakpoints.only("sm"));
 
   React.useEffect(() => {
     if (mobile) {
-      setDeviceType('mobile')
-    } else  if (tablet) {
-      setDeviceType('tablet')
+      setDeviceType("mobile");
+    } else if (tablet) {
+      setDeviceType("tablet");
+    } else {
+      setDeviceType("pc");
     }
-    else {
-      setDeviceType('pc')
-    }
-  }, [tablet, mobile])
-
+  }, [tablet, mobile]);
 
   const formik = useFormik({
     initialValues: {
@@ -177,15 +180,14 @@ const Companies = () => {
       domain: "",
       contactName: "",
       contactPhone: "",
-      type: "",
-      accountManager: "",
+      type: sectors[0],
+      accountManager: allAdmins[0]?.id,
       salaryDay: 0,
     },
     // validationSchema,
     onSubmit: values => {
       // setLoading(true);
 
-     
       try {
         const { contactName, contactPhone, ...rest } = Object.assign({}, values);
 
@@ -195,11 +197,10 @@ const Companies = () => {
             name: values.contactName,
             phone: values.contactPhone,
           },
-          salaryDay: parseInt(values.salaryDay)
+          salaryDay: parseInt(values.salaryDay),
         };
 
         console.log("COMAPNY PAYLOADS ... ", payload);
-
 
         const response = APIService.post("/company/create", payload);
 
@@ -247,7 +248,6 @@ const Companies = () => {
 
   const { errors, touched, values, getFieldProps, handleSubmit } = formik;
 
-  // console.log("ADMINS >>> ", admins);
 
   return (
     <DashboardLayout>
@@ -297,9 +297,7 @@ const Companies = () => {
             </SoftButton>
           </Toolbar>
         </AppBar>
-        {
-          deviceType === "mobile" && <Toolbar />
-        }
+        {deviceType === "mobile" && <Toolbar />}
         {isError && (
           <Box display='flex' flexDirection='row' justifyContent='center' alignItems='center'>
             <SoftTypography fontSize={12} sx={{ color: "red" }} pt={4}>
@@ -316,7 +314,12 @@ const Companies = () => {
             alignItems: "center",
           }}
         >
-          <SoftBox width={deviceType === "pc" ? '60%' : deviceType === "tablet" ? '80%' : "90%"} component='form' role='form' onSubmit={formik.handleSubmit}>
+          <SoftBox
+            width={deviceType === "pc" ? "60%" : deviceType === "tablet" ? "80%" : "90%"}
+            component='form'
+            role='form'
+            onSubmit={formik.handleSubmit}
+          >
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6} md={6}>
                 <SoftBox mb={2}>
@@ -325,7 +328,7 @@ const Companies = () => {
                     id='name'
                     name='name'
                     required
-                    {...getFieldProps('name')}
+                    {...getFieldProps("name")}
                     error={Boolean(touched.name && errors.name)}
                     helperText={errors.name}
                     placeholder='Company name'
@@ -338,7 +341,7 @@ const Companies = () => {
                   <SoftInput
                     id='website'
                     name='website'
-                    {...getFieldProps('website')}
+                    {...getFieldProps("website")}
                     error={Boolean(touched.website && errors.website)}
                     helperText={errors.website}
                     placeholder='e.g: https://your.website.com'
@@ -354,10 +357,10 @@ const Companies = () => {
                   <SoftInput
                     id='domain'
                     name='domain'
-                    {...getFieldProps('domain')}
+                    {...getFieldProps("domain")}
                     error={Boolean(touched.domain && errors.domain)}
                     helperText={errors.domain}
-                    placeholder="e.g: abc.com"
+                    placeholder='e.g: abc.com'
                   />
                 </SoftBox>
               </Grid>
@@ -368,7 +371,7 @@ const Companies = () => {
                     required
                     id='emailAddress'
                     name='emailAddress'
-                    {...getFieldProps('emailAddress')}
+                    {...getFieldProps("emailAddress")}
                     error={Boolean(touched.emailAddress && errors.emailAddress)}
                     helperText={errors.emailAddress}
                     type='email'
@@ -386,7 +389,7 @@ const Companies = () => {
                     required
                     id='phone'
                     name='phone'
-                    {...getFieldProps('phone')}
+                    {...getFieldProps("phone")}
                     error={Boolean(touched.phone && errors.phone)}
                     helperText={errors.phone}
                     type='phone'
@@ -396,14 +399,14 @@ const Companies = () => {
               </Grid>
               <Grid item xs={12} sm={6} md={6}>
                 <Box mb={2}>
-                  <FormControl fullWidth error={Boolean(touched.type && errors.type)} >
+                  <FormControl fullWidth error={Boolean(touched.type && errors.type)}>
                     <p style={{ fontSize: 12 }}>Sector type</p>
                     <NativeSelect
                       disableUnderline
                       variant='outlined'
                       required
                       fullWidth
-                      {...getFieldProps('type')}
+                      {...getFieldProps("type")}
                       sx={{ textTransform: "capitalize" }}
                       inputProps={{
                         name: "type",
@@ -413,6 +416,7 @@ const Companies = () => {
                         },
                       }}
                     >
+                      <option>Select a Sector</option>
                       {sectors?.map((el, index) => (
                         <option
                           style={{ textTransform: "uppercase" }}
@@ -423,9 +427,7 @@ const Companies = () => {
                         </option>
                       ))}
                     </NativeSelect>
-                    <FormHelperText>
-                    {errors.type}
-                    </FormHelperText>
+                    <FormHelperText>{errors.type}</FormHelperText>
                   </FormControl>
                 </Box>
               </Grid>
@@ -439,7 +441,7 @@ const Companies = () => {
                     id='contactName'
                     name='contactName'
                     required
-                    {...getFieldProps('contactName')}
+                    {...getFieldProps("contactName")}
                     error={Boolean(touched.contactName && errors.contactName)}
                     helperText={errors.contactName}
                     placeholder="Representative's name"
@@ -453,7 +455,7 @@ const Companies = () => {
                     required
                     id='contactPhone'
                     name='contactPhone'
-                    {...getFieldProps('contactPhone')}
+                    {...getFieldProps("contactPhone")}
                     error={Boolean(touched.contactPhone && errors.contactPhone)}
                     helperText={errors.contactPhone}
                     type='phone'
@@ -505,7 +507,11 @@ const Companies = () => {
                       defaultValue={formik.values.accountManager}
                       disableUnderline
                       variant='outlined'
-                      onChange={formik.handleChange}
+                      onChange={e => {
+                        formik.handleChange("accountManager");
+                        console.log("FOR :: ", e.target?.value);
+                        formik.setFieldValue("accountManager", e.target?.value);
+                      }}
                       required
                       fullWidth
                       sx={{ textTransform: "capitalize" }}
@@ -517,7 +523,8 @@ const Companies = () => {
                         },
                       }}
                     >
-                      {admins?.map((el, index) => (
+                      <option>Select an Admin</option>
+                      {allAdmins?.map((el, index) => (
                         <option style={{ textTransform: "capitalize" }} key={index} value={el.id}>
                           {`${el.fullName} - ${el?.privilege?.role}`}
                         </option>

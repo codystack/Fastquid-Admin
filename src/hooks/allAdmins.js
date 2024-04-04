@@ -1,8 +1,8 @@
 import useSWR from 'swr';
 
-export default function useCompany(page) {
-  const { data, mutate, error } = useSWR('/company/all?page=' + page);
-  console.log('COPANY :: ', data);
+export default function useAllAdmins() {
+  const { data, mutate, error } = useSWR('/admin/allAdmins');
+  // console.log('response', error);
   const loading = !data && !error;
   const loggedOut =
     (error && error?.message === 'No token provided.') ||
@@ -13,7 +13,7 @@ export default function useCompany(page) {
   return {
     loading,
     loggedOut,
-    data, 
+    data,
     mutate,
   };
 }

@@ -70,6 +70,8 @@ import { setAlltimeSettledLoans } from "redux/slices/loans";
 import { Toaster } from "react-hot-toast";
 import useEmailTemplate from "hooks/useEmailTemplate";
 import { setEmailTemplate } from "redux/slices/settings";
+import useAllAdmins from "hooks/allAdmins";
+import { setAllAdmins } from "redux/slices/admin";
 
 export default function App () {
   const [controller, dispatch] = useSoftUIController();
@@ -81,6 +83,8 @@ export default function App () {
   const { data, mutate } = useProfile();
   const { data: requestData } = useRequest(1);
   const { data: cardData } = useCard();
+  const { data: adminsData, mutate: adminsMutate } = useAdmins();
+  const { data: allAdminsData, mutate: allAdminsMutate } = useAllAdmins();
   const { data: companyData, mutateCompany } = useCompany(1);
   const { data: emailTemplateData } = useEmailTemplate(1);
   const { data: settingsData, mutateSettings } = useSettings();
@@ -95,7 +99,7 @@ export default function App () {
   const { data: transactionData, mutate: transactionMutate } = useTransaction(1);
   const { data: supportData, mutate: supportMutate } = useSupport(1);
   const { data: usersData, mutate: usersMutate } = useUsers(1);
-  const { data: adminsData, mutate: adminsMutate } = useAdmins();
+  
 
   const dispatcher = useDispatch();
   const { profileData, isAuth } = useSelector(state => state.profile);
@@ -198,7 +202,12 @@ export default function App () {
     if (adminsData) {
       dispatcher(setAdmins(adminsData));
     }
-  }, [usersData, adminsData]);
+
+    if (allAdminsData) {
+      dispatcher(setAllAdmins(allAdminsData?.docs));
+    }
+
+  }, [usersData, adminsData, allAdminsData]);
 
   // Open sidenav when mouse enter on mini sidenav
   const handleOnMouseEnter = () => {
