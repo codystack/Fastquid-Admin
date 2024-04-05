@@ -8,11 +8,10 @@ import Button from "@mui/material/Button";
 
 // import { useSnackbar } from "notistack";
 import { useDispatch, useSelector } from "react-redux";
-import { makeStyles } from "@mui/styles";
 import { setLoading } from "../../../redux/slices/backdrop";
 import { PropTypes } from "prop-types";
 import SoftBox from "components/SoftBox";
-import { AppBar, Dialog, DialogActions, DialogContent, Icon, List, Toolbar, useTheme } from "@mui/material";
+import { AppBar, Dialog, DialogActions, DialogContent, Icon, List, Toolbar } from "@mui/material";
 
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -24,28 +23,13 @@ import { toast } from "react-hot-toast";
 import { mutate } from "swr";
 import DisburseOTPForm from "forms/loan/disburse_otp";
 
-const useStyles = makeStyles((theme) => ({
-  awardRoot: {
-    display: "flex",
-    flexDirection: "column",
-  },
-  awardRow: {
-    display: "flex",
-    flexDirection: "row",
-    marginLeft: "auto",
-  },
-  button: {
-    margin: theme.spacing(1),
-  },
-}));
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
 const ActionButton = ({ selected }) => {
-  const classes = useStyles();
-  const theme = useTheme();
+  
 
   const [open, setOpen] = React.useState(false);
   const [payoutType, setPayoutType] = React.useState('');
