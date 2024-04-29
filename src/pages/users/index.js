@@ -5,13 +5,10 @@ import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import React from "react";
 
 import PropTypes from "prop-types";
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/system/Box";
 // import Card from "@mui/material/Card";
 import UsersTable from "examples/Tables/users";
-import AdminsTable from "examples/Tables/admins";
 import SoftButton from "components/SoftButton";
 import { Add, Close } from "@mui/icons-material";
 import {
@@ -27,8 +24,6 @@ import {
   useTheme,
 } from "@mui/material";
 
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
 import Slide from "@mui/material/Slide";
 import SoftBox from "components/SoftBox";
 import SoftInput from "components/SoftInput";
@@ -67,50 +62,15 @@ TabPanel.propTypes = {
   value: PropTypes.number.isRequired,
 };
 
-function a11yProps (index) {
-  return {
-    id: `simple-tab-${index}`,
-    "aria-controls": `simple-tabpanel-${index}`,
-  };
-}
-
 const Users = () => {
   const [countryCode] = React.useState("+234");
-  const [value, setValue] = React.useState(0);
   const [open, setOpen] = React.useState(false);
   const [isLoading, setLoading] = React.useState(false);
   const [errMsg, setErrMsg] = React.useState("");
   const [isError, setError] = React.useState(false);
   const [deviceType, setDeviceType] = React.useState("mobile");
 
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
-
-  const roles = ["manager", "sales", "analyst", "developer", "operations"];
-  const claims = ["readonly", "read/write"];
   const gender = ["male", "female"];
-
-  // const osName = () => {
-  //   const userAgent = window.navigator.userAgent;
-  //   let os = "";
-
-  //   if (userAgent.indexOf("Win") !== -1) {
-  //     os = "Windows";
-  //   } else if (userAgent.indexOf("Mac") !== -1) {
-  //     os = "MacOS";
-  //   } else if (userAgent.indexOf("Linux") !== -1) {
-  //     os = "Linux";
-  //   } else if (userAgent.indexOf("Android") !== -1) {
-  //     os = "Android";
-  //   } else if (userAgent.indexOf("iOS") !== -1) {
-  //     os = "iOS";
-  //   } else {
-  //     os = "Unknown";
-  //   }
-
-  //   return os;
-  // };
 
   const theme = useTheme();
   const mobile = useMediaQuery(theme.breakpoints.only('xs'));
@@ -141,7 +101,6 @@ const Users = () => {
       setLoading(true);
 
       try {
-        // const { type, claim, role, ...rest } = Object.assign({}, values);
 
         const payload = {
           ...values,
