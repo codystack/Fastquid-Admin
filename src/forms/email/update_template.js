@@ -56,11 +56,11 @@ const UpdateTemplate = ({ data, setOpen }) => {
         console.log("DSTE ::: ", data);
         console.log("SHORT CODES ::: ", payload);
 
-        const response = APIService.update("/admin/setting/email-template/update", data?.id, payload);
+        const response = APIService.update("/admin/setting/email-template/update", data?.id ?? data?._id, payload);
         console.log("ADD TEMPLATE RESPONSE ::: ", response);
 
         toast.promise(response, {
-          loading: "Loading",
+          loading: "Processing...",
           success: res => {
             setLoading(false);
             dispatch(setLoading(false));
