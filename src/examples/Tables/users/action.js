@@ -83,6 +83,7 @@ const ActionButton = ({ selected }) => {
           ) : (
             <MenuItem onClick={handleClickOpen}>{`Unfreeze Account`}</MenuItem>
           )}
+          <MenuItem onClick={() => {}}>{`Bank Statement`}</MenuItem>
         </div>
       )}
 
