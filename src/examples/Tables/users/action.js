@@ -60,6 +60,25 @@ const ActionButton = ({ selected }) => {
     setOpenConfirm(false);
   };
 
+  const initMono = async () => {
+    try {
+      const payload = {
+        fullName: `${selected?.row?.firstName} ${selected?.row?.lastName}`,
+        emailAddress: `${selected?.row?.emailAddress}`
+      };
+
+      const response = await APIService.post("/bank/init-mono", payload);
+      console.log("INIT MONO RESPONSE HERE :::: ", response.data);
+
+      if (response.status === 200) {
+        // Now open mono url here
+        window.open(response.data?.data?.mono_url, '_blank');
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   const renderMenu = (
     <Menu
       id="simple-menu"
@@ -83,7 +102,7 @@ const ActionButton = ({ selected }) => {
           ) : (
             <MenuItem onClick={handleClickOpen}>{`Unfreeze Account`}</MenuItem>
           )}
-          <MenuItem onClick={() => {}}>{`Bank Statement`}</MenuItem>
+          <MenuItem onClick={initMono}>{`Bank Statement`}</MenuItem>
         </div>
       )}
 
