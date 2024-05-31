@@ -63,12 +63,12 @@ const ActionButton = ({ selected }) => {
   const initMono = async () => {
     try {
       const payload = {
-        fullName: `${selected?.row?.firstName} ${selected?.row?.lastName}`,
-        emailAddress: `${selected?.row?.emailAddress}`
+        code: `${selected?.row?.monoInfo?.accountId}`,
+        period: `last12months`
       };
 
-      const response = await APIService.post("/bank/init-mono", payload);
-      console.log("INIT MONO RESPONSE HERE :::: ", response.data);
+      const response = await APIService.post("/bank/statement", payload);
+      console.log("IBANK STATEMENT RESPONSE HERE :::: ", response.data);
 
       if (response.status === 200) {
         // Now open mono url here
@@ -102,7 +102,9 @@ const ActionButton = ({ selected }) => {
           ) : (
             <MenuItem onClick={handleClickOpen}>{`Unfreeze Account`}</MenuItem>
           )}
-          <MenuItem onClick={initMono}>{`Bank Statement`}</MenuItem>
+          {
+            selected?.row?.monoInfo && <MenuItem onClick={initMono}>{`Bank Statement`}</MenuItem>
+          }
         </div>
       )}
 
