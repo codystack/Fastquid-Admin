@@ -23,16 +23,13 @@ import { toast } from "react-hot-toast";
 import { mutate } from "swr";
 import DisburseOTPForm from "forms/loan/disburse_otp";
 
-
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
 const ActionButton = ({ selected }) => {
-  
-
   const [open, setOpen] = React.useState(false);
-  const [payoutType, setPayoutType] = React.useState('');
+  const [payoutType, setPayoutType] = React.useState("");
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [openRepay, setOpenRepay] = React.useState(false);
   const [openDelete, setOpenDelete] = React.useState(false);
@@ -78,9 +75,10 @@ const ActionButton = ({ selected }) => {
             <div>
               {(profileData?.privilege?.claim === "read/write" ||
                 profileData?.privilege?.claim === "approve" ||
-                profileData?.privilege?.claim !== "disburse") && (
-                <MenuItem onClick={handleClickOpen}>{"Approve"}</MenuItem>
-              )}
+                profileData?.privilege?.claim !== "disburse") &&
+                selected?.row?.user?.monoRef && (
+                  <MenuItem onClick={handleClickOpen}>{"Approve"}</MenuItem>
+                )}
               <MenuItem
                 onClick={() => {
                   closeMenu();
@@ -94,20 +92,31 @@ const ActionButton = ({ selected }) => {
           {selected?.row?.status === "approved" && (
             <div>
               {(profileData?.privilege?.claim === "read/write" ||
-                profileData?.privilege?.claim === "disburse") && (
-                <div>
-                  <MenuItem onClick={() => {
-                    closeMenu();
-                    setPayoutType('automated');
-                    toast.custom('Temporarily disabled. Check back later!', {style: {backgroundColor: 'red'}})
-                  }}>{"Disburse"}</MenuItem>
-                <MenuItem onClick={() => {
-                  setPayoutType('manual');
-                  closeMenu();
-                  setOpenConfirm(true);
-                }}>{"Manual Disburse"}</MenuItem>
-                </div>
-              )}
+                profileData?.privilege?.claim === "disburse") &&
+                selected?.row?.user?.directDebitCustomerId && (
+                  <div>
+                    <MenuItem
+                      onClick={() => {
+                        closeMenu();
+                        setPayoutType("automated");
+                        toast.custom("Temporarily disabled. Check back later!", {
+                          style: { backgroundColor: "red" },
+                        });
+                      }}
+                    >
+                      {"Disburse"}
+                    </MenuItem>
+                    <MenuItem
+                      onClick={() => {
+                        setPayoutType("manual");
+                        closeMenu();
+                        setOpenConfirm(true);
+                      }}
+                    >
+                      {"Manual Disburse"}
+                    </MenuItem>
+                  </div>
+                )}
               <MenuItem
                 onClick={() => {
                   closeMenu();
@@ -181,7 +190,7 @@ const ActionButton = ({ selected }) => {
 
       toast.promise(response, {
         loading: "Loading",
-        success: res => {
+        success: (res) => {
           // console.log("LUKWIZA ::-:: ", res.data);
           // mutate("/loan/all");
           dispatch(setLoading(false));
@@ -190,7 +199,7 @@ const ActionButton = ({ selected }) => {
           }, 1000);
           return `${res.data?.message || res?.message || "Operation successful"}`;
         },
-        error: err => {
+        error: (err) => {
           console.log("ERROR HERE >>> ", `${err}`);
           dispatch(setLoading(false));
           return err?.response?.data?.message || err?.message || "Something went wrong, try again.";
@@ -286,7 +295,14 @@ const ActionButton = ({ selected }) => {
           ${
             selected?.row?.status === "pending"
               ? "Proceed if you are very sure you ou want to approve this loan request "
-              : `Make sure you ${payoutType === "manual" ? "have credited "+ selected?.row?.user?.firstName + " " +  selected?.row?.user?.lastName : "have stable internet connection "} before proceeding`
+              : `Make sure you ${
+                  payoutType === "manual"
+                    ? "have credited " +
+                      selected?.row?.user?.firstName +
+                      " " +
+                      selected?.row?.user?.lastName
+                    : "have stable internet connection "
+                } before proceeding`
           }`}
           </DialogContentText>
         </DialogContent>
