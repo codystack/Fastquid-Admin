@@ -337,21 +337,14 @@ export default function LoansTable({usecase}) {
         )}`}</p>
       ),
     },
-    // {
-    //   field: "disbursedOn",
-    //   headerName: "Disbursed On",
-    //   width: 150,
-    //   renderCell: (params) => (
-    //     <p style={{ textTransform: "capitalize", fontSize: 14 }}>{`${new Date(
-    //       params?.row?.disbursedOn
-    //     ).toLocaleString("en-US", {
-    //       weekday: "short",
-    //       day: "numeric",
-    //       month: "short",
-    //       year: "numeric",
-    //     })}`}</p>
-    //   ),
-    // },
+    {
+      field: "account",
+      headerName: "Acc Linked",
+      width: 150,
+      renderCell: (params) => (
+        <p style={{ textTransform: "capitalize", fontSize: 14 }}>{`${params?.row?.user?.accountLinked}`}</p>
+      ),
+    },
     {
       field: "dueDate",
       headerName: "Due Date",
