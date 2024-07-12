@@ -76,7 +76,7 @@ const ActionButton = ({ selected }) => {
               {(profileData?.privilege?.claim === "read/write" ||
                 profileData?.privilege?.claim === "approve" ||
                 profileData?.privilege?.claim !== "disburse") &&
-                selected?.row?.user?.monoRef && (
+                selected?.row?.user?.monoRef && selected?.row?.user?.accountLinked && (
                   <MenuItem onClick={handleClickOpen}>{"Approve"}</MenuItem>
                 )}
               <MenuItem

@@ -192,6 +192,16 @@ const Preview = (props) => {
         <Grid item xs={12} sm={6} md={3}>
           <Box>
             <Typography variant="h6" fontWeight={600}>
+              ACCOUNT LINKED
+            </Typography>
+            <p style={{ fontSize: 14, textTransform: "capitalize" }}>
+              {`${selected?.row?.user?.accountLinked ?? false}`}
+            </p>
+          </Box>
+        </Grid>
+        <Grid item xs={12} sm={6} md={3}>
+          <Box>
+            <Typography variant="h6" fontWeight={600}>
               LAST DISBURSEMENT
             </Typography>
             <p style={{ fontSize: 14, textTransform: "capitalize" }}>
